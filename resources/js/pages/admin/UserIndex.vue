@@ -7,7 +7,7 @@ import { Users, Calendar, Clock, Pen } from 'lucide-vue-next';
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Users',
-    href: '/presences/users',
+    href: '/users',
   },
 ];
 

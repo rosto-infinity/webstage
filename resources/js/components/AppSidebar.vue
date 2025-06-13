@@ -30,8 +30,8 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid, // Icône appropriée pour un tableau de bord
     },
     {
-        title: 'Presences',
-        href: '/presences',
+        title: 'Presences users',
+        href: '/presences/users',
         icon: CalendarCheck, // Mieux adapté pour la gestion des présences
     },
     {
@@ -40,8 +40,8 @@ const mainNavItems: NavItem[] = [
         icon: UserPlus, // Représente mieux l'ajout d'utilisateurs/présences
     },
     {
-        title: 'Users list',
-        href: '/presences/users',
+        title: 'Users',
+        href: '/users',
         icon: List, // Plus adapté pour une liste que l'icône Users
     },
 ];

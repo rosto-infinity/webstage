@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('presences', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->date('date');
+            $table->time('arrival_time')->nullable();
+            $table->time('departure_time')->nullable();
+            $table->integer('late_minutes')->default(0);
+            $table->boolean('absent')->default(false);
+            $table->boolean('late')->default(false);
             $table->timestamps();
         });
     }

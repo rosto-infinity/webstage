@@ -11,10 +11,10 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
-Route::get('/presences',[PresenceController::class,'index'])->name('presences');
+Route::get('/presences/users',[PresenceController::class,'index'])->name('presences');
 Route::get('/presences/add',[PresenceController::class,'add'])->name('presences.add');
-Route::get('/presences/users',[UserController::class,'index'])->name('presences.users');
-
+Route::post('/presences/store', [PresenceController::class, 'store'])->name('presences.store');
+Route::get('/users',[UserController::class,'index'])->name('presences.users');
 
 
 

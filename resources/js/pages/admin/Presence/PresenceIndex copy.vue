@@ -22,28 +22,7 @@ const lateCount = computed(() =>
 //tableau
 const data = ref<AttendanceRecord[]>([
   { id: 1, date: '2025-06-12', fullName: 'Alice Dupont', email: 'alice.dupont@email.com', arrivalTime: '08:05', departureTime: '17:00', lateMinutes: 5, isAbsent: false, isLate: true },
-  { id: 2, date: '2025-06-12', fullName: 'Benoît Martin', email: 'benoit.martin@email.com', arrivalTime: '08:00', departureTime: '17:00', lateMinutes: 0, isAbsent: false, isLate: false },
-  { id: 3, date: '2025-06-12', fullName: 'Carla Moreau', email: 'carla.moreau@email.com', arrivalTime: '08:12', departureTime: '17:00', lateMinutes: 12, isAbsent: false, isLate: true },
-  { id: 4, date: '2025-06-12', fullName: 'David Leroy', email: 'david.leroy@email.com', arrivalTime: '', departureTime: '', lateMinutes: 0, isAbsent: true, isLate: false },
-  { id: 5, date: '2025-06-12', fullName: 'Emma Petit', email: 'emma.petit@email.com', arrivalTime: '08:03', departureTime: '17:00', lateMinutes: 3, isAbsent: false, isLate: true },
-  { id: 6, date: '2025-06-12', fullName: 'Félix Bernard', email: 'felix.bernard@email.com', arrivalTime: '08:00', departureTime: '17:00', lateMinutes: 0, isAbsent: false, isLate: false },
-  { id: 7, date: '2025-06-12', fullName: 'Gabrielle Lefevre', email: 'gabrielle.lefevre@email.com', arrivalTime: '08:10', departureTime: '17:00', lateMinutes: 10, isAbsent: false, isLate: true },
-  { id: 8, date: '2025-06-12', fullName: 'Hugo Girard', email: 'hugo.girard@email.com', arrivalTime: '', departureTime: '', lateMinutes: 0, isAbsent: true, isLate: false },
-  { id: 9, date: '2025-06-12', fullName: 'Inès Dubois', email: 'ines.dubois@email.com', arrivalTime: '08:00', departureTime: '17:00', lateMinutes: 0, isAbsent: false, isLate: false },
-  { id: 10, date: '2025-06-12', fullName: 'Jules Fontaine', email: 'jules.fontaine@email.com', arrivalTime: '08:07', departureTime: '17:00', lateMinutes: 7, isAbsent: false, isLate: true },
-  { id: 11, date: '2025-06-12', fullName: 'Kenza Laurent', email: 'kenza.laurent@email.com', arrivalTime: '08:00', departureTime: '17:00', lateMinutes: 0, isAbsent: false, isLate: false },
-  { id: 12, date: '2025-06-12', fullName: 'Léo Marchand', email: 'leo.marchand@email.com', arrivalTime: '08:15', departureTime: '17:00', lateMinutes: 15, isAbsent: false, isLate: true },
-  { id: 13, date: '2025-06-12', fullName: 'Manon Roux', email: 'manon.roux@email.com', arrivalTime: '08:00', departureTime: '17:00', lateMinutes: 0, isAbsent: false, isLate: false },
-  { id: 14, date: '2025-06-12', fullName: 'Nicolas Gauthier', email: 'nicolas.gauthier@email.com', arrivalTime: '', departureTime: '', lateMinutes: 0, isAbsent: true, isLate: false },
-  { id: 15, date: '2025-06-12', fullName: 'Océane Barbier', email: 'oceane.barbier@email.com', arrivalTime: '08:02', departureTime: '17:00', lateMinutes: 2, isAbsent: false, isLate: true },
-  { id: 16, date: '2025-06-12', fullName: 'Pauline Masson', email: 'pauline.masson@email.com', arrivalTime: '08:00', departureTime: '17:00', lateMinutes: 0, isAbsent: false, isLate: false },
-  { id: 17, date: '2025-06-12', fullName: 'Quentin Robin', email: 'quentin.robin@email.com', arrivalTime: '08:09', departureTime: '17:00', lateMinutes: 9, isAbsent: false, isLate: true },
-  { id: 18, date: '2025-06-12', fullName: 'Rania Perrot', email: 'rania.perrot@email.com', arrivalTime: '08:00', departureTime: '17:00', lateMinutes: 0, isAbsent: false, isLate: false },
-  { id: 19, date: '2025-06-12', fullName: 'Sami Lefort', email: 'sami.lefort@email.com', arrivalTime: '', departureTime: '', lateMinutes: 0, isAbsent: true, isLate: false },
-  { id: 20, date: '2025-06-12', fullName: 'Théo Blanchard', email: 'theo.blanchard@email.com', arrivalTime: '08:04', departureTime: '17:00', lateMinutes: 4, isAbsent: false, isLate: true },
-  { id: 21, date: '2025-07-12', fullName: 'Théo Blanchard', email: 'theo.blanchard@email.com', arrivalTime: '08:04', departureTime: '17:00', lateMinutes: 4, isAbsent: false, isLate: true },
-  { id: 22, date: '2025-08-12', fullName: 'Théo Blanchard', email: 'theo.blanchard@email.com', arrivalTime: '08:04', departureTime: '17:00', lateMinutes: 4, isAbsent: false, isLate: true },
-  { id: 23, date: '2025-09-12', fullName: 'Théo Blanchard', email: 'theo.blanchard@email.com', arrivalTime: '08:04', departureTime: '17:00', lateMinutes: 4, isAbsent: false, isLate: true },
+  { id: 2, date: '2025-06-12', fullName: 'Benoît Martin', email: 'benoit.martin@email.com', arrivalTime: '08:00', departureTime: '17:00', lateMinutes: 0, isAbsent: false, isLate: false }, 
 ]);
 
 interface AttendanceRecord {
