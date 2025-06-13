@@ -112,7 +112,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
       <div><h1 class="text-3xl font-bold">Tableau de présence</h1><p class="text-gray-600">BTS 2 Génie Logiciel / DQP</p></div>
       <div class="flex gap-2">
-        <Link :href="route('presences.add')" class="btn-primary flex items-center gap-2"><Pen class="w-5 h-5"/>Ajouter</Link>
+        <Link :href="route('presences.add')" prefetch class="btn-primary flex items-center gap-2"><Pen class="w-5 h-5"/>Ajouter</Link>
         <button class="btn-primary flex items-center gap-2"><Download class="w-5 h-5"/>Exporter</button>
       </div>
     </div>
@@ -174,20 +174,20 @@ const breadcrumbs: BreadcrumbItem[] = [
 </template>
 
 <style scoped>
-@reference "tailwindcss";
+/* @reference "tailwindcss"; */
 
 /* Classe personnalisée */
-.th-sort {
+/* .th-sort {
   cursor: pointer;
   font-weight: 500;
-}
+} */
 
-.btn-primary {
+/* .btn-primary {
   @apply bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors;
-}
+} */
 
-.focus\:ring {
+/* .focus\:ring {
   @apply focus:ring-2 focus:ring-blue-500 focus:outline-none;
-}
+} */
 </style>
 

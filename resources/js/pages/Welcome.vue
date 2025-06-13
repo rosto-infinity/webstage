@@ -46,20 +46,20 @@ onMounted(() => {
       <nav class="flex items-center justify-end gap-4 py-6">
         <Link
           v-if="$page.props.auth.user"
-          :href="route('dashboard')"
+          :href="route('dashboard')" prefetch
           class="inline-block rounded-lg border border-green-200 px-5 py-2 text-sm leading-normal text-green-800 hover:bg-green-100 transition-colors"
         >
           Dashboard
         </Link>
         <template v-else>
           <Link
-            :href="route('login')"
+            :href="route('login')" prefetch
             class="inline-block rounded-lg px-5 py-2 text-sm leading-normal text-green-700 hover:text-green-900 hover:bg-green-50 transition-colors"
           >
             Connexion
           </Link>
           <Link
-            :href="route('register')"
+            :href="route('register')" prefetch
             class="inline-block rounded-lg bg-green-600 px-5 py-2 text-sm leading-normal text-white hover:bg-green-700 transition-colors shadow-sm"
           >
             Inscription
@@ -88,7 +88,7 @@ onMounted(() => {
 
         <div class="mt-12 flex flex-col sm:flex-row gap-4">
           <Link
-            href="/dashboard"
+            :href="route('dashboard')" prefetch
             class="cta-primary px-8 py-3 text-base font-medium rounded-lg transition-all duration-300 hover:shadow-lg"
           >
             Accéder au dashboard

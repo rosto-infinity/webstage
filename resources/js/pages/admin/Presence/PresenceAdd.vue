@@ -13,6 +13,7 @@ interface PresenceForm {
   minutes_retard: number | null
   absent: boolean
   en_retard: boolean
+  
 }
 
 const form = useForm<PresenceForm>({
@@ -51,7 +52,7 @@ const breadcrumbs: BreadcrumbItem[] = [
   <AppLayout :breadcrumbs="breadcrumbs">
     <div class="p-6">
       <Link
-        :href="route('presences')"
+        :href="route('presences')" prefetch
         class="flex items-center w-48 gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
       >
         <ArrowLeft class="w-4 h-4"/>
