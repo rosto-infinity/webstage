@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
-use Inertia\Inertia;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
@@ -13,7 +13,7 @@ class UserController extends Controller
     {
         return Inertia::render('admin/UserIndex', [
             'users' => User::query()->paginate(6),
-            'totalUsers' => User::count() // Ajout du nombre total d'utilisateurs
+            'totalUsers' => User::count(), // Ajout du nombre total d'utilisateurs
         ]);
     }
 }

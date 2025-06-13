@@ -66,7 +66,7 @@ const breadcrumbs: BreadcrumbItem[] = [
           <!-- Sélection de l'utilisateur -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Étudiant</label>
-            <select v-model="form.user_id" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:green-500">
+            <select v-model="form.user_id"  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:green-500">
               <option value="" disabled>Choisissez un étudiant</option>
               <option v-for="u in users" :key="u.id" :value="u.id">
                 {{ u.name }} — {{ u.email }}
@@ -77,7 +77,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-            <input v-model="form.date" type="date" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:green-500" />
+            <input v-model="form.date" type="date"  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:green-500" />
             <span v-if="form.errors.date" class="text-red-600 text-sm">{{ form.errors.date }}</span>
           </div>
 

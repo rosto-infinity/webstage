@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Presence;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class PresenceSeeder extends Seeder
 {
