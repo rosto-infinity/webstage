@@ -131,3 +131,22 @@ MIT License - voir le fichier LICENSE.
 ## 📞 Contact
   - **Waffo lele rostand**
   - **+2376 915 848 19**
+ 
+**webStage** est une application de suivi de présence développée avec Laravel 12, Inertia.js, Vue 3, Tailwind CSS v4 et Chart.js. Elle permet de gérer les présences des utilisateurs, d'afficher des statistiques sous forme de graphiques et offre une interface responsive.
+
+### Principales Fonctionnalités
+- Authentification Laravel native
+- CRUD des présences (utilisateurs, statut, dates, heures, retards, etc.)
+- Dashboard avec statistiques graphiques (camembert des présences du jour, graphique à barres hebdomadaire, graphique linéaire mensuel, motifs d'absence)
+- Interface responsive grâce à Tailwind v4
+- Navigation fluide avec Inertia.js + Ziggy
+
+### Pile Technologique
+- Back-end : PHP ≥ 8.2, Laravel 12, Inertia.js, Ziggy
+- Front-end : Vue.js 3, @inertiajs/vue3, Tailwind CSS v4, Chart.js, lucide-vue-next
+- Outils et développement : Vite, TypeScript, tailwind-merge, cla$$x, fakerphp/faker, pestphp/pest, mockery/mockery, laravel/pint, etc.
+- Environnement de développement : Linux Mint, Nginx, Docker (optionnel), Composer, Node.js (npm), MySQL (ou MariaDB), SQLite (optionnel)
+
+### Licence
+MIT License
+
