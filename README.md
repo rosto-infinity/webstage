@@ -127,3 +127,7 @@ MIT License - voir le fichier LICENSE.
 - Authentification avancée (rôles, permissions)
 - Notification email automatique
 - Filtrage avancé, recherche dynamique, pagination infinie
+
+## 📞 Contact
+  - **Waffo lele rostand**
+  - **+2376 915 848 19**
