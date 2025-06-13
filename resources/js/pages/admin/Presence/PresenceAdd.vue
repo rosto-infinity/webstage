@@ -53,7 +53,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <div class="p-6">
       <Link
         :href="route('presences')" prefetch
-        class="flex items-center w-48 gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+        class="flex items-center w-59 gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
       >
         <ArrowLeft class="w-4 h-4"/>
         <span>Retour aux présences</span>
@@ -66,7 +66,7 @@ const breadcrumbs: BreadcrumbItem[] = [
           <!-- Sélection de l'utilisateur -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Étudiant</label>
-            <select v-model="form.user_id" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            <select v-model="form.user_id" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:green-500">
               <option value="" disabled>Choisissez un étudiant</option>
               <option v-for="u in users" :key="u.id" :value="u.id">
                 {{ u.name }} — {{ u.email }}
@@ -77,31 +77,31 @@ const breadcrumbs: BreadcrumbItem[] = [
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-            <input v-model="form.date" type="date" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+            <input v-model="form.date" type="date" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:green-500" />
             <span v-if="form.errors.date" class="text-red-600 text-sm">{{ form.errors.date }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Heure d'arrivée</label>
-            <input v-model="form.heure_arrivee" type="time" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+            <input v-model="form.heure_arrivee" type="time" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:green-500" />
             <span v-if="form.errors.heure_arrivee" class="text-red-600 text-sm">{{ form.errors.heure_arrivee }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Heure de départ</label>
-            <input v-model="form.heure_depart" type="time" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+            <input v-model="form.heure_depart" type="time" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:green-500" />
             <span v-if="form.errors.heure_depart" class="text-red-600 text-sm">{{ form.errors.heure_depart }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Minutes de retard</label>
-            <input v-model.number="form.minutes_retard" type="number" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+            <input v-model.number="form.minutes_retard" type="number" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:green-500" />
             <span v-if="form.errors.minutes_retard" class="text-red-600 text-sm">{{ form.errors.minutes_retard }}</span>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Absent</label>
-            <select v-model="form.absent" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            <select v-model="form.absent" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:green-500">
               <option :value="false">Non</option>
               <option :value="true">Oui</option>
             </select>
@@ -110,7 +110,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">En retard</label>
-            <select v-model="form.en_retard" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            <select v-model="form.en_retard" 
+            class="w-full  px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:green-500">
               <option :value="false">Non</option>
               <option :value="true">Oui</option>
             </select>
@@ -119,7 +120,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
           <div class="md:col-span-2 flex justify-end">
             <button type="submit" :disabled="form.processing"
-              class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">
+              class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200">
               Ajouter
             </button>
           </div>

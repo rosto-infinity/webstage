@@ -24,7 +24,8 @@ Route::get('dashboard', function () {
 
 //  Route::get('/{any}', function () {
 //     return Inertia::render('NotFoundPage');
-//  })->where('any', '.*');
+//  })->where('any', '.*')->name('notfound');
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
