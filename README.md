@@ -23,6 +23,16 @@
   - tailwind‑merge, cla$$x
   - fakerphp/faker, pestphp/pest, mockery/mockery, laravel/pint…
   - sail, collision, …etc.
+  - **Environnemnt & dev** :
+    - Linux mint
+    - Sever Nginx
+    - Docker (optionnel)
+    - Composer
+    - Node.js (npm)
+    - MySQL (ou MariaDB)
+    - SQLite (optionnel pour dev)
+    - MySQL 8.0
+
 
 ---
 
@@ -40,3 +50,80 @@ $table->integer('late_minutes')->default(0);
 $table->boolean('absent')->default(false);
 $table->boolean('late')->default(false);
 $table->timestamps();
+## 🚀 Installation
+
+Clone le dépôt :
+
+```bash
+git clone <repo-url> webStage
+cd webStage
+```
+
+Installe les dépendances composer & npm :
+
+```bash
+composer install
+npm install
+```
+
+Configure l’environnement :
+
+```bash
+cp .env.example .env
+php artisan key:generate
+# renseigne tes identifiants DB…
+```
+
+Crée la base et lance la migration :
+
+```bash
+php artisan migrate
+```
+
+(Optionnel) Remplis avec des données de test via factory + seeder :
+
+```bash
+php artisan db:seed
+```
+
+Compile les assets et démarre le serveur :
+
+```bash
+npm run dev       # ou npm run prod pour production
+php artisan serve
+```
+
+## 🧩 Fonctionnalités
+
+- Authentification Laravel native
+- CRUD des présences (utilisateurs, status, dates, heures, retard…)
+- Dashboard avec statistiques graphiques :
+  - Camembert des présences du jour
+  - Bar chart hebdomadaire
+  - Line chart mensuel
+  - Motifs d’absence (mois en cours)
+- Interface responsive grâce à Tailwind v4
+- Navigation fluide avec Inertia.js + Ziggy
+
+## 💡 Utilisation
+
+- **Présences** : accès via `/presences`
+- **Ajout** : lien "Ajouter présence", form avec sélection d’utilisateur
+- **Dashboard** : accessible via `/dashboard`, présente les graphiques
+
+## 🧪 Tests & qualité
+
+- Tests unitaires et features avec Pest via `php artisan test`
+- Formatting par Laravel Pint
+- Qualité du code contrôlée par Composer et `npm run lint`
+
+## 📄 Licence
+
+MIT License - voir le fichier LICENSE.
+
+## 🧭 À venir
+
+- Export Excel / PDF des présences
+- Authentification avancée (rôles, permissions)
+- Notification email automatique
+- Filtrage avancé, recherche dynamique, pagination infinie
