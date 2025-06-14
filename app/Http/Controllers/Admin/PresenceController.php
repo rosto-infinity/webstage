@@ -17,7 +17,7 @@ class PresenceController extends Controller
             ->get()
             ->map(fn ($p) => [
                 'id' => $p->id,
-                'date' => $p->date, // en string
+                'date' => $p->date, // Formatage explicite en string
                 'arrival_time' => $p->arrival_time,
                 'departure_time' => $p->departure_time,
                 'late_minutes' => $p->late_minutes,
@@ -41,18 +41,26 @@ class PresenceController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'date' => 'required|date',
-            'arrival_time' => 'nullable|date_format:H:i',
-            'departure_time' => 'nullable|date_format:H:i',
-            'late_minutes' => 'nullable|integer|min:0',
-            'absent' => 'required|boolean',
-            'late' => 'required|boolean',
+            'heure_arrivee' => 'nullable|date_format:H:i',
+            'heure_depart' => 'nullable|date_format:H:i|after:heure_arrivee',
+            'minutes_retard' => 'nullable|integer|min:0',
+            'absent' => 'boolean',
+            'en_retard' => 'boolean',
         ]);
 
-        Presence::create($data);
+        Presence::create([
+            'user_id' => $validated['user_id'],
+            'date' => $validated['date'],
+            'arrival_time' => $validated['heure_arrivee'],
+            'departure_time' => $validated['heure_depart'],
+            'late_minutes' => $validated['minutes_retard'],
+            'absent' => $validated['absent'],
+            'late' => $validated['en_retard'],
+        ]);
 
-        return redirect()->route('presences.create')->with('success', 'Présence ajoutée avec succès.');
+        return redirect()->route('presences')->with('success', 'Présence ajoutée avec succès.');
     }
 }
