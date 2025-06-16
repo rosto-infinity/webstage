@@ -41,6 +41,14 @@ class PresenceController extends Controller
 
     public function store(Request $request)
     {
+//         use App\Http\Requests\PresenceRequest;
+
+// public function store(PresenceRequest $request)
+// {
+//     Presence::create($request->validated());
+//     return redirect()->route('presences')->with('success', 'Enregistrement effectué.');
+// }
+
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'date' => 'required|date',
