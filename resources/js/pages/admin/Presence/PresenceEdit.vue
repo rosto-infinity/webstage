@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import {  watch } from 'vue';
 import type { BreadcrumbItem } from '@/types';
 
 interface PresenceForm {
