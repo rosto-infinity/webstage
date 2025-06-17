@@ -3,13 +3,51 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import Badge from '@/components/Badge.vue';
 import SortIcon from '@/components/SortIcon.vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { ref, computed ,watch} from 'vue';
 import { ChevronLeft, ChevronRight, Pen, Users, Calendar, Clock, Search, Download } from 'lucide-vue-next';
 import type { BreadcrumbItem } from '@/types';
-import type { PageProps } from '@/types';
+ import type { PageProps } from '@/types';
 import { Trash2 } from 'lucide-vue-next';
 import { router } from '@inertiajs/vue3';
 
+
+defineProps<{
+  presenceCount:number
+}>()
+
+
+// Typage des messages flash
+interface FlashMessages {
+  success?: string;
+  error?: string;
+  warning?: string;
+}
+
+// Récupérer les messages flash
+const flash = computed<FlashMessages>(() => usePage().props.flash as FlashMessages);
+const showFlash = ref(false);
+const flashMessage = ref('');
+const flashType = ref<'success' | 'error' | 'warning'>('success');
+
+// Surveillance réactive des messages flash
+watch(flash, (newVal: FlashMessages) => {
+  const hasMessage = newVal.success || newVal.error || newVal.warning;
+
+  if (hasMessage) {
+    showFlash.value = true;
+    flashMessage.value = newVal.success || newVal.error || newVal.warning || '';
+    flashType.value = newVal.success ? 'success' 
+                     : newVal.error ? 'error' 
+                     : 'warning';
+    
+    // Durée de 5s pour une meilleure expérience
+    setTimeout(() => {
+      showFlash.value = false;
+    }, 5000);
+  }
+}, { 
+  immediate: true,
+});
 // Ajouter cette fonction
 function deletePresence(id: number) {
   if (confirm('Êtes-vous sûr de vouloir supprimer cette présence ?')) {
@@ -114,6 +152,27 @@ const breadcrumbs: BreadcrumbItem[] = [
 <template>
   <Head title="Présences" />
   <AppLayout :breadcrumbs="breadcrumbs">
+    
+     <!-- Message flash -->
+    <div v-if="showFlash" 
+         :class="[
+           'fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-md transition-all duration-300',
+           flashType === 'success' 
+             ? 'bg-green-50 border border-green-200 text-green-800' 
+             : 'bg-red-50 border border-red-200 text-red-800'
+         ]">
+      <div class="flex items-start justify-between gap-4">
+        <div class="flex-1">
+          <h3 class="font-medium">
+            {{ flashType === 'success' ? 'Succès' : 'Erreur' }}
+          </h3>
+          <p class="text-sm mt-1">{{ flashMessage }}</p>
+        </div>
+        <button @click="showFlash = false" class="text-gray-500 hover:text-gray-700">
+          <X class="w-5 h-5" />
+        </button>
+      </div>
+    </div>
     <!-- Statistiques -->
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-8 p-2">
       <div class="bg-white p-5 rounded-xl shadow border flex items-center gap-3">
@@ -137,7 +196,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <div class="p-2">
       <!-- Actions -->
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-        <div><h1 class="text-3xl font-bold">Tableau de présence</h1><p class="text-gray-600">BTS 2 Génie Logiciel / DQP</p></div>
+        <div><h1 class="text-3xl font-bold">Tableau de présence : {{ presenceCount }}</h1><p class="text-gray-600">BTS 2 Génie Logiciel / DQP</p></div>
         <div class="flex gap-2">
           <Link :href="route('presences.add')" class="bg-green-600 text-white flex items-center px-6 py-2 rounded-lg hover:bg-green-700">
             <Pen class="w-5 h-5"/>Ajouter

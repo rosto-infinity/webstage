@@ -13,26 +13,37 @@ use App\Http\Requests\PresenceRequest;
 class PresenceController extends Controller
 {
     public function index()
-    {
-        $presences = Presence::with('user')
-            ->orderBy('date', 'desc')
-            ->get()
-            ->map(fn ($p) => [
-                'id' => $p->id,
-                'date' => $p->date, // Formatage explicite en string
-                'arrival_time' => $p->arrival_time,
-                'departure_time' => $p->departure_time,
-                'late_minutes' => $p->late_minutes,
-                'absent' => $p->absent,
-                'late' => $p->late,
-                'user' => [
-                    'name' => $p->user->name,
-                    'email' => $p->user->email,
-                ],
-            ]);
+{
+    $presences = Presence::with('user')
+        ->orderBy('date', 'desc')
+        ->get()
+        ->map(fn ($p) => [
+            'id' => $p->id,
+            'date' => $p->date,
+            'arrival_time' => $p->arrival_time,
+            'departure_time' => $p->departure_time,
+            'late_minutes' => $p->late_minutes,
+            'absent' => $p->absent,
+            'late' => $p->late,
+            'user' => [
+                'name' => $p->user->name,
+                'email' => $p->user->email,
+            ],
+        ]);
 
-        return Inertia::render('admin/Presence/PresenceIndex', compact('presences'));
-    }
+    $presenceCount = Presence::count();
+
+//         dd($stats["absent"]);
+    return Inertia::render('admin/Presence/PresenceIndex', [
+        'presences' => $presences,
+        'presenceCount' => $presenceCount,
+        'flash' => [
+            'success' => session('success'),
+            'error' => session('error'),
+            'warning' => session('warning'),
+        ],
+    ]);
+}
 
     public function add()
     {
@@ -104,9 +115,7 @@ public function update(PresenceRequest $request, $id)
      */
     public function destroy(Presence $presence)
     {
-        // Vérification des autorisations si nécessaire
-        // $this->authorize('delete', $presence);
-
+       
         $presence->delete();
 
         return redirect()->route('presences')

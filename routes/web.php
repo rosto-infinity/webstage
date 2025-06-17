@@ -1,12 +1,15 @@
 <?php
 
-use App\Http\Controllers\Admin\PresenceController;
-use App\Http\Controllers\Admin\UserController;
-use Illuminate\Support\Facades\Route;
+use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Presence;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\PresenceController;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome');
+    $totalUsers =User::count();
+    return Inertia::render('Welcome',compact('totalUsers'));
 })->name('home');
 
 Route::prefix('presences')->group(function () {
@@ -20,7 +23,21 @@ Route::prefix('presences')->group(function () {
     ->name('presences.destroy');
 });
 Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
+      $presenceCount =Presence::count();
+        $totalUsers =User::count();
+
+            $Countpresent = Presence::whereDate('date', today())->where('absent', false)->count();
+            $Countabsent = Presence::whereDate('date', today())->where('absent', true)->count();
+            $Countlate =Presence::whereDate('date', today())->where('late', true)->count();
+//  var_dump($presenceCount);
+     return Inertia::render('Dashboard', compact(
+            'totalUsers',
+            'presenceCount',
+            'Countpresent',
+            'Countabsent',
+            'Countlate',
+            
+        ));
 })->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/users', [UserController::class, 'index'])->name('presences.users');
 

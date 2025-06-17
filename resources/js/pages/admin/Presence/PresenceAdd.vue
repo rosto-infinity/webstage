@@ -18,10 +18,10 @@
           Nouvelle fiche de présence
         </h2>
 
-        <!-- Formulaire -->
-        <form @submit.prevent="submit" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Formulaire réorganisé horizontalement -->
+        <form @submit.prevent="submit" class="space-y-6">
           <!-- Section Étudiant -->
-          <div class="md:col-span-2 space-y-4 p-4 bg-gray-50 rounded-lg">
+          <div class="space-y-4 p-4 bg-gray-50 rounded-lg">
             <h3 class="font-medium text-gray-700">Informations étudiant</h3>
             
             <div>
@@ -46,116 +46,129 @@
             </div>
           </div>
 
-          <!-- Section Horaires -->
-          <div class="space-y-4 p-4 bg-gray-50 rounded-lg">
-            <h3 class="font-medium text-gray-700">Horaires</h3>
-            
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-              <input
-                v-model="form.date"
-                type="date"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                :class="{ 'border-red-500': form.errors.date }"
-              />
-              <p v-if="form.errors.date" class="mt-1 text-sm text-red-600">
-                {{ form.errors.date }}
-              </p>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Heure d'arrivée</label>
-              <input
-                v-model="form.heure_arrivee"
-                type="time"
-                :disabled="form.absent"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                :class="{ 'border-red-500': form.errors.heure_arrivee, 'bg-gray-100': form.absent }"
-              />
-              <p v-if="form.errors.heure_arrivee" class="mt-1 text-sm text-red-600">
-                {{ form.errors.heure_arrivee }}
-              </p>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Heure de départ</label>
-              <input
-                v-model="form.heure_depart"
-                type="time"
-                :disabled="form.absent"
-                :min="form.heure_arrivee"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                :class="{ 'border-red-500': form.errors.heure_depart, 'bg-gray-100': form.absent }"
-              />
-              <p v-if="form.errors.heure_depart" class="mt-1 text-sm text-red-600">
-                {{ form.errors.heure_depart }}
-              </p>
-            </div>
-          </div>
-
-          <!-- Section Statut -->
-          <div class="space-y-4 p-4 bg-gray-50 rounded-lg">
-            <h3 class="font-medium text-gray-700">Statut</h3>
-
-            <div>
-              <label class="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+          <!-- Conteneur horizontal -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Section Horaires -->
+            <div class="space-y-4 p-4 bg-gray-50 rounded-lg">
+              <h3 class="font-medium text-gray-700">Horaires</h3>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
                 <input
-                  v-model="form.absent"
-                  type="checkbox"
-                  class="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                  v-model="form.date"
+                  type="date"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                  :class="{ 'border-red-500': form.errors.date }"
                 />
-                Absent(e)
-              </label>
-              <p v-if="form.errors.absent" class="mt-1 text-sm text-red-600">
-                {{ form.errors.absent }}
-              </p>
-            </div>
-
-            <div>
-              <label class="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
-                <input
-                  v-model="form.en_retard"
-                  type="checkbox"
-                  :disabled="form.absent"
-                  class="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                  :class="{ 'bg-gray-100': form.absent }"
-                />
-                En retard
-              </label>
-              <p v-if="form.errors.en_retard" class="mt-1 text-sm text-red-600">
-                {{ form.errors.en_retard }}
-              </p>
-            </div>
-
-            <!-- Affichage du retard calculé automatiquement -->
-            <div v-if="form.heure_arrivee && !form.absent" class="p-3 bg-blue-50 rounded-lg border border-blue-200">
-              <div class="flex items-center gap-2 mb-2">
-                <Clock class="w-4 h-4 text-blue-600" />
-                <span class="text-sm font-medium text-blue-700">Calcul automatique du retard</span>
+                <p v-if="form.errors.date" class="mt-1 text-sm text-red-600">
+                  {{ form.errors.date }}
+                </p>
               </div>
-              <p class="text-sm text-blue-600">
-                Heure normale : <strong>8h00</strong><br>
-                Heure d'arrivée : <strong>{{ form.heure_arrivee }}</strong><br>
-                Retard calculé : <strong>{{ formatDelay(calculatedDelay) }}</strong>
-              </p>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Arrivée</label>
+                <input
+                  v-model="form.heure_arrivee"
+                  type="time"
+                  :disabled="form.absent"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                  :class="{ 'border-red-500': form.errors.heure_arrivee, 'bg-gray-100': form.absent }"
+                />
+                <p v-if="form.errors.heure_arrivee" class="mt-1 text-sm text-red-600">
+                  {{ form.errors.heure_arrivee }}
+                </p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Départ</label>
+                <input
+                  v-model="form.heure_depart"
+                  type="time"
+                  :disabled="form.absent"
+                  :min="form.heure_arrivee"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                  :class="{ 'border-red-500': form.errors.heure_depart, 'bg-gray-100': form.absent }"
+                />
+                <p v-if="form.errors.heure_depart" class="mt-1 text-sm text-red-600">
+                  {{ form.errors.heure_depart }}
+                </p>
+              </div>
             </div>
 
-            <div v-if="form.en_retard && !form.absent">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Minutes de retard (calculé automatiquement)</label>
-              <input
-                v-model.number="form.minutes_retard"
-                type="number"
-                readonly
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed"
-              />
-              <p class="text-xs text-gray-500 mt-1">
-                Calculé automatiquement basé sur l'heure normale de 8h00
-              </p>
+            <!-- Section Statut -->
+            <div class="space-y-4 p-4 bg-gray-50 rounded-lg">
+              <h3 class="font-medium text-gray-700">Statut</h3>
+
+              <div class="space-y-4">
+                <div>
+                  <label class="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+                    <input
+                      v-model="form.absent"
+                      type="checkbox"
+                      class="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                    />
+                    Absent(e)
+                  </label>
+                </div>
+
+                <div>
+                  <label class="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+                    <input
+                      v-model="form.en_retard"
+                      type="checkbox"
+                      :disabled="form.absent"
+                      class="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      :class="{ 'bg-gray-100': form.absent }"
+                    />
+                    En retard
+                  </label>
+                </div>
+              </div>
+
+              <!-- Affichage du retard calculé -->
+              <div v-if="form.heure_arrivee && !form.absent" class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <div class="flex items-center gap-2 mb-2">
+                  <Clock class="w-4 h-4 text-blue-600" />
+                  <span class="text-sm font-medium text-blue-700">Calcul du retard</span>
+                </div>
+                <div class="text-sm text-blue-600 space-y-1">
+                  <div>Normale: <strong>8h00</strong></div>
+                  <div>Arrivée: <strong>{{ form.heure_arrivee }}</strong></div>
+                  <div>Retard: <strong>{{ formatDelay(calculatedDelay) }}</strong></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section Détails retard -->
+            <div class="space-y-4 p-4 bg-gray-50 rounded-lg">
+              <h3 class="font-medium text-gray-700">Détails</h3>
+
+              <div v-if="form.en_retard && !form.absent">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Minutes de retard</label>
+                <input
+                  v-model.number="form.minutes_retard"
+                  type="number"
+                  readonly
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed"
+                />
+                <p class="text-xs text-gray-500 mt-1">
+                  Calculé automatiquement
+                </p>
+              </div>
+
+              <!-- Espace supplémentaire pour équilibrer visuellement -->
+              <div class="h-full flex items-start ">
+                <div class="w-full p-3 bg-green-50 rounded-lg border border-green-200">
+                  <p class="text-sm text-green-700">
+                    Tous les champs marqués d'un astérisque (<span class="text-red-500">*</span>) sont obligatoires
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
           <!-- Actions -->
-          <div class="md:col-span-2 flex justify-end gap-4 pt-4 border-t">
+          <div class="flex gap-4 pt-4 border-t">
             <Link
               :href="route('presences')"
               class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"

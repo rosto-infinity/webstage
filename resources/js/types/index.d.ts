@@ -4,6 +4,24 @@ import type { Config } from 'ziggy-js';
 export interface Auth {
     user: User;
 }
+export interface PageProps {
+    
+  arrival_time: string | null;
+  departure_time: string | null;
+  late_minutes: number;
+  absent: boolean;
+  late: boolean;
+}
+export interface Presence {  
+   id: number;
+  date: string;
+  arrival_time: string | null;
+  departure_time: string | null;
+  late_minutes: number;
+  absent: boolean;
+  late: boolean;
+  user: { name: string; email: string };
+}
 
 export interface BreadcrumbItem {
     title: string;

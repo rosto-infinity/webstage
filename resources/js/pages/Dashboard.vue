@@ -4,9 +4,28 @@ import PieChart from '@/components/Charts/PieChart.vue';
 import BarChart from '@/components/Charts/BarChart.vue';
 import LineChart from '@/components/Charts/LineChart.vue';
 import { Users, Calendar, Clock, AlertCircle } from 'lucide-vue-next';
-import type { BreadcrumbItem } from '@/types';
+import type { 
+  BreadcrumbItem, 
+  // Presence 
+ } from '@/types';
 
-const stats = { total: 42, present: 32, absent: 5, late: 10 };
+
+
+ const props = defineProps<{
+    totalUsers:number
+    presenceCount:number
+    Countpresent:number
+    Countabsent:number
+    Countlate:number
+}>();
+
+const stats = 
+{ 
+  total: props.totalUsers, 
+  present: props.Countpresent, 
+  absent: props.Countabsent,
+   late: props.Countlate 
+  };
 const dailyPresence = [
   { day: 'Lun', present: 38, absent: 4 },
   { day: 'Mar', present: 35, absent: 7 },
@@ -29,9 +48,12 @@ const breadcrumbs: BreadcrumbItem[] = [{ title: 'Dashboard', href: '/dashboard' 
   <AppLayout :breadcrumbs="breadcrumbs">
     <div class="p-2">
 
-   
+   rrr
     <!-- Cartes de stats -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      
+      
+      
       <div
         v-for="(item,i) in [
           {icon: Users, label:'Total étudiants', value:stats.total, bg:'bg-blue-50', text:'text-blue-600'},
@@ -42,6 +64,8 @@ const breadcrumbs: BreadcrumbItem[] = [{ title: 'Dashboard', href: '/dashboard' 
         :key="i"
         class="bg-white p-5 rounded-xl shadow border flex items-center gap-3"
       >
+
+      
         <div :class="`${item.bg} p-3 rounded-lg ${item.text}`">
           <component :is="item.icon" class="w-6 h-6" />
         </div>

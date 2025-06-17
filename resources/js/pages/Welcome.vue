@@ -17,7 +17,10 @@ const themeColors = {
     900: '#14532d',
   }
 };
-
+ defineProps<{
+    totalUsers:number
+   
+}>();
 // Animation au scroll
 const animatedElements = ref<HTMLElement[]>([]);
 onMounted(() => {
@@ -101,7 +104,7 @@ onMounted(() => {
             href="#"
             class="cta-secondary px-8 py-3 text-base font-medium rounded-lg border-2 border-green-600/20 transition-all duration-300 hover:border-green-600/40"
           >
-            Nos fonctionnalités
+            Nos Disponibilités
           </Link>
         </div>
 
@@ -118,18 +121,20 @@ onMounted(() => {
       <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div class="stat-card p-8 rounded-xl bg-white border border-green-100 shadow-sm hover:shadow-md">
-            <div class="text-5xl font-bold text-green-600 mb-2" ref="counter1">127</div>
-            <div class="text-green-800">Projets livrés</div>
+            <div v-if="totalUsers<10 " class="text-5xl  font-bold text-green-600 mb-2" ref="counter1">0{{ totalUsers }}</div>
+            <div v-else class="text-5xl  font-bold text-green-600 mb-2" ref="counter1">{{ totalUsers }}</div>
+            <div class="text-green-800">Etudiants BTS encadrés</div>
+          </div>
+          
+           <div class="stat-card p-8 rounded-xl bg-white border border-green-100 shadow-sm hover:shadow-md">
+            <div v-if="totalUsers<10 " class="text-5xl  font-bold text-green-600 mb-2" ref="counter1">0{{ totalUsers }}</div>
+            <div v-else class="text-5xl  font-bold text-green-600 mb-2" ref="counter1">{{ totalUsers }}</div>
+            <div class="text-green-800">Apprenants DQP encadrés</div>
           </div>
           
           <div class="stat-card p-8 rounded-xl bg-white border border-green-100 shadow-sm hover:shadow-md">
-            <div class="text-5xl font-bold text-green-600 mb-2" ref="counter2">98%</div>
-            <div class="text-green-800">Satisfaction clients</div>
-          </div>
-          
-          <div class="stat-card p-8 rounded-xl bg-white border border-green-100 shadow-sm hover:shadow-md">
-            <div class="text-5xl font-bold text-green-600 mb-2" ref="counter3">24/7</div>
-            <div class="text-green-800">Support technique</div>
+            <div class="text-5xl font-bold text-green-600 mb-2" ref="counter3">6J/7J</div>
+            <div class="text-green-800">8h-17h/Jours</div>
           </div>
         </div>
       </div>
