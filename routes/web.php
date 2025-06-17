@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Presence;
@@ -22,23 +23,7 @@ Route::prefix('presences')->group(function () {
     Route::delete('/{presence}', [PresenceController::class, 'destroy'])
     ->name('presences.destroy');
 });
-Route::get('dashboard', function () {
-      $presenceCount =Presence::count();
-        $totalUsers =User::count();
-
-            $Countpresent = Presence::whereDate('date', today())->where('absent', false)->count();
-            $Countabsent = Presence::whereDate('date', today())->where('absent', true)->count();
-            $Countlate =Presence::whereDate('date', today())->where('late', true)->count();
-//  var_dump($presenceCount);
-     return Inertia::render('Dashboard', compact(
-            'totalUsers',
-            'presenceCount',
-            'Countpresent',
-            'Countabsent',
-            'Countlate',
-            
-        ));
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('dashboard', [DashboardController::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/users', [UserController::class, 'index'])->name('presences.users');
 
 require __DIR__.'/settings.php';
