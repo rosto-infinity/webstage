@@ -7,7 +7,20 @@ import { ref, computed } from 'vue';
 import { ChevronLeft, ChevronRight, Pen, Users, Calendar, Clock, Search, Download } from 'lucide-vue-next';
 import type { BreadcrumbItem } from '@/types';
 import type { PageProps } from '@/types';
+import { Trash2 } from 'lucide-vue-next';
+import { router } from '@inertiajs/vue3';
 
+// Ajouter cette fonction
+function deletePresence(id: number) {
+  if (confirm('Êtes-vous sûr de vouloir supprimer cette présence ?')) {
+    router.delete(route('presences.destroy', { presence: id }), {
+      onSuccess: () => {
+        // Suppression locale pour réactivité immédiate
+        data.value = data.value.filter(p => p.id !== id);
+      }
+    });
+  }
+}
 interface Presence {
   id: number;
   date: string;
@@ -184,6 +197,12 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Pen class="w-4 h-4 inline"/> Modifier
   </Link>
 </td>
+<td class="px-4 py-2 flex gap-2">
+  
+    <button @click="deletePresence(r.id)" class="text-red-600 hover:underline">
+      <Trash2 class="w-4 h-4 inline"/> Supprimer
+    </button>
+  </td>
             </tr>
           </tbody>
         </table>

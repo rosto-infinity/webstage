@@ -16,6 +16,8 @@ Route::prefix('presences')->group(function () {
     
     Route::get('/{id}/edit', [PresenceController::class, 'edit'])->name('presences.edit');
     Route::put('/{id}', [PresenceController::class, 'update'])->name('presences.update');
+    Route::delete('/{presence}', [PresenceController::class, 'destroy'])
+    ->name('presences.destroy');
 });
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');

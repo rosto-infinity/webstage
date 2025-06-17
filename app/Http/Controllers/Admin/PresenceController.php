@@ -99,4 +99,17 @@ public function update(PresenceRequest $request, $id)
 
     return redirect()->route('presences')->with('success', 'Présence mise à jour avec succès.');
 }
+  /**
+     * Supprime une présence
+     */
+    public function destroy(Presence $presence)
+    {
+        // Vérification des autorisations si nécessaire
+        // $this->authorize('delete', $presence);
+
+        $presence->delete();
+
+        return redirect()->route('presences')
+            ->with('success', 'Présence supprimée avec succès.');
+    }
 }
