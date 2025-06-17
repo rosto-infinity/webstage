@@ -175,7 +175,7 @@ const breadcrumbs: BreadcrumbItem[] = [
               <th @click="handleSort('late_minutes')" class="th-sort px-4 py-2">Retard <SortIcon field="late_minutes" :sortField="sortField" :direction="sortDirection"/></th>
               <th class="px-4 py-2">Absent</th>
               <th class="px-4 py-2">En retard</th>
-              <th class="px-4 py-2">Actions</th>
+              <th colspan="2" class="px-4 py-2 text-center">Actions sur la pésence</th>
             </tr>
           </thead>
           <tbody>
@@ -194,13 +194,13 @@ const breadcrumbs: BreadcrumbItem[] = [
               <td class="px-4 py-2"><Badge :type="r.late ? 'warning' : 'success'">{{ r.late ? 'Oui' : 'Non' }}</Badge></td>
               <td class="px-4 py-2">
   <Link :href="route('presences.edit', { id: r.id })" class="text-blue-600 hover:underline">
-    <Pen class="w-4 h-4 inline"/> Modifier
+    <Pen class="w-4 h-4 inline"/> Editer
   </Link>
 </td>
 <td class="px-4 py-2 flex gap-2">
   
     <button @click="deletePresence(r.id)" class="text-red-600 hover:underline">
-      <Trash2 class="w-4 h-4 inline"/> Supprimer
+      <Trash2 class="w-4 h-4 inline"/> Suppr
     </button>
   </td>
             </tr>
