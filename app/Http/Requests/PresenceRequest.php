@@ -4,91 +4,84 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Carbon\Carbon;
 
 class PresenceRequest extends FormRequest
 {
-    public function authorize(): bool
+    public function authorize()
     {
-        return true;
+        return true; // Autoriser toutes les requêtes
     }
 
-    public function rules(): array
+    public function rules()
     {
         return [
             'user_id' => [
                 'required',
                 'exists:users,id',
-                $this->uniqueUserDateRule()
+                Rule::unique('presences')->where(function ($query) {
+                    return $query->whereDate('date', $this->date);
+                })->ignore($this->route('id')), // Ignore lors de la mise à jour
             ],
             'date' => [
                 'required',
                 'date',
-                'before_or_equal:today'
+                'before_or_equal:today',
             ],
             'heure_arrivee' => [
                 'required_if:absent,false',
                 'nullable',
                 'date_format:H:i',
-                'before_or_equal:heure_depart',
-                $this->arrivalTimeRule()
+                function ($attribute, $value, $fail) {
+                    if ($value && $this->absent) {
+                        $fail("Incohérence : heure d'arrivée renseignée alors que marqué absent.");
+                    }
+                },
             ],
             'heure_depart' => [
                 'required_with:heure_arrivee',
                 'nullable',
                 'date_format:H:i',
-                'after:heure_arrivee'
+                'after:heure_arrivee',
+                function ($attribute, $value, $fail) {
+                    if ($value && !$this->heure_arrivee) {
+                        $fail("Le départ nécessite une heure d'arrivée.");
+                    }
+                    if ($value && $this->absent) {
+                        $fail("Incohérence : heure de départ renseignée alors que marqué absent.");
+                    }
+                },
             ],
             'minutes_retard' => [
                 'nullable',
                 'integer',
                 'min:0',
                 'max:300',
-                'required_if:en_retard,true'
+                'required_if:en_retard,true',
+                function ($attribute, $value, $fail) {
+                    if ($value && $this->absent) {
+                        $fail("Incohérence : retard renseigné alors que marqué absent.");
+                    }
+                },
             ],
             'absent' => 'required|boolean',
             'en_retard' => [
                 'required',
                 'boolean',
-                'exclude_if:absent,true'
-            ]
+                'exclude_if:absent,true',
+            ],
         ];
     }
 
-    public function messages(): array
+    public function messages()
     {
         return [
-            'user_id.unique' => 'Cet utilisateur a déjà une entrée pour cette date.',
-            'heure_arrivee.required_if' => "L'heure d'arrivée est requise quand l'étudiant est présent.",
-            'heure_depart.after' => 'Le départ doit être après l\'arrivée.',
-            'minutes_retard.required_if' => 'Veuillez spécifier le nombre de minutes de retard.',
-            'minutes_retard.max' => 'Le retard ne peut excéder 300 minutes (5h).'
+            'user_id.unique' => 'Cet étudiant a déjà une présence enregistrée pour cette date.',
+            'date.before_or_equal' => 'La date ne peut pas être future.',
+            'heure_arrivee.required_if' => "L'heure d'arrivée est obligatoire si non absent.",
+            'minutes_retard.required_if' => 'Veuillez renseigner le nombre de minutes de retard.',
+            'minutes_retard.max' => 'Le retard maximum autorisé est de 300 minutes (5h).',
+            'heure_depart.after' => "L'heure de départ doit être postérieure à l'arrivée.",
+            'heure_depart.required_with' => "L'heure de départ est requise quand l'heure d'arrivée est renseignée.",
         ];
-    }
-
-    protected function prepareForValidation(): void
-    {
-        $this->merge([
-            'absent' => $this->boolean('absent'),
-            'en_retard' => $this->boolean('en_retard'),
-            'date' => Carbon::parse($this->date)->format('Y-m-d')
-        ]);
-    }
-
-    private function uniqueUserDateRule()
-    {
-        return Rule::unique('presences')
-            ->where('user_id', $this->user_id)
-            ->where('date', $this->date)
-            ->ignore($this->presence);
-    }
-
-    private function arrivalTimeRule()
-    {
-        return function ($attribute, $value, $fail) {
-            if ($value && $this->absent) {
-                $fail("Incompatible : heure d'arrivée alors que marqué absent.");
-            }
-        };
     }
 }

@@ -8,6 +8,7 @@ use App\Models\Presence;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PresenceRequest;
 
 class PresenceController extends Controller
 {
@@ -40,77 +41,11 @@ class PresenceController extends Controller
         return Inertia::render('admin/Presence/PresenceAdd', compact('users'));
     }
 
- public function store(Request $request)
+public function store(PresenceRequest $request)
 {
-    // Validation des données
-    $validated = $request->validate([
-        'user_id' => [
-            'required',
-            'exists:users,id',
-            Rule::unique('presences')->where(function ($query) use ($request) {
-                return $query->whereDate('date', $request->date);
-            })
-        ],
-        'date' => [
-            'required',
-            'date',
-            'before_or_equal:today'
-        ],
-        'heure_arrivee' => [
-            'required_if:absent,false',
-            'nullable',
-            'date_format:H:i',
-            function ($attribute, $value, $fail) use ($request) {
-                if ($value && $request->absent) {
-                    $fail("Incohérence : heure d'arrivée renseignée alors que marqué absent.");
-                }
-            }
-        ],
-        'heure_depart' => [
-            'required_with:heure_arrivee',
-            'nullable',
-            'date_format:H:i',
-            'after:heure_arrivee',
-            function ($attribute, $value, $fail) use ($request) {
-                if ($value && !$request->heure_arrivee) {
-                    $fail("Le départ nécessite une heure d'arrivée.");
-                }
-                if ($value && $request->absent) {
-                    $fail("Incohérence : heure de départ renseignée alors que marqué absent.");
-                }
-            }
-        ],
-        'minutes_retard' => [
-            'nullable',
-            'integer',
-            'min:0',
-            'max:300',
-            'required_if:en_retard,true',
-            function ($attribute, $value, $fail) use ($request) {
-                if ($value && $request->absent) {
-                    $fail("Incohérence : retard renseigné alors que marqué absent.");
-                }
-            }
-        ],
-        'absent' => 'required|boolean',
-        'en_retard' => [
-            'required',
-            'boolean',
-            'exclude_if:absent,true'
-        ]
-    ], [
-        'user_id.unique' => 'Cet étudiant a déjà une présence enregistrée pour cette date.',
-        'date.before_or_equal' => 'La date ne peut pas être future.',
-        'heure_arrivee.required_if' => "L'heure d'arrivée est obligatoire si non absent.",
-        'minutes_retard.required_if' => 'Veuillez renseigner le nombre de minutes de retard.',
-        'minutes_retard.max' => 'Le retard maximum autorisé est de 300 minutes (5h).',
-        'heure_depart.after' => "L'heure de départ doit être postérieure à l'arrivée.",
-        'heure_depart.required_with' => "L'heure de départ est requise quand l'heure d'arrivée est renseignée."
-    ]);
-
     // Vérification finale avant création
-    if (Presence::where('user_id', $validated['user_id'])
-               ->whereDate('date', $validated['date'])
+    if (Presence::where('user_id', $request->user_id)
+               ->whereDate('date', $request->date)
                ->exists()) {
         return back()
             ->withErrors(['user_id' => 'Une présence existe déjà pour cet étudiant aujourd\'hui.'])
@@ -119,23 +54,25 @@ class PresenceController extends Controller
 
     // Création de la présence
     Presence::create([
-        'user_id' => $validated['user_id'],
-        'date' => $validated['date'],
-        'arrival_time' => $validated['absent'] ? null : $validated['heure_arrivee'],
-        'departure_time' => $validated['absent'] ? null : $validated['heure_depart'],
-        'late_minutes' => $validated['absent'] ? null : $validated['minutes_retard'],
-        'absent' => $validated['absent'],
-        'late' => $validated['absent'] ? false : $validated['en_retard'],
+        'user_id' => $request->user_id,
+        'date' => $request->date,
+        'arrival_time' => $request->absent ? null : $request->heure_arrivee,
+        'departure_time' => $request->absent ? null : $request->heure_depart,
+        'late_minutes' => $request->absent ? null : $request->minutes_retard,
+        'absent' => $request->absent,
+        'late' => $request->absent ? false : $request->en_retard,
     ]);
 
     return redirect()->route('presences')
         ->with('success', 'Présence enregistrée avec succès.');
 }
-
     
-    public function edit($id)
+public function edit($id)
 {
+    // Récupérer la présence par ID
     $presence = Presence::findOrFail($id);
+    
+    // Récupérer tous les utilisateurs pour le sélecteur
     $users = User::orderBy('name')->get(['id', 'name', 'email']);
 
     return Inertia::render('admin/Presence/PresenceEdit', [
@@ -144,4 +81,22 @@ class PresenceController extends Controller
     ]);
 }
 
+public function update(PresenceRequest $request, $id)
+{
+    // Récupérer la présence par ID
+    $presence = Presence::findOrFail($id);
+    
+    // Mettre à jour la présence avec les données validées
+    $presence->update([
+        'user_id' => $request->user_id,
+        'date' => $request->date,
+        'arrival_time' => $request->absent ? null : $request->heure_arrivee,
+        'departure_time' => $request->absent ? null : $request->heure_depart,
+        'late_minutes' => $request->absent ? null : $request->minutes_retard,
+        'absent' => $request->absent,
+        'late' => $request->absent ? false : $request->en_retard,
+    ]);
+
+    return redirect()->route('presences')->with('success', 'Présence mise à jour avec succès.');
+}
 }

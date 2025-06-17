@@ -7,8 +7,8 @@ import type { BreadcrumbItem } from '@/types';
 interface PresenceForm {
   user_id: number | null;
   date: string;
-  heure_arrivee: string;
-  heure_depart: string;
+  heure_arrivee: string | null;
+  heure_depart: string | null;
   minutes_retard: number | null;
   absent: boolean;
   en_retard: boolean;
@@ -79,6 +79,7 @@ const breadcrumbs: BreadcrumbItem[] = [
               <select
                 v-model="form.user_id"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                :class="{ 'border-red-500': form.errors.user_id }"
               >
                 <option value="" disabled>Sélectionnez un étudiant</option>
                 <option 
@@ -89,6 +90,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                   {{ user.name }} ({{ user.email }})
                 </option>
               </select>
+              <p v-if="form.errors.user_id" class="text-sm text-red-600">{{ form.errors.user_id }}</p>
             </div>
           </div>
 
@@ -101,7 +103,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                 v-model="form.date"
                 type="date"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                :class="{ 'border-red-500': form.errors.date }"
               />
+              <p v-if="form.errors.date" class="text-sm text-red-600">{{ form.errors.date }}</p>
             </div>
 
             <div>
@@ -110,7 +114,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                 v-model="form.heure_arrivee"
                 type="time"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                :class="{ 'border-red-500': form.errors.heure_arrivee }"
               />
+              <p v-if="form.errors.heure_arrivee" class="text-sm text-red-600">{{ form.errors.heure_arrivee }}</p>
             </div>
 
             <div>
@@ -119,7 +125,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                 v-model="form.heure_depart"
                 type="time"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                :class="{ 'border-red-500': form.errors.heure_depart }"
               />
+              <p v-if="form.errors.heure_depart" class="text-sm text-red-600">{{ form.errors.heure_depart }}</p>
             </div>
           </div>
 
@@ -156,7 +164,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                 min="0"
                 step="1"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                :class="{ 'border-red-500': form.errors.minutes_retard }"
               />
+              <p v-if="form.errors.minutes_retard" class="text-sm text-red-600">{{ form.errors.minutes_retard }}</p>
             </div>
           </div>
 
