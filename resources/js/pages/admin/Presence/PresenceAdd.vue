@@ -1,67 +1,3 @@
-<script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue'
-import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
-import { ArrowLeft } from 'lucide-vue-next'
-import type { BreadcrumbItem } from '@/types'
-import { watch } from 'vue'
-
-
-// Typage TypeScript
-interface PresenceForm {
-  user_id: number | null
-  date: string
-  heure_arrivee: string
-  heure_depart: string
-  minutes_retard: number | null
-  absent: boolean
-  en_retard: boolean
-}
-
-// Initialisation du formulaire
-const form = useForm<PresenceForm>({
-  user_id: null,
-  date: new Date().toISOString().split('T')[0], // Date du jour par défaut
-  heure_arrivee: '',
-  heure_depart: '',
-  minutes_retard: null,
-  absent: false,
-  en_retard: false,
-})
-
-// Récupération des utilisateurs
-const { props } = usePage<{
-  users: Array<{ id: number; name: string; email: string }>
-}>()
-
-// Logique métier
-const submit = () => {
-  form.post(route('presences.store'), {
-    preserveScroll: true,
-    onSuccess: () => form.reset(),
-  })
-}
-
-// Gestion des états liés
-watch(() => form.absent, (newVal) => {
-  if (newVal) {
-    form.en_retard = false
-    form.minutes_retard = null
-    form.heure_arrivee = ''
-    form.heure_depart = ''
-  }
-})
-
-watch(() => form.en_retard, (newVal) => {
-  if (!newVal) form.minutes_retard = null
-})
-
-// Configuration UI
-const breadcrumbs: BreadcrumbItem[] = [
-  { title: 'Présences', href: route('presences') },
-  { title: 'Ajout', href: route('presences.add') },
-]
-</script>
-
 <template>
   <Head title="Ajouter une présence" />
 
@@ -89,12 +25,11 @@ const breadcrumbs: BreadcrumbItem[] = [
             <h3 class="font-medium text-gray-700">Informations étudiant</h3>
             
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1 required">Étudiant</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Étudiant</label>
               <select
                 v-model="form.user_id"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                 :class="{ 'border-red-500': form.errors.user_id }"
-                required
               >
                 <option value="" disabled>Sélectionnez un étudiant</option>
                 <option 
@@ -116,13 +51,12 @@ const breadcrumbs: BreadcrumbItem[] = [
             <h3 class="font-medium text-gray-700">Horaires</h3>
             
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1 required">Date</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
               <input
                 v-model="form.date"
                 type="date"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                 :class="{ 'border-red-500': form.errors.date }"
-                required
               />
               <p v-if="form.errors.date" class="mt-1 text-sm text-red-600">
                 {{ form.errors.date }}
@@ -193,18 +127,29 @@ const breadcrumbs: BreadcrumbItem[] = [
               </p>
             </div>
 
+            <!-- Affichage du retard calculé automatiquement -->
+            <div v-if="form.heure_arrivee && !form.absent" class="p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <div class="flex items-center gap-2 mb-2">
+                <Clock class="w-4 h-4 text-blue-600" />
+                <span class="text-sm font-medium text-blue-700">Calcul automatique du retard</span>
+              </div>
+              <p class="text-sm text-blue-600">
+                Heure normale : <strong>8h00</strong><br>
+                Heure d'arrivée : <strong>{{ form.heure_arrivee }}</strong><br>
+                Retard calculé : <strong>{{ formatDelay(calculatedDelay) }}</strong>
+              </p>
+            </div>
+
             <div v-if="form.en_retard && !form.absent">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Minutes de retard</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Minutes de retard (calculé automatiquement)</label>
               <input
                 v-model.number="form.minutes_retard"
                 type="number"
-                min="0"
-                step="1"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                :class="{ 'border-red-500': form.errors.minutes_retard }"
+                readonly
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed"
               />
-              <p v-if="form.errors.minutes_retard" class="mt-1 text-sm text-red-600">
-                {{ form.errors.minutes_retard }}
+              <p class="text-xs text-gray-500 mt-1">
+                Calculé automatiquement basé sur l'heure normale de 8h00
               </p>
             </div>
           </div>
@@ -220,9 +165,10 @@ const breadcrumbs: BreadcrumbItem[] = [
             <button
               type="submit"
               :disabled="form.processing"
-              class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-green-400 transition-colors"
+              class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-green-400 transition-colors flex items-center gap-2"
             >
-              Enregistrer
+              <span v-if="form.processing">Enregistrement...</span>
+              <span v-else>Enregistrer</span>
             </button>
           </div>
         </form>
@@ -230,3 +176,129 @@ const breadcrumbs: BreadcrumbItem[] = [
     </div>
   </AppLayout>
 </template>
+
+<script setup lang="ts">
+import AppLayout from '@/layouts/AppLayout.vue'
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
+import { ArrowLeft, Clock } from 'lucide-vue-next'
+import type { BreadcrumbItem } from '@/types'
+import { watch, computed } from 'vue'
+
+// Typage TypeScript
+interface PresenceForm {
+  user_id: number | null
+  date: string
+  heure_arrivee: string
+  heure_depart: string
+  minutes_retard: number | null
+  absent: boolean
+  en_retard: boolean
+}
+
+// Initialisation du formulaire
+const form = useForm<PresenceForm>({
+  user_id: null,
+  date: new Date().toISOString().split('T')[0], // Date du jour par défaut
+  heure_arrivee: '',
+  heure_depart: '',
+  minutes_retard: null,
+  absent: false,
+  en_retard: false,
+})
+
+// Récupération des utilisateurs
+const { props } = usePage<{
+  users: Array<{ id: number; name: string; email: string }>
+}>()
+
+// Fonction pour calculer le retard
+function calculateDelay(arrivalTime: string): number {
+  if (!arrivalTime) return 0;
+  
+  const normalStartTime = '08:00'; // Heure normale de début
+  
+  const timeToMinutes = (time: string): number => {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
+  };
+  
+  const normalStartMinutes = timeToMinutes(normalStartTime);
+  const arrivalMinutes = timeToMinutes(arrivalTime);
+  
+  const delayMinutes = arrivalMinutes - normalStartMinutes;
+  return delayMinutes > 0 ? delayMinutes : 0;
+}
+
+// Fonction pour formater l'affichage du retard
+function formatDelay(minutes: number): string {
+  if (minutes === 0) return '0 min';
+  
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  
+  if (hours > 0) {
+    return `${hours}h ${remainingMinutes}min`;
+  }
+  return `${remainingMinutes}min`;
+}
+
+// Calcul du retard en temps réel
+const calculatedDelay = computed(() => {
+  return calculateDelay(form.heure_arrivee);
+});
+
+// Calcul automatique du retard quand l'heure d'arrivée change
+watch(() => form.heure_arrivee, (newArrivalTime) => {
+  if (newArrivalTime && !form.absent) {
+    const delay = calculateDelay(newArrivalTime);
+    form.minutes_retard = delay;
+    form.en_retard = delay > 0;
+  } else {
+    form.minutes_retard = null;
+    form.en_retard = false;
+  }
+});
+
+// Gestion des états liés
+watch(() => form.absent, (newVal) => {
+  if (newVal) {
+    form.en_retard = false;
+    form.minutes_retard = null;
+    form.heure_arrivee = '';
+    form.heure_depart = '';
+  }
+});
+
+watch(() => form.en_retard, (newVal) => {
+  if (!newVal && !form.absent) {
+    form.minutes_retard = null;
+  }
+});
+
+// Logique métier
+const submit = () => {
+  form.post(route('presences.store'), {
+    preserveScroll: true,
+    onSuccess: () => {
+      form.reset();
+      // Optionnel : message de succès
+    },
+    onError: () => {
+      // Optionnel : gestion des erreurs
+    }
+  })
+}
+
+// Configuration UI
+const breadcrumbs: BreadcrumbItem[] = [
+  { title: 'Présences', href: route('presences') },
+  { title: 'Ajout', href: route('presences.add') },
+]
+</script>
+
+<style scoped>
+/* Styles personnalisés si nécessaire */
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+</style>
