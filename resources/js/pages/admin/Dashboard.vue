@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import PieChart from '@/components/Charts/PieChart.vue';
 import BarChart from '@/components/Charts/BarChart.vue';
 import LineChart from '@/components/Charts/LineChart.vue';
+
 import { Users, Calendar, Clock, AlertCircle } from 'lucide-vue-next';
 import type { 
   BreadcrumbItem, 
@@ -41,6 +42,7 @@ const monthlyTrend = [
   { month: 'Mai', rate: 90 },
   { month: 'Juin', rate: 92 },
 ];
+
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Dashboard', href: '/dashboard' }];
 </script>
 

@@ -19,6 +19,13 @@ class Presence extends Model
         'absent',
         'late',
     ];
+   
+
+protected $casts = [
+    'late_minutes' => 'integer',
+    'absent' => 'boolean',
+    'late' => 'boolean'
+];
 
     public function user(): BelongsTo
     {

@@ -122,3 +122,53 @@ public function update(PresenceRequest $request, $id)
             ->with('success', 'Présence supprimée avec succès.');
     }
 }
+
+
+// public function store(PresenceRequest $request)
+// {
+//     try {
+//         // Vérification d'unicité (redondante avec la validation mais sécurisée)
+//         $existingPresence = Presence::where('user_id', $request->user_id)
+//             ->whereDate('date', $request->date)
+//             ->first();
+
+//         if ($existingPresence) {
+//             return redirect()->back()
+//                 ->withInput()
+//                 ->withErrors([
+//                     'user_id' => "Une présence existe déjà pour cet étudiant le {$request->date->format('d/m/Y')}"
+//                 ]);
+//         }
+
+//         // Transformation des données avant création
+//         $presenceData = [
+//             'user_id' => $request->user_id,
+//             'date' => $request->date,
+//             'absent' => $request->boolean('absent'),
+//             'late' => $request->absent ? false : $request->boolean('en_retard'),
+//             'arrival_time' => $request->absent ? null : $request->heure_arrivee,
+//             'departure_time' => $request->absent ? null : $request->heure_depart,
+//             'late_minutes' => $request->absent ? null : $request->minutes_retard,
+//         ];
+
+//         // Création avec gestion des erreurs DB
+//         $presence = Presence::create($presenceData);
+
+//         // Notification si nécessaire (à adapter)
+//         if ($presence->absent) {
+//             // Event::dispatch(new AbsenceMarked($presence));
+//         }
+
+//         return redirect()->route('presences')
+//             ->with([
+//                 'success' => 'Présence enregistrée !',
+//                 'presence_id' => $presence->id // Optionnel pour suivi
+//             ]);
+
+//     } catch (\Exception $e) {
+//         report($e); // Log l'erreur
+//         return back()
+//             ->withInput()
+//             ->withErrors(['system' => 'Une erreur système est survenue. Veuillez réessayer.']);
+//     }
+// }
