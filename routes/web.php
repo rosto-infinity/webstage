@@ -25,6 +25,7 @@ Route::prefix('presences')->group(function () {
 });
 Route::get('dashboard', [DashboardController::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/users', [UserController::class, 'index'])->name('presences.users');
+Route::resource('users', App\Http\Controllers\Admin\UserController::class)->middleware(['auth']);
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
@@ -32,4 +33,4 @@ require __DIR__.'/auth.php';
  Route::get('/{any}', function () {
        return Inertia::render('NotFoundPage');
      })->where('any', '.*')->name('notfound');
-  
+

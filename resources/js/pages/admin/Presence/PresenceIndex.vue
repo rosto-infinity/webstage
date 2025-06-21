@@ -126,7 +126,8 @@ const paginatedData = computed(() => {
   return filteredAndSortedData.value.slice(start, start + itemsPerPage.value);
 });
 
-const presentCount = computed(() => data.value.filter(r => !r.absent && !r.late).length);
+// const presentCount = computed(() => data.value.filter(r => !r.absent && !r.late).length);
+const presentCount = computed(() => data.value.filter(r => !r.absent ).length);
 const absentCount = computed(() => data.value.filter(r => r.absent).length);
 const lateCount = computed(() => data.value.filter(r => r.late).length);
 

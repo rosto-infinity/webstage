@@ -69,7 +69,7 @@ public function store(PresenceRequest $request)
         'date' => $request->date,
         'arrival_time' => $request->absent ? null : $request->heure_arrivee,
         'departure_time' => $request->absent ? null : $request->heure_depart,
-        'late_minutes' => $request->absent ? null : $request->minutes_retard,
+        'late_minutes' => $request->absent ? 0 : $request->minutes_retard,
         'absent' => $request->absent,
         'late' => $request->absent ? false : $request->en_retard,
     ]);
@@ -103,7 +103,7 @@ public function update(PresenceRequest $request, $id)
         'date' => $request->date,
         'arrival_time' => $request->absent ? null : $request->heure_arrivee,
         'departure_time' => $request->absent ? null : $request->heure_depart,
-        'late_minutes' => $request->absent ? null : $request->minutes_retard,
+        'late_minutes' => $request->absent ? 0 : $request->minutes_retard,
         'absent' => $request->absent,
         'late' => $request->absent ? false : $request->en_retard,
     ]);

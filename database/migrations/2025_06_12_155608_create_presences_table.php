@@ -17,7 +17,7 @@ return new class extends Migration
             $table->date('date');
             $table->time('arrival_time')->nullable();
             $table->time('departure_time')->nullable();
-            $table->integer('late_minutes')->default(0);
+            $table->integer('late_minutes')->nullable()->default(0);
             $table->boolean('absent')->default(false);
             $table->boolean('late')->default(false);
             $table->timestamps();

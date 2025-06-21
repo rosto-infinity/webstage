@@ -11,22 +11,21 @@ use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {
-    public function  index() {
-      $presenceCount =Presence::count();
-        $totalUsers =User::count();
+    public function index(Request $request)
+    {
+        $date = $request->input('date') ?? now()->toDateString();
 
-            $Countpresent = Presence::whereDate('date', today())->where('absent', false)->count();
-            $Countabsent = Presence::whereDate('date', today())->where('absent', true)->count();
-            $Countlate =Presence::whereDate('date', today())->where('late', true)->count();
-//  var_dump($presenceCount);
-     return Inertia::render('admin/Dashboard', compact(
-            'totalUsers',
-            'presenceCount',
-            'Countpresent',
-            'Countabsent',
-            'Countlate',
-            
-        ));
+        $presences = Presence::whereDate('date', $date);
+
+        return Inertia::render('admin/Dashboard', [
+            'totalUsers' => User::count(),
+            'presenceCount' => $presences->count(),
+            'Countpresent' => $presences->where('absent', false)->count(),
+            'Countabsent' => $presences->where('absent', true)->count(),
+            'Countlate' => $presences->where('late', true)->count(),
+            'selectedDate' => $date,
+            // Ajoute ici les données pour les graphiques si besoin
+        ]);
     }
 }
     //    $presences = Presence::with('user')
@@ -100,4 +99,4 @@ class DashboardController extends Controller
         //     'monthlyTrend',
         //     'absenceReasons'
         // ));
- 
+

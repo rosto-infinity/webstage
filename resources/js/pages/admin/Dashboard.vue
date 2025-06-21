@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import PieChart from '@/components/Charts/PieChart.vue';
 import BarChart from '@/components/Charts/BarChart.vue';
 import LineChart from '@/components/Charts/LineChart.vue';
+import PieChart from '@/components/Charts/PieChart.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { router } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
-import { Users, Calendar, Clock, AlertCircle } from 'lucide-vue-next';
-import type { 
-  BreadcrumbItem, 
-  // Presence 
- } from '@/types';
+import type {
+  BreadcrumbItem,
+} from '@/types';
+import { AlertCircle, Calendar, Clock, Users } from 'lucide-vue-next';
 
 
 
@@ -18,15 +19,22 @@ import type {
     Countpresent:number
     Countabsent:number
     Countlate:number
+    selectedDate?: string
 }>();
 
-const stats = 
-{ 
+const stats = { 
   total: props.totalUsers, 
   present: props.Countpresent, 
   absent: props.Countabsent,
-   late: props.Countlate 
-  };
+  late: props.Countlate 
+};
+
+const date = ref(props.selectedDate || new Date().toISOString().slice(0,10))
+
+function filterByDate() {
+  router.get(route('dashboard'), { date: date.value }, { preserveState: true, replace: true })
+}
+
 const dailyPresence = [
   { day: 'Lun', present: 38, absent: 4 },
   { day: 'Mar', present: 35, absent: 7 },
@@ -49,8 +57,14 @@ const breadcrumbs: BreadcrumbItem[] = [{ title: 'Dashboard', href: '/dashboard' 
 <template>
   <AppLayout :breadcrumbs="breadcrumbs">
     <div class="p-2">
+      <!-- Filtre par date -->
+      <form @submit.prevent="filterByDate" class="mb-6 flex items-center gap-2">
+        <label for="date" class="font-medium">Date :</label>
+        <input id="date" type="date" v-model="date" class="input" />
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+      </form>
 
-   rrr
+  
     <!-- Cartes de stats -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       
