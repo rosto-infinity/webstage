@@ -13,8 +13,19 @@ Route::get('/', function () {
     return Inertia::render('Welcome',compact('totalUsers'));
 })->name('home');
 
+Route::middleware(['auth'])->name('users.')->group(function () {
+    Route::get('users', [UserController::class, 'index'])->name('index');
+    Route::get('users/create', [UserController::class, 'create'])->name('create');
+    Route::post('users', [UserController::class, 'store'])->name('store');
+    Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('edit');
+    Route::put('users/{user}', [UserController::class, 'update'])->name('update');
+    Route::delete('users/{user}', [UserController::class, 'destroy'])->name('destroy');
+});
+
+
 Route::prefix('presences')->group(function () {
     Route::get('/users', [PresenceController::class, 'index'])->name('presences');
+    
     Route::get('/add', [PresenceController::class, 'add'])->name('presences.add');
     Route::post('/store', [PresenceController::class, 'store'])->name('presences.store');
     
@@ -24,8 +35,8 @@ Route::prefix('presences')->group(function () {
     ->name('presences.destroy');
 });
 Route::get('dashboard', [DashboardController::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/users', [UserController::class, 'index'])->name('presences.users');
-Route::resource('users', App\Http\Controllers\Admin\UserController::class)->middleware(['auth']);
+// Route::get('/users', [UserController::class, 'index'])->name('presences.users');
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

@@ -6,7 +6,7 @@ import { Head, Link, usePage } from '@inertiajs/vue3';
 import { ref, computed ,watch} from 'vue';
 import { ChevronLeft, ChevronRight, Pen, Users, Calendar, Clock, Search, Download } from 'lucide-vue-next';
 import type { BreadcrumbItem } from '@/types';
- import type { PageProps } from '@/types';
+
 import { Trash2 } from 'lucide-vue-next';
 import { router } from '@inertiajs/vue3';
 
@@ -82,15 +82,17 @@ function calculerMinutesRetard(arrivee: string | null, normale = '08:00'): numbe
   const diffMin = Math.floor((+dateArr - +dateNorm) / 60000);
   return diffMin > 0 ? diffMin : 0;
 }
+const page = usePage(); // garde le type par défaut
+const rawPresences = (page.props as any).presences as Omit<Presence, 'late_minutes'|'late'>[];
 
-const page = usePage<PageProps<{ presences: Omit<Presence, 'late_minutes'|'late'>[] }>>();
 const data = ref<Presence[]>(
-  page.props.presences.map(r => ({
+  rawPresences.map((r: Omit<Presence, 'late_minutes'|'late'>) => ({
     ...r,
     late_minutes: calculerMinutesRetard(r.arrival_time),
     late: calculerMinutesRetard(r.arrival_time) > 0,
   }))
 );
+
 
 const searchTerm = ref('');
 const filterStatus = ref<'all' | 'present' | 'absent' | 'late'>('all');

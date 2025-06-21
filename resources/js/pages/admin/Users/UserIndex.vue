@@ -2,13 +2,12 @@
 import Pagination from '@/components/Pagination.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem, type PaginationLink } from '@/types';
-import { Head, Link } from '@inertiajs/vue3';
-import { Users, Calendar, Clock } from 'lucide-vue-next';
-
+import { Head, Link, router } from '@inertiajs/vue3';
+import { Pen, Clock, Trash2} from 'lucide-vue-next';
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Users',
-    href: '/users',
+    href: '/presences/users',
   },
 ];
 
@@ -27,6 +26,12 @@ defineProps<{
   totalAbsentUsers?: number
   totalLateUsers?: number
 }>();
+
+function destroy(id: number | string) {
+  if (confirm('Supprimer cet utilisateur ?')) {
+    router.delete(route('users.destroy', id));
+  }
+}
 </script>
 
 <template>
@@ -88,6 +93,7 @@ defineProps<{
         <h2 class="text-lg font-medium text-gray-900 dark:text-white">
           Liste des utilisateurs
         </h2>
+         <Link class="btn btn-primary mb-4" :href="route('users.create')">Ajouter un utilisateur</Link>
         <span class="text-sm text-gray-500 dark:text-gray-400">
           Total: {{ totalUsers }} utilisateur(s)
         </span>
@@ -108,6 +114,9 @@ defineProps<{
               </th>
               <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 Statut
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Actions
               </th>
             </tr>
           </thead>
@@ -137,6 +146,21 @@ defineProps<{
                 >
                   {{ user.status === 'active' ? 'Actif' : user.status === 'inactive' ? 'Inactif' : 'N/A' }}
                 </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <Link 
+                  :href="route('users.edit', user.id)" 
+                  class="inline-flex items-center px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-700 dark:hover:bg-blue-600"
+                >
+                 <Pen class="w-4 h-4 inline"/>  Modifier
+                </Link>
+                <button 
+                  @click="destroy(user.id)" 
+                  class="inline-flex items-center px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:bg-red-700 dark:hover:bg-red-600 ml-2"
+                >
+                <Trash2 class="w-4 h-4 inline"/>
+                  Supprimer
+                </button>
               </td>
             </tr>
           </tbody>

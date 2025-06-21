@@ -43,6 +43,7 @@ const mainNavItems: NavItem[] = [
         href: '/users',
         icon: List, // Plus adapté pour une liste que l'icône Users
     },
+   
 ];
 
 const footerNavItems: NavItem[] = [
