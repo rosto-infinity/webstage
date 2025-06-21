@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import { Link } from '@inertiajs/vue3'
+</script>
+
+
 <template>
   <div class="error-page min-h-screen flex flex-col bg-gradient-to-b from-green-50 to-white dark:from-green-900/10 dark:to-gray-900">
     <!-- Header -->
@@ -53,9 +58,8 @@
   </div>
 </template>
 
-<script setup>
-import { Link } from '@inertiajs/vue3'
-</script>
+
+
 
 <style scoped>
 .error-page {

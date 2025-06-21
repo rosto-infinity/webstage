@@ -1,29 +1,44 @@
-<script setup>
-import {Link} from '@inertiajs/vue3';
-  defineProps({
-    links: {
-        type: Object,
-        required: true
-    }
-    
-  });
+<script setup lang="ts">
+import { Link } from '@inertiajs/vue3'
+import type { PaginationLink } from '@/types'
+
+defineProps<{
+  links: PaginationLink[]
+}>()
+
+// Fonction pour décoder les entités HTML (comme &laquo;)
+const decodeHtmlEntities = (text: string) => {
+  const textarea = document.createElement('textarea')
+  textarea.innerHTML = text
+  return textarea.value
+}
 </script>
 
 <template>
-  <div class="flex flex-wrap items-center justify-center space-x-1 mt-4">
-    <Link
-      v-for="(link, index) in links"
-      :key="index"
-      :href="link.url || '#'"
-       v-html="link.label"
-      class="px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-      
-      :class="[
-        link.active ? 'bg-green-600 text-white font-semibold':
-        'bg-whitepy-2 text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:dark:bg-gray-700',
-        !link.url ? 'opacity-50 pointer-events-none' : 'hover:bg-gray-100 cursor-pointer text-gray-500 dark:hover:bg-gray-700 dark:text-gray-300 hover:dark:text-white',
-      ]"
-      />
-  </div>
-
+  <nav 
+    aria-label="Pagination"
+    class="flex items-center justify-between mt-6"
+  >
+    <div class="flex-1 flex justify-center">
+      <div class="flex space-x-1 rounded-md shadow-sm">
+        <Link
+          v-for="(link, index) in links"
+          :key="index"
+          :href="link.url || '#'"
+          :aria-current="link.active ? 'page' : undefined"
+          :aria-disabled="!link.url"
+          class="relative inline-flex items-center px-4 py-2 text-sm font-medium transition-colors duration-150 focus:z-10 focus:outline-none focus:ring-2 focus:ring-green-500"
+          :class="{
+            'z-10 bg-green-600 text-white': link.active,
+            'bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700': !link.active && link.url,
+            'opacity-50 cursor-not-allowed': !link.url,
+            'rounded-l-md': index === 0,
+            'rounded-r-md': index === links.length - 1
+          }"
+        >
+          {{ decodeHtmlEntities(link.label) }}
+        </Link>
+      </div>
+    </div>
+  </nav>
 </template>
