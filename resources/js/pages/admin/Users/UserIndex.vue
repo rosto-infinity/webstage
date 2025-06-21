@@ -3,7 +3,8 @@ import Pagination from '@/components/Pagination.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem, type PaginationLink } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { Pen, Clock, Trash2} from 'lucide-vue-next';
+import {  Pen, Users, Calendar, Clock } from 'lucide-vue-next';
+
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Users',

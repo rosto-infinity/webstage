@@ -66,7 +66,7 @@ const submit = () => {
           </label>
           <input
             v-model="form.name"
-            required
+            
             class="input w-full"
             :class="{ 'input-error': form.errors.name }"
             placeholder="Jean Dupont"
@@ -84,7 +84,7 @@ const submit = () => {
           <input
             v-model="form.email"
             type="email"
-            required
+            
             class="input w-full"
             :class="{ 'input-error': form.errors.email }"
             placeholder="jean.dupont@example.com"
@@ -102,7 +102,7 @@ const submit = () => {
           <input
             v-model="form.password"
             type="password"
-            required
+            
             minlength="8"
             class="input w-full"
             :class="{ 'input-error': form.errors.password }"
@@ -121,7 +121,7 @@ const submit = () => {
           <input
             v-model="form.password_confirmation"
             type="password"
-            required
+            
             minlength="8"
             class="input w-full"
             :class="{ 'input-error': form.errors.password_confirmation }"
