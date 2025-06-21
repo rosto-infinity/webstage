@@ -13,7 +13,8 @@ class UserController extends Controller
     public function index(Request $request)
     {
         return Inertia::render('admin/Users/UserIndex', [
-            'users' => User::query()->paginate(3),
+            // 'users' => User::query()->paginate(7),
+            'users' => User::latest()->paginate(7),
             'totalUsers' => User::count(), // Ajout du nombre total d'utilisateurs
         ]);
     }

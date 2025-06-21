@@ -29,7 +29,7 @@ const decodeHtmlEntities = (text: string) => {
           :aria-disabled="!link.url"
           class="relative inline-flex items-center px-4 py-2 text-sm font-medium transition-colors duration-150 focus:z-10 focus:outline-none focus:ring-2 focus:ring-green-500"
           :class="{
-            'z-10 bg-green-600 text-white': link.active,
+            'z-10 bg-green-400 text-white rounded-sm': link.active,
             'bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700': !link.active && link.url,
             'opacity-50 cursor-not-allowed': !link.url,
             'rounded-l-md': index === 0,

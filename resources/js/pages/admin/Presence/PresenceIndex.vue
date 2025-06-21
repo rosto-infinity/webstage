@@ -2,14 +2,10 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import Badge from '@/components/Badge.vue';
 import SortIcon from '@/components/SortIcon.vue';
-import { Head, Link, usePage } from '@inertiajs/vue3';
+import { Head, Link, usePage, router } from '@inertiajs/vue3';
 import { ref, computed ,watch} from 'vue';
-import { ChevronLeft, ChevronRight, Pen, Users, Calendar, Clock, Search, Download } from 'lucide-vue-next';
+import { Trash2 ,ChevronLeft, ChevronRight, Pen, Users, Calendar, Clock, Search, Download } from 'lucide-vue-next';
 import type { BreadcrumbItem } from '@/types';
-
-import { Trash2 } from 'lucide-vue-next';
-import { router } from '@inertiajs/vue3';
-
 
 defineProps<{
   presenceCount:number

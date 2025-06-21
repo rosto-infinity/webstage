@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head } from '@inertiajs/vue3';
-import { useForm } from '@inertiajs/vue3';
+import { Card } from '@/components/ui/card';
 import { type BreadcrumbItem } from '@/types';
+import InputError from '@/components/InputError.vue';
 
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Head, useForm } from '@inertiajs/vue3';
+import { LoaderCircle } from 'lucide-vue-next';
 // Configuration des breadcrumbs
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Utilisateurs', href: '/users' },
@@ -45,6 +50,7 @@ const submit = () => {
 </script>
 
 <template>
+  
   <Head title="Création utilisateur" />
 
   <AppLayout :breadcrumbs="breadcrumbs">
@@ -59,95 +65,68 @@ const submit = () => {
       </header>
 
       <form @submit.prevent="submit" class="space-y-6 max-w-2xl">
-        <!-- Champ Nom complet -->
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Nom complet <span class="text-red-500">*</span>
-          </label>
-          <input
-            v-model="form.name"
-            
-            class="input w-full"
-            :class="{ 'input-error': form.errors.name }"
-            placeholder="Jean Dupont"
-          />
-          <p v-if="form.errors.name" class="text-sm text-red-600 dark:text-red-400">
-            {{ form.errors.name }}
-          </p>
-        </div>
-
-        <!-- Champ Email -->
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Email <span class="text-red-500">*</span>
-          </label>
-          <input
-            v-model="form.email"
-            type="email"
-            
-            class="input w-full"
-            :class="{ 'input-error': form.errors.email }"
-            placeholder="jean.dupont@example.com"
-          />
-          <p v-if="form.errors.email" class="text-sm text-red-600 dark:text-red-400">
-            {{ form.errors.email }}
-          </p>
-        </div>
-
-        <!-- Champ Mot de passe -->
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Mot de passe <span class="text-red-500">*</span>
-          </label>
-          <input
-            v-model="form.password"
-            type="password"
-            
-            minlength="8"
-            class="input w-full"
-            :class="{ 'input-error': form.errors.password }"
-            placeholder="••••••••"
-          />
-          <p v-if="form.errors.password" class="text-sm text-red-600 dark:text-red-400">
-            {{ form.errors.password }}
-          </p>
-        </div>
-
-        <!-- Champ Confirmation mot de passe -->
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Confirmation mot de passe <span class="text-red-500">*</span>
-          </label>
-          <input
-            v-model="form.password_confirmation"
-            type="password"
-            
-            minlength="8"
-            class="input w-full"
-            :class="{ 'input-error': form.errors.password_confirmation }"
-            placeholder="••••••••"
-          />
-        </div>
-
+     <Card class="rounded-xl">
         <!-- Boutons d'action -->
-        <div class="flex items-center justify-end gap-3 pt-4">
-          <button
-            type="button"
-            @click="form.reset()"
-            class="btn btn-secondary"
-            :disabled="form.processing"
-          >
-            Réinitialiser
-          </button>
-          <button
-            type="submit"
-            class="btn btn-primary"
-            :disabled="form.processing"
-          >
-            <span v-if="form.processing">Création en cours...</span>
-            <span v-else>Créer l'utilisateur</span>
-          </button>
-        </div>
+     <div class="grid gap-6  p-5 rounded-md shadow-emerald-950">
+              <div class="flex items-center justify-end gap-3 pt-4">
+                <button
+                  type="button"
+                  @click="form.reset()"
+                  class="btn btn-secondary"
+                  :disabled="form.processing"
+                >
+                  Réinitialiser
+                </button>
+              
+              </div>
+
+                <div class="grid gap-2">
+                    <Label for="name">Name</Label>
+                    <Input id="name" type="text"  autofocus :tabindex="1" autocomplete="name" v-model="form.name" placeholder="Full name" />
+                    <InputError :message="form.errors.name" />
+                </div>
+
+                <div class="grid gap-2">
+                    <Label for="email">Email address</Label>
+                    <Input id="email" type="email"  :tabindex="2" autocomplete="email" v-model="form.email" placeholder="email@example.com" />
+                    <InputError :message="form.errors.email" />
+                </div>
+
+                <div class="grid gap-2">
+                    <Label for="password">Password</Label>
+                    <Input
+                        id="password"
+                        type="password"
+                        
+                        :tabindex="3"
+                        autocomplete="new-password"
+                        v-model="form.password"
+                        placeholder="Password"
+                    />
+                    <InputError :message="form.errors.password" />
+                </div>
+
+                <div class="grid gap-2">
+                    <Label for="password_confirmation">Confirm password</Label>
+                    <Input
+                        id="password_confirmation"
+                        type="password"
+                        
+                        :tabindex="4"
+                        autocomplete="new-password"
+                        v-model="form.password_confirmation"
+                        placeholder="Confirm password"
+                    />
+                    <InputError :message="form.errors.password_confirmation" />
+                </div>
+
+                <Button type="submit" class="mt-2 w-full bg-green-500 hover:bg-green-700" tabindex="5" :disabled="form.processing">
+                    <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
+                    Create account
+                </Button>
+            </div>
+
+</Card>
       </form>
     </div>
   </AppLayout>

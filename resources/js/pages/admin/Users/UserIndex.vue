@@ -3,7 +3,7 @@ import Pagination from '@/components/Pagination.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem, type PaginationLink } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
-import {  Pen, Users, Calendar, Clock } from 'lucide-vue-next';
+import { UserPlus,Trash2, Pen, Users, Calendar, Clock } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -94,7 +94,10 @@ function destroy(id: number | string) {
         <h2 class="text-lg font-medium text-gray-900 dark:text-white">
           Liste des utilisateurs
         </h2>
-         <Link class="btn btn-primary mb-4" :href="route('users.create')">Ajouter un utilisateur</Link>
+       <span class="flex pt-2 px-2 rounded-sm text-white gap-1 bg-green-900">
+           <UserPlus/>
+         <Link class="btn btn-primary mb-4" :href="route('users.create')">Add Users</Link>
+       </span>
         <span class="text-sm text-gray-500 dark:text-gray-400">
           Total: {{ totalUsers }} utilisateur(s)
         </span>
@@ -151,16 +154,16 @@ function destroy(id: number | string) {
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <Link 
                   :href="route('users.edit', user.id)" 
-                  class="inline-flex items-center px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-700 dark:hover:bg-blue-600"
+                  class="inline-flex items-center px-3 py-1 gap-1 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:bg-green-700 dark:hover:bg-green-600"
                 >
-                 <Pen class="w-4 h-4 inline"/>  Modifier
+                 <Pen class="w-4 h-4 inline"/>  Editer
                 </Link>
                 <button 
                   @click="destroy(user.id)" 
-                  class="inline-flex items-center px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:bg-red-700 dark:hover:bg-red-600 ml-2"
+                  class="inline-flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:bg-red-700 dark:hover:bg-red-600 ml-2"
                 >
                 <Trash2 class="w-4 h-4 inline"/>
-                  Supprimer
+                  Suppr.
                 </button>
               </td>
             </tr>
