@@ -4,21 +4,50 @@ import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import {
     LayoutGrid,
     CalendarCheck,
     UserPlus,
     List,
     Folder,
+    Settings,
     BookOpen,
     Home
 } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 
+interface PageProps {
+    auth: {
+        user?: {
+            role: string;
+            // Ajoutez ici d'autres propriétés utilisateur si nécessaire
+        };
+    };
+}
+
+const { props } = usePage<PageProps>();
+const userRole = props.auth?.user?.role || 'user';
+
 
 const mainNavItems: NavItem[] = [
+    {
+        title: 'Dashboard',
+        href: '/dashboard',
+        icon: LayoutGrid,
+    },
+];
+
+const adminNavItems: NavItem[] = [
+    {
+        title: 'Manager Users',
+        href: '/admin/users',
+        icon: Settings,
+    },
+];
+
+const superAdminNavItems: NavItem[] = [
     {
         title: 'Home',
         href: '/',
@@ -41,11 +70,21 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Users',
-        href: '/users',
+        href: '/gestions/users',
         icon: List, // Plus adapté pour une liste que l'icône Users
     },
    
 ];
+
+let roleBasedNavItems = [...mainNavItems];
+
+if (userRole === 'admin') {
+    roleBasedNavItems = [...roleBasedNavItems, ...adminNavItems];
+}
+if (userRole === 'superadmin') {
+    roleBasedNavItems = [...roleBasedNavItems, ...adminNavItems, ...superAdminNavItems];
+}
+
 
 const footerNavItems: NavItem[] = [
     {
@@ -68,8 +107,8 @@ const footerNavItems: NavItem[] = [
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link :href="route('dashboard')" prefetch>
-                        <AppLogo />
+                        <Link :href="route('dashboard')">
+                            <AppLogo />
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -77,12 +116,11 @@ const footerNavItems: NavItem[] = [
         </SidebarHeader>
 
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <NavMain :items="roleBasedNavItems" />
         </SidebarContent>
 
         <SidebarFooter>
-
-            <NavFooter :items="footerNavItems" />
+            <NavFooter :items="footerNavItems" className="mt-auto" />
             <NavUser />
         </SidebarFooter>
     </Sidebar>

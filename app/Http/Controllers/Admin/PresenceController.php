@@ -34,7 +34,7 @@ class PresenceController extends Controller
     $presenceCount = Presence::count();
 
 //         dd($stats["absent"]);
-    return Inertia::render('admin/Presence/PresenceIndex', [
+    return Inertia::render('SuperAdmin/Presence/PresenceIndex', [
         'presences' => $presences,
         'presenceCount' => $presenceCount,
         'flash' => [
@@ -49,7 +49,7 @@ class PresenceController extends Controller
     {
         $users = User::orderBy('name')->get(['id', 'name', 'email']);
 
-        return Inertia::render('admin/Presence/PresenceAdd', compact('users'));
+        return Inertia::render('SuperAdmin/Presence/PresenceAdd', compact('users'));
     }
 
 public function store(PresenceRequest $request)
@@ -86,7 +86,7 @@ public function edit($id)
     // Récupérer tous les utilisateurs pour le sélecteur
     $users = User::orderBy('name')->get(['id', 'name', 'email']);
 
-    return Inertia::render('admin/Presence/PresenceEdit', [
+    return Inertia::render('SuperAdmin/Presence/PresenceEdit', [
         'presence' => $presence,
         'users' => $users,
     ]);

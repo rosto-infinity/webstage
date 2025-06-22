@@ -12,8 +12,8 @@ import { Card } from '@/components/ui/card';
 
 // Configuration des breadcrumbs
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: 'Utilisateurs', href: '/users' },
-  { title: 'Modifier utilisateur', href: '' }
+  { title: 'Utilisateurs Sup_Admin', href: '/users' },
+  { title: 'Modifier utilisateur : Sup_Admin', href: '' }
 ];
 
 // Typage des props

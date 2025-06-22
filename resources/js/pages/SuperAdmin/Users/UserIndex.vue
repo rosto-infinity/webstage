@@ -7,7 +7,7 @@ import { UserPlus,Trash2, Pen, Users, Calendar, Clock } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
-    title: 'Users',
+    title: 'Users List : Sup_Admin',
     href: '/presences/users',
   },
 ];

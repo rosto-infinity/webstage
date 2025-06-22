@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        return Inertia::render('admin/Users/UserIndex', [
+        return Inertia::render('SuperAdmin/Users/UserIndex', [
             // 'users' => User::query()->paginate(7),
             'users' => User::latest()->paginate(7),
             'totalUsers' => User::count(), // Ajout du nombre total d'utilisateurs
@@ -21,7 +21,7 @@ class UserController extends Controller
 
     public function create()
     {
-        return Inertia::render('admin/Users/UserCreate');
+        return Inertia::render('SuperAdmin/Users/UserCreate');
     }
 
     public function store(Request $request)
@@ -41,7 +41,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        return Inertia::render('admin/Users/UserEdit', [
+        return Inertia::render('SuperAdmin/Users/UserEdit', [
             'user' => $user
         ]);
     }

@@ -17,7 +17,7 @@ class DashboardController extends Controller
 
         $baseQuery = Presence::whereDate('date', $date);
 
-        return Inertia::render('admin/Dashboard', [
+        return Inertia::render('SuperAdmin/Dashboard', [
             'totalUsers'    => User::count(),
             'presenceCount' => (clone $baseQuery)->count(),
             'Countpresent'  => (clone $baseQuery)->where('absent', false)->count(),

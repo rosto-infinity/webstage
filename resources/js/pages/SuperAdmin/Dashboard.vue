@@ -51,7 +51,7 @@ const monthlyTrend = [
   { month: 'Juin', rate: 92 },
 ];
 
-const breadcrumbs: BreadcrumbItem[] = [{ title: 'Dashboard', href: '/dashboard' }];
+const breadcrumbs: BreadcrumbItem[] = [{ title: 'Dashboard Sup_Admin', href: '/dashboard' }];
 </script>
 
 <template>

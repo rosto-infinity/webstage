@@ -144,7 +144,7 @@ function setCurrentPage(n: number) {
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: 'Présences', href: '/presences' },
+  { title: 'Présences : Sup_Admin', href: '/presences' },
 ];
 </script>
 

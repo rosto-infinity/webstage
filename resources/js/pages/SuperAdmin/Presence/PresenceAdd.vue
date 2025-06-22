@@ -304,8 +304,8 @@ const submit = () => {
 
 // Configuration UI
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: 'Présences', href: route('presences') },
-  { title: 'Ajout', href: route('presences.add') },
+  { title: 'Présences Sup_Admin', href: route('presences') },
+  { title: 'Ajout Présences : Sup_Admin', href: route('presences.add') },
 ]
 </script>
 

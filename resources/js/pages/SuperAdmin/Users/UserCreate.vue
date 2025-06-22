@@ -11,8 +11,8 @@ import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
 // Configuration des breadcrumbs
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: 'Utilisateurs', href: '/users' },
-  { title: 'Nouvel utilisateur', href: '' }
+  { title: 'Utilisateurs Sup_Admin', href: '/users' },
+  { title: 'Nouvel utilisateur : Sup_Admin', href: '' }
 ];
 
 // Typage du formulaire avec intersection de types
