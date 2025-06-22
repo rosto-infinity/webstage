@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
+import Appearance from './settings/Appearance.vue';
+import AppearanceTabs from '@/components/AppearanceTabs.vue';
 
 // Configuration du thème vert
 const themeColors = {
@@ -47,6 +49,9 @@ onMounted(() => {
     <!-- Header -->
     <header class="mb-6 w-full max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl mx-auto">
       <nav class="flex items-center justify-end gap-4 py-6">
+                       <AppearanceTabs />
+
+       
         <Link
           v-if="$page.props.auth.user"
           :href="route('dashboard')" prefetch

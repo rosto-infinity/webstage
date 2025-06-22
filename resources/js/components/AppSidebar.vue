@@ -17,6 +17,7 @@ import {
 import AppLogo from './AppLogo.vue';
 
 
+
 const mainNavItems: NavItem[] = [
     {
         title: 'Home',
@@ -52,6 +53,7 @@ const footerNavItems: NavItem[] = [
         href: '#',
         icon: Folder,
     },
+   
     {
         title: 'Documentation',
         href: '#',
@@ -79,6 +81,7 @@ const footerNavItems: NavItem[] = [
         </SidebarContent>
 
         <SidebarFooter>
+
             <NavFooter :items="footerNavItems" />
             <NavUser />
         </SidebarFooter>

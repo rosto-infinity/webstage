@@ -50,7 +50,7 @@ const submit = () => {
 </script>
 
 <template>
-  
+
   <Head title="Création utilisateur" />
 
   <AppLayout :breadcrumbs="breadcrumbs">
@@ -65,68 +65,52 @@ const submit = () => {
       </header>
 
       <form @submit.prevent="submit" class="space-y-6 max-w-2xl">
-     <Card class="rounded-xl">
-        <!-- Boutons d'action -->
-     <div class="grid gap-6  p-5 rounded-md shadow-emerald-950">
-              <div class="flex items-center justify-end gap-3 pt-4">
-                <button
-                  type="button"
-                  @click="form.reset()"
-                  class="btn btn-secondary"
-                  :disabled="form.processing"
-                >
-                  Réinitialiser
-                </button>
-              
-              </div>
+        <Card class="rounded-xl">
+          <!-- Boutons d'action -->
+          <div class="grid gap-6  p-5 rounded-md shadow-emerald-950">
+            <div class="flex items-center justify-end gap-3 pt-4">
+              <button type="button" @click="form.reset()" class="btn btn-secondary" :disabled="form.processing">
+                Réinitialiser
+              </button>
 
-                <div class="grid gap-2">
-                    <Label for="name">Name</Label>
-                    <Input id="name" type="text"  autofocus :tabindex="1" autocomplete="name" v-model="form.name" placeholder="Full name" />
-                    <InputError :message="form.errors.name" />
-                </div>
-
-                <div class="grid gap-2">
-                    <Label for="email">Email address</Label>
-                    <Input id="email" type="email"  :tabindex="2" autocomplete="email" v-model="form.email" placeholder="email@example.com" />
-                    <InputError :message="form.errors.email" />
-                </div>
-
-                <div class="grid gap-2">
-                    <Label for="password">Password</Label>
-                    <Input
-                        id="password"
-                        type="password"
-                        
-                        :tabindex="3"
-                        autocomplete="new-password"
-                        v-model="form.password"
-                        placeholder="Password"
-                    />
-                    <InputError :message="form.errors.password" />
-                </div>
-
-                <div class="grid gap-2">
-                    <Label for="password_confirmation">Confirm password</Label>
-                    <Input
-                        id="password_confirmation"
-                        type="password"
-                        
-                        :tabindex="4"
-                        autocomplete="new-password"
-                        v-model="form.password_confirmation"
-                        placeholder="Confirm password"
-                    />
-                    <InputError :message="form.errors.password_confirmation" />
-                </div>
-
-                <Button type="submit" class="mt-2 w-full bg-green-500 hover:bg-green-700" tabindex="5" :disabled="form.processing">
-                    <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                    Create account
-                </Button>
             </div>
 
-</Card>
+            <div class="grid gap-2">
+              <Label for="name">Name</Label>
+              <Input id="name" type="text" autofocus :tabindex="1" autocomplete="name" v-model="form.name"
+                placeholder="Full name" />
+              <InputError :message="form.errors.name" />
+            </div>
+
+            <div class="grid gap-2">
+              <Label for="email">Email address</Label>
+              <Input id="email" type="email" :tabindex="2" autocomplete="email" v-model="form.email"
+                placeholder="email@example.com" />
+              <InputError :message="form.errors.email" />
+            </div>
+
+            <div class="grid gap-2">
+              <Label for="password">Password</Label>
+              <Input id="password" type="password" :tabindex="3" autocomplete="new-password" v-model="form.password"
+                placeholder="Password" />
+              <InputError :message="form.errors.password" />
+            </div>
+
+            <div class="grid gap-2">
+              <Label for="password_confirmation">Confirm password</Label>
+              <Input id="password_confirmation" type="password" :tabindex="4" autocomplete="new-password"
+                v-model="form.password_confirmation" placeholder="Confirm password" />
+              <InputError :message="form.errors.password_confirmation" />
+            </div>
+
+            <Button type="submit" class="mt-2 w-full bg-green-500 hover:bg-green-700" tabindex="5"
+              :disabled="form.processing">
+              <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
+              Create account
+            </Button>
+          </div>
+
+        </Card>
       </form>
     </div>
   </AppLayout>

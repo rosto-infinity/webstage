@@ -33,6 +33,7 @@ const footerNavItems: NavItem[] = [
         href: 'https://github.com/laravel/vue-starter-kit',
         icon: Folder,
     },
+    
     {
         title: 'Documentation',
         href: 'https://laravel.com/docs/starter-kits#vue',
@@ -60,6 +61,7 @@ const footerNavItems: NavItem[] = [
         </SidebarContent>
 
         <SidebarFooter>
+             
             <NavFooter :items="footerNavItems" />
             <NavUser />
         </SidebarFooter>
