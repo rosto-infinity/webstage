@@ -11,7 +11,7 @@ use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request)
+    public function superadmin(Request $request)
     {
         $date = $request->input('date') ?? now()->toDateString();
 
@@ -25,5 +25,9 @@ class DashboardController extends Controller
             'Countlate'     => (clone $baseQuery)->where('late', true)->count(),
             'selectedDate'  => $date,
         ]);
+    }
+    public function admin(Request $request)
+    {
+        return Inertia::render('Admin/Dashboard', [ ]);
     }
 }

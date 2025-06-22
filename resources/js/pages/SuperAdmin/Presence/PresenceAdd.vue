@@ -5,7 +5,7 @@
     <div class="p-6 max-w-7xl mx-auto">
       <!-- Bouton de retour -->
       <Link
-        :href="route('presences')"
+        :href="route('presences')" prefetch
         class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg transition-colors mb-6"
       >
         <ArrowLeft class="w-4 h-4" />

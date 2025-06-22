@@ -251,7 +251,7 @@ const breadcrumbs: BreadcrumbItem[] = [
               <td class="px-4 py-2"><Badge :type="r.absent ? 'danger' : 'success'">{{ r.absent ? 'Oui' : 'Non' }}</Badge></td>
               <td class="px-4 py-2"><Badge :type="r.late ? 'warning' : 'success'">{{ r.late ? 'Oui' : 'Non' }}</Badge></td>
               <td class="px-4 py-2">
-  <Link :href="route('presences.edit', { id: r.id })" class="text-blue-600 hover:underline">
+  <Link :href="route('presences.edit', { id: r.id })" prefetch class="text-blue-600 hover:underline">
     <Pen class="w-4 h-4 inline"/> Editer
   </Link>
 </td>

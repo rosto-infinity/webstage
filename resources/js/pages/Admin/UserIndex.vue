@@ -2,8 +2,8 @@
 import Pagination from '@/components/Pagination.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem, type PaginationLink } from '@/types';
-import { Head, Link, router } from '@inertiajs/vue3';
-import { UserPlus,Trash2, Pen, Users, Calendar, Clock } from 'lucide-vue-next';
+import { Head, Link } from '@inertiajs/vue3';
+import { UserPlus, Users, Calendar, Clock } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -28,11 +28,7 @@ defineProps<{
   totalLateUsers?: number
 }>();
 
-function destroy(id: number | string) {
-  if (confirm('Supprimer cet utilisateur ?')) {
-    router.delete(route('users.destroy', id));
-  }
-}
+
 </script>
 
 <template>
@@ -96,7 +92,7 @@ function destroy(id: number | string) {
         </h2>
        <span class="flex pt-2 px-2 rounded-sm text-white gap-1 bg-green-900">
            <UserPlus/>
-         <Link class="btn btn-primary mb-4" :href="route('users.create')" prefetch>Add Users</Link>
+         <Link class="btn btn-primary mb-4" :href="route('users.create')">Add Users</Link>
        </span>
         <span class="text-sm text-gray-500 dark:text-gray-400">
           Total: {{ totalUsers }} utilisateur(s)
@@ -151,21 +147,7 @@ function destroy(id: number | string) {
                   {{ user.status === 'active' ? 'Actif' : user.status === 'inactive' ? 'Inactif' : 'N/A' }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <Link 
-                  :href="route('users.edit', user.id)" 
-                  class="inline-flex items-center px-3 py-1 gap-1 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:bg-green-700 dark:hover:bg-green-600"
-                >
-                 <Pen class="w-4 h-4 inline"/>  Editer
-                </Link>
-                <button 
-                  @click="destroy(user.id)" 
-                  class="inline-flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:bg-red-700 dark:hover:bg-red-600 ml-2"
-                >
-                <Trash2 class="w-4 h-4 inline"/>
-                  Suppr.
-                </button>
-              </td>
+           
             </tr>
           </tbody>
         </table>

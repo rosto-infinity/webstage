@@ -32,31 +32,40 @@ const userRole = props.auth?.user?.role || 'user';
 
 
 const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },
-];
-
-const adminNavItems: NavItem[] = [
-    {
-        title: 'Manager Users',
-        href: '/admin/users',
-        icon: Settings,
-    },
-];
-
-const superAdminNavItems: NavItem[] = [
+   
     {
         title: 'Home',
         href: '/',
         icon: Home, // Icône appropriée pour un tableau de bord
     },
-    {
+
+{
         title: 'Dashboard',
         href: '/dashboard',
-        icon: LayoutGrid, // Icône appropriée pour un tableau de bord
+        icon: LayoutGrid,
+    },
+    
+];
+
+const adminNavItems: NavItem[] = [
+    {
+        title: 'Dashboard Users',
+        href: '/admin/dashboard',
+        icon: LayoutGrid,
+    },
+    {
+         title: 'Dashboard Admin',
+        href: '/gestions/users',
+        icon: Settings,
+    },
+];
+
+const superAdminNavItems: NavItem[] = [
+  
+    {
+        title: 'Dashboard Sup_Admin',
+        href: '/superadmin/dashboard',
+        icon: LayoutGrid,
     },
     {
         title: 'Presences users',
@@ -79,10 +88,10 @@ const superAdminNavItems: NavItem[] = [
 let roleBasedNavItems = [...mainNavItems];
 
 if (userRole === 'admin') {
-    roleBasedNavItems = [...roleBasedNavItems, ...adminNavItems];
+    roleBasedNavItems = [...adminNavItems];
 }
 if (userRole === 'superadmin') {
-    roleBasedNavItems = [...roleBasedNavItems, ...adminNavItems, ...superAdminNavItems];
+    roleBasedNavItems = [...roleBasedNavItems,...superAdminNavItems];
 }
 
 

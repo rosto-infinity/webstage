@@ -7,8 +7,8 @@ import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Head, useForm, Link } from '@inertiajs/vue3';
-import { ArrowLeft,LoaderCircle } from 'lucide-vue-next';
+import { Head, useForm } from '@inertiajs/vue3';
+import { LoaderCircle } from 'lucide-vue-next';
 // Configuration des breadcrumbs
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Utilisateurs Sup_Admin', href: '/users' },
@@ -67,30 +67,11 @@ const submit = () => {
       <form @submit.prevent="submit" class="space-y-6 max-w-2xl">
         <Card class="rounded-xl">
           <!-- Boutons d'action -->
-          <div class="grid gap-6 px-4 rounded-md shadow-emerald-950">
-            <div class="flex justify-between items-center  gap-3 pt-1">
-             
-             <span>
-              <Link
-        :href="route('users.index')" prefetch
-        class="inline-flex items-center  gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg transition-colors mb-6"
-      >
-          <ArrowLeft class="w-4 h-4" />
-      Retour à la liste
-      </Link>
-             </span>
-              <!-- <button type="button" @click="form.reset()" class="btn btn-secondary" :disabled="form.processing">
+          <div class="grid gap-6  p-5 rounded-md shadow-emerald-950">
+            <div class="flex items-center justify-end gap-3 pt-4">
+              <button type="button" @click="form.reset()" class="btn btn-secondary" :disabled="form.processing">
                 Réinitialiser
-              </button> -->
-
-              <button
-              type="button"
-              @click="form.reset()"
-              class="px-4 py-2 text-sm font-medium rounded-md shadow-sm bg-secondary text-secondary-foreground hover:bg-secondary/80"
-              :disabled="form.processing"
-            >
-              Réinitialiser
-            </button>
+              </button>
 
             </div>
 

@@ -13,28 +13,40 @@ Route::get('/', function () {
     return Inertia::render('Welcome',compact('totalUsers'));
 })->name('home');
 
-Route::middleware(['auth', 'verified','role:superadmin'])->group(function () {
+Route::get('dashboard', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::prefix('gestions')->name('users.')->group(function () {
+Route::middleware(['auth', 'verified','role:admin'])->group(function () {
+    Route::get('admin/dashboard', [DashboardController::class,'admin'])->name('admin.dashboard');
+    Route::prefix('gestions')->name('users.')->group(function () {
     Route::get('users', [UserController::class, 'index'])->name('index');
     Route::get('users/create', [UserController::class, 'create'])->name('create');
     Route::post('users', [UserController::class, 'store'])->name('store');
-    Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('edit');
-    Route::put('users/{user}', [UserController::class, 'update'])->name('update');
-    Route::delete('users/{user}', [UserController::class, 'destroy'])->name('destroy');
+    });
 });
 
+Route::middleware(['auth', 'verified','role:superadmin'])->group(function () {
+    Route::get('/superadmin/dashboard', [DashboardController::class,'superadmin'])->name('dashboard.superadmin');
+    Route::prefix('gestions')->name('users.')->group(function () {
+        Route::get('users', [UserController::class, 'index'])->name('index');
+        Route::get('users/create', [UserController::class, 'create'])->name('create');
+        Route::post('users', [UserController::class, 'store'])->name('store');
+        Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('edit');
+        Route::put('users/{user}', [UserController::class, 'update'])->name('update');
+        Route::delete('users/{user}', [UserController::class, 'destroy'])->name('destroy');
+    });
 
-Route::prefix('presences')->group(function () {
-    Route::get('/users', [PresenceController::class, 'index'])->name('presences');  
-    Route::get('/add', [PresenceController::class, 'add'])->name('presences.add');
-    Route::post('/store', [PresenceController::class, 'store'])->name('presences.store'); 
-    Route::get('/{id}/edit', [PresenceController::class, 'edit'])->name('presences.edit');
-    Route::put('/{id}', [PresenceController::class, 'update'])->name('presences.update');
-    Route::delete('/{presence}', [PresenceController::class, 'destroy'])
-    ->name('presences.destroy');
-});
-Route::get('dashboard', [DashboardController::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
+
+    Route::prefix('presences')->group(function () {
+        Route::get('/users', [PresenceController::class, 'index'])->name('presences');  
+        Route::get('/add', [PresenceController::class, 'add'])->name('presences.add');
+        Route::post('/store', [PresenceController::class, 'store'])->name('presences.store'); 
+        Route::get('/{id}/edit', [PresenceController::class, 'edit'])->name('presences.edit');
+        Route::put('/{id}', [PresenceController::class, 'update'])->name('presences.update');
+        Route::delete('/{presence}', [PresenceController::class, 'destroy'])
+        ->name('presences.destroy');
+    });
 
 });
 

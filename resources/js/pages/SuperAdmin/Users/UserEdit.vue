@@ -4,19 +4,11 @@ import { Head } from '@inertiajs/vue3';
 import { useForm } from '@inertiajs/vue3';
 import type { BreadcrumbItem } from '@/types';
 import InputError from '@/components/InputError.vue';
-
-
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 
-// Configuration des breadcrumbs
-const breadcrumbs: BreadcrumbItem[] = [
-  { title: 'Utilisateurs Sup_Admin', href: '/users' },
-  { title: 'Modifier utilisateur : Sup_Admin', href: '' }
-];
-
-// Typage des props
+// Typage TypeScript strict
 interface User {
   id: number | string;
   name: string;
@@ -27,7 +19,13 @@ const props = defineProps<{
   user: User;
 }>();
 
-// Initialisation du formulaire avec validation
+// Configuration des breadcrumbs
+const breadcrumbs: BreadcrumbItem[] = [
+  { title: 'Utilisateurs Admin', href: '/users' },
+  { title: `Modifier utilisateur : ${props.user.name}`, href: '' }
+];
+
+// Initialisation du formulaire avec typage
 const form = useForm({
   name: props.user.name,
   email: props.user.email,
@@ -35,7 +33,7 @@ const form = useForm({
   password_confirmation: ''
 });
 
-// Soumission du formulaire avec gestion d'erreur
+// Soumission du formulaire
 const submit = () => {
   form.put(route('users.update', props.user.id), {
     preserveScroll: true,
@@ -47,154 +45,113 @@ const submit = () => {
     }
   });
 };
+
+// Réinitialisation contrôlée
+const resetForm = () => {
+  form.reset();
+  form.clearErrors();
+};
 </script>
 
 <template>
-  <Head title="Modifier utilisateur" />
+  <Head :title="`Modifier ${user.name}`" />
 
   <AppLayout :breadcrumbs="breadcrumbs">
-    <div class="flex h-full flex-1 flex-col gap-6 rounded-xl p-6">
-      <header class="space-y-2">
+    <div class="flex flex-col h-full gap-6 p-6">
+      <header class="space-y-1">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
           Modifier l'utilisateur
         </h1>
-        <p class="text-sm text-gray-500 dark:text-gray-400">
-          ID: {{ user.id }}
+        <p class="text-sm text-muted-foreground">
+          ID: {{ user.id }} • Dernière modification: {{ new Date().toLocaleDateString() }}
         </p>
       </header>
       
-      <div class="grid gap-6  p-5 rounded-md shadow-emerald-950">
-        
-        <form @submit.prevent="submit" class="space-y-6 max-w-2xl " >
-            <Card class="rounded-xl p-5 py-7">
-            
-            
-            <div class="grid gap-2">
-                  <Label for="name">Nom complet</Label>
-                  <Input id="name" type="name" :tabindex="2" autocomplete="name" v-model="form.name"
-                    placeholder="name@example.com" />
-                  <InputError :message="form.errors.name" />
-            </div>
-            
-            <!-- <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Nom complet
-              </label>
-              <input
+      <Card class="p-6">
+        <form @submit.prevent="submit" class="space-y-6">
+          <div class="grid gap-4">
+            <!-- Champ Nom -->
+            <div class="space-y-2">
+              <Label for="name">Nom complet</Label>
+              <Input
+                id="name"
                 v-model="form.name"
-                
-                class="input w-full"
-                :class="{ 'input-error': form.errors.name }"
+                placeholder="Jean Dupont"
+                :disabled="form.processing"
               />
-              <p v-if="form.errors.name" class="text-sm text-red-600 dark:text-red-400">
-                {{ form.errors.name }}
-              </p>
-            </div> -->
+              <InputError :message="form.errors.name" />
+            </div>
 
-
-              <div class="grid gap-2">
-                  <Label for="email">Adresse email</Label>
-                  <Input id="email" type="email" :tabindex="2" autocomplete="email" v-model="form.email"
-                    placeholder="email@example.com" />
-                  <InputError :message="form.errors.email" />
-                </div>
-
-            <!-- <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Adresse email
-              </label>
-              <input
-                v-model="form.email"
+            <!-- Champ Email -->
+            <div class="space-y-2">
+              <Label for="email">Adresse email</Label>
+              <Input
+                id="email"
                 type="email"
-                
-                class="input w-full"
-                :class="{ 'input-error': form.errors.email }"
+                v-model="form.email"
+                placeholder="email@exemple.com"
+                :disabled="form.processing"
               />
-              <p v-if="form.errors.email" class="text-sm text-red-600 dark:text-red-400">
-                {{ form.errors.email }}
-              </p>
-            </div> -->
+              <InputError :message="form.errors.email" />
+            </div>
 
-            <div class="space-y-4 border-t border-green-600 dark:border-gray-700 pt-4">
-              
-             
-              
-              
-              <h3 class="text-lg font-medium text-gray-900 dark:text-white">
-                Changer le mot de passe
-              </h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
-                Laissez vide pour conserver le mot de passe actuel
-              </p>
-
-               <div class="grid gap-2">
-                  <Label for="password">Nouveau mot de passe</Label>
-                  <Input id="password" type="password" :tabindex="3" autocomplete="new-password" v-model="form.password"
-                    placeholder="Password" />
-                  <InputError :message="form.errors.password" />
-               </div>
-
-                <div class="grid gap-2">
-                  <Label for="password_confirmation">Confirm password</Label>
-                  <Input id="password_confirmation" type="password" :tabindex="4" autocomplete="new-password"
-                    v-model="form.password_confirmation" placeholder="Confirm password" />
-                  <InputError :message="form.errors.password_confirmation" />
-                </div>
-              
-                <!-- <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Nouveau mot de passe
-                </label>
-                <input
-                  v-model="form.password"
-                  type="password"
-                  class="input w-full"
-                  :class="{ 'input-error': form.errors.password }"
-                />
-                <p v-if="form.errors.password" class="text-sm text-red-600 dark:text-red-400">
-                  {{ form.errors.password }}
+            <!-- Section Mot de passe -->
+            <div class="pt-4 space-y-4 border-t">
+              <div class="space-y-1">
+                <h3 class="text-lg font-medium">Changer le mot de passe</h3>
+                <p class="text-sm text-muted-foreground">
+                  Laissez vide pour conserver le mot de passe actuel
                 </p>
-              </div> -->
+              </div>
 
-              <!-- <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Confirmation
-                </label>
-                <input
-                  v-model="form.password_confirmation"
-                  type="password"
-                  class="input w-full"
-                />
-              </div> -->
-            </div>
+              <div class="grid gap-4 md:grid-cols-2">
+                <!-- Nouveau mot de passe -->
+                <div class="space-y-2">
+                  <Label for="password">Nouveau mot de passe</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    v-model="form.password"
+                    :disabled="form.processing"
+                  />
+                  <InputError :message="form.errors.password" />
+                </div>
 
-            <div class="flex items-center justify-end gap-3 pt-2">
-              <button
-                type="button"
-                @click="form.reset()"
-                class="btn btn-secondary bg-green-400 px-5 py-2 rounded-sm mr-2"
-                :disabled="form.processing"
-              >
-                Annuler
-              </button>
-              <button
-                type="submit"
-                class="btn btn-primary"
-                :disabled="form.processing"
-              >
-                <span v-if="form.processing"
-                class="bg-green-500 px-5 py-2 rounded-sm mr-2" 
-                
-                >Enregistrement...</span>
-                <span v-else class="bg-green-500 px-5 py-2 rounded-sm mr-2"> Mettre à jour</span>
-              </button>
+                <!-- Confirmation -->
+                <div class="space-y-2">
+                  <Label for="password_confirmation">Confirmation</Label>
+                  <Input
+                    id="password_confirmation"
+                    type="password"
+                    v-model="form.password_confirmation"
+                    :disabled="form.processing"
+                  />
+                </div>
+              </div>
             </div>
-          </Card>
-          </form>
-        
-        </div>
-      
-      
-      </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex justify-end gap-3 pt-2">
+            <button
+              type="button"
+              @click="resetForm"
+              class="px-4 py-2 text-sm font-medium rounded-md shadow-sm bg-secondary text-secondary-foreground hover:bg-secondary/80"
+              :disabled="form.processing"
+            >
+              Réinitialiser
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 text-sm font-medium text-white rounded-md shadow-sm bg-primary hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              :disabled="form.processing"
+            >
+              <span v-if="form.processing">Enregistrement...</span>
+              <span v-else>Mettre à jour</span>
+            </button>
+          </div>
+        </form>
+      </Card>
+    </div>
   </AppLayout>
 </template>
