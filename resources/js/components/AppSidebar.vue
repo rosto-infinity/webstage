@@ -38,6 +38,7 @@ const mainNavItems: NavItem[] = [
         href: '/',
         icon: Home, // Icône appropriée pour un tableau de bord
     },
+     
 
 {
         title: 'Dashboard',
