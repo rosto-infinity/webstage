@@ -82,7 +82,7 @@ class UserController extends Controller
             ->orderBy('month')
             ->get()
             ->map(function($row) {
-                // Formate les données pour l'affichage
+                // -- Formate les données pour l'affichage
                 return [
                     'month' => Carbon::create()->month($row->month)->format('M'), // Format 'Jan', 'Feb', etc.
                     'rate' => $row->total > 0 ? round($row->presents / $row->total * 100, 1) : 0, // Taux de présence en %
