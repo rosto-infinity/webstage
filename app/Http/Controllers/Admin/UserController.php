@@ -39,7 +39,7 @@ class UserController extends Controller
         // -Récupère l'utilisateur actuellement authentifié
         $user = Auth::user();
 
-        // STATISTIQUES GLOBALES
+        // -STATISTIQUES GLOBALES
         // Compte le nombre total de présences
         $total = Presence::where('user_id', $user->id)->count();
         
