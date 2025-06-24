@@ -22,7 +22,7 @@ class UserController extends Controller
     public function indexlist(Request $request)
     {
         return Inertia::render('SuperAdmin/Users/UserIndex', [
-            // Récupère les utilisateurs triés par date de création (les plus récents en premier)
+            // -Récupère les utilisateurs triés par date de création (les plus récents en premier)
             'users' => User::latest()->paginate(7),
             // Compte le nombre total d'utilisateurs pour affichage statistique
             'totalUsers' => User::count(),
