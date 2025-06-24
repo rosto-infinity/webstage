@@ -134,7 +134,7 @@ class UserController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
         
-        // Redirection avec message de succès
+        // -Redirection avec message de succès
         return redirect()->route('users.index')->with('success', 'Utilisateur créé');
     }
 
