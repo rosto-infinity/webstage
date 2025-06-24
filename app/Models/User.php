@@ -54,7 +54,7 @@ class User extends Authenticatable
 
     public function isSuperAdmin()
     {
-        return $this->role === 'superadmin'; // ou selon ta logique
-    dd($this->role);
+       return $this->role === env('SUPERADMIN_ROLE', 'lolo');
+  
     }
 }

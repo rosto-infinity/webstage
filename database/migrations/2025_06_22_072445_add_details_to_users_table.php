@@ -11,11 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('role',['user','admin','superadmin'])
-            ->after('email')
-            ->default('user');
-        });
+        // Schema::table('users', function (Blueprint $table) {
+        //     $table->enum('role',['user','admin','superadmin'])
+        //     ->after('email')
+        //     ->default('user');
+        // });
+        $roles = config('roles.roles', ['ty','nf','er']);
+    
+    Schema::table('users', function (Blueprint $table) use ($roles) {
+        $table->enum('role', $roles)
+              ->after('email')
+              ->default('user');
+    });
     }
 
     /**
