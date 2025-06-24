@@ -43,7 +43,7 @@ class UserController extends Controller
         // -Compte le nombre total de présences
         $total = Presence::where('user_id', $user->id)->count();
         
-        // Compte les présences, absences et retards
+        // -Compte les présences, absences et retards
         $present = Presence::where('user_id', $user->id)->where('absent', false)->count();
         $absent = Presence::where('user_id', $user->id)->where('absent', true)->count();
         $late = Presence::where('user_id', $user->id)->where('late', true)->count();
