@@ -127,7 +127,7 @@ class UserController extends Controller
             'password' => 'required|confirmed|min:8',
         ]);
         
-        // Création de l'utilisateur avec le mot de passe hashé
+        // -Création de l'utilisateur avec le mot de passe hashé
         User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
