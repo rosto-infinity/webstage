@@ -36,7 +36,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        // Récupère l'utilisateur actuellement authentifié
+        // -Récupère l'utilisateur actuellement authentifié
         $user = Auth::user();
 
         // STATISTIQUES GLOBALES
