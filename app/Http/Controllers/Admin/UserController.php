@@ -120,7 +120,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // Validation des données du formulaire
+        // -Validation des données du formulaire
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
