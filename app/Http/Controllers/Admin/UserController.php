@@ -40,7 +40,7 @@ class UserController extends Controller
         $user = Auth::user();
 
         // -STATISTIQUES GLOBALES
-        // Compte le nombre total de présences
+        // -Compte le nombre total de présences
         $total = Presence::where('user_id', $user->id)->count();
         
         // Compte les présences, absences et retards
