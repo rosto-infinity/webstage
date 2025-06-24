@@ -89,7 +89,7 @@ class UserController extends Controller
                 ];
             })->toArray();
 
-        // Renvoie toutes les données à la vue Inertia
+        // ---Renvoie toutes les données à la vue Inertia
         return Inertia::render('Dashboard', [
             'total' => $total,
             'present' => $present,
