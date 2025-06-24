@@ -139,7 +139,7 @@ class UserController extends Controller
     }
 
     /**
-     * Affiche le formulaire d'édition d'un utilisateur
+     * --Affiche le formulaire d'édition d'un utilisateur
      * 
      * @param User $user L'utilisateur à éditer
      * @return \Inertia\Response Vue Inertia avec le formulaire pré-rempli
