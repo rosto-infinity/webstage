@@ -8,8 +8,8 @@ use App\Models\Presence;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -66,11 +66,11 @@ class UserController extends Controller
             'total' => $total,
             'present' => $present,
             'absent' => $absent,
-            'isSuperAdmin' => $user->isSuperAdmin(),
             'late' => $late,
             'lateMinutes' => $lateMinutes,
             'weekStats' => $weekStats,
             'monthlyStats' => $monthlyStats,
+            'isSuperAdmin' => $user->isSuperAdmin(),
         ]);
     }
 
