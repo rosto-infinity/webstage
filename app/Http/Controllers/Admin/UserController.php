@@ -76,7 +76,7 @@ class UserController extends Controller
 
         // -STATISTIQUES MENSUELLES
         $monthlyStats = Presence::where('user_id', $user->id)
-            // Sélectionne le mois, le total et le nombre de présences
+            // -Sélectionne le mois, le total et le nombre de présences
             ->selectRaw('MONTH(date) as month, COUNT(*) as total, SUM(CASE WHEN absent = 0 THEN 1 ELSE 0 END) as presents')
             ->groupBy('month')
             ->orderBy('month')
