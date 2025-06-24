@@ -171,7 +171,7 @@ class UserController extends Controller
         $user->name = $validated['name'];
         $user->email = $validated['email'];
         
-        // Mise à jour du mot de passe seulement si fourni
+        // ---Mise à jour du mot de passe seulement si fourni
         if ($request->filled('password')) {
             $user->password = Hash::make($validated['password']);
         }
