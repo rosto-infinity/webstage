@@ -103,7 +103,7 @@ class UserController extends Controller
     }
 
     /**
-     * Affiche le formulaire de création d'un utilisateur
+     * -Affiche le formulaire de création d'un utilisateur
      * 
      * @return \Inertia\Response Vue Inertia avec le formulaire
      */
