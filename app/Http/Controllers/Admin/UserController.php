@@ -30,7 +30,7 @@ class UserController extends Controller
     }
 
     /**
-     * Affiche le tableau de bord utilisateur avec les statistiques de présence
+     * -Affiche le tableau de bord utilisateur avec les statistiques de présence
      * 
      * @return \Inertia\Response Vue Inertia avec toutes les données statistiques
      */
