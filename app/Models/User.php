@@ -51,4 +51,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function isSuperAdmin()
+    {
+        return $this->role === 'superadmin'; // ou selon ta logique
+    dd($this->role);
+    }
 }

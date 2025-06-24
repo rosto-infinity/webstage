@@ -6,22 +6,15 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Presence;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
-    public function indexlist(Request $request)
-    {
-        return Inertia::render('SuperAdmin/Users/UserIndex', [
-            // 'users' => User::query()->paginate(7),
-            'users' => User::latest()->paginate(7),
-            'totalUsers' => User::count(), // Ajout du nombre total d'utilisateurs
-        ]);
-    }
-     public function index()
+
+   public function index()
     {
         $user = Auth::user();
 
@@ -66,13 +59,61 @@ class UserController extends Controller
             'total' => $total,
             'present' => $present,
             'absent' => $absent,
-            'isSuperAdmin' => $user->isSuperAdmin(),
             'late' => $late,
             'lateMinutes' => $lateMinutes,
             'weekStats' => $weekStats,
             'monthlyStats' => $monthlyStats,
         ]);
     }
+
+    // public function index(Request $request)
+    // {
+    //     $user = $request->user();
+
+    //     // Statistiques globales
+    //     $total = \App\Models\Presence::where('user_id', $user->id)->count();
+    //     $present = \App\Models\Presence::where('user_id', $user->id)->where('absent', false)->count();
+    //     $absent = \App\Models\Presence::where('user_id', $user->id)->where('absent', true)->count();
+    //     $late = \App\Models\Presence::where('user_id', $user->id)->where('late', true)->count();
+    //     $lateMinutes = \App\Models\Presence::where('user_id', $user->id)->sum('late_minutes');
+
+    //     // Statistiques hebdo (présent/absent par jour)
+    //     $weekStats = \App\Models\Presence::where('user_id', $user->id)
+    //         ->whereBetween('date', [now()->startOfWeek(), now()->endOfWeek()])
+    //         ->get()
+    //         ->groupBy(function($item) {
+    //             return \Carbon\Carbon::parse($item->date)->format('D');
+    //         })
+    //         ->map(function($items) {
+    //             return [
+    //                 'present' => $items->where('absent', false)->count(),
+    //                 'absent' => $items->where('absent', true)->count(),
+    //             ];
+    //         });
+
+    //     // Statistiques mensuelles (taux de présence par mois)
+    //     $monthlyStats = \App\Models\Presence::where('user_id', $user->id)
+    //         ->selectRaw('MONTH(date) as month, COUNT(*) as total, SUM(CASE WHEN absent = 0 THEN 1 ELSE 0 END) as presents')
+    //         ->groupBy('month')
+    //         ->orderBy('month')
+    //         ->get()
+    //         ->map(function($row) {
+    //             return [
+    //                 'month' => \Carbon\Carbon::create()->month($row->month)->format('M'),
+    //                 'rate' => $row->total > 0 ? round($row->presents / $row->total * 100, 1) : 0,
+    //             ];
+    //         });
+
+    //     return Inertia::render('Dashboard', [
+    //         'total' => $total,
+    //         'present' => $present,
+    //         'absent' => $absent,
+    //         'late' => $late,
+    //         'lateMinutes' => $lateMinutes,
+    //         'weekStats' => $weekStats,
+    //         'monthlyStats' => $monthlyStats,
+    //     ]);
+    // }
 
     public function create()
     {

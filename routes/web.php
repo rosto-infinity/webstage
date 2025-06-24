@@ -27,7 +27,7 @@ Route::middleware(['auth', 'verified','role:admin'])->group(function () {
 Route::middleware(['auth', 'verified','role:superadmin'])->group(function () {
     Route::get('/superadmin/dashboard', [DashboardController::class,'superadmin'])->name('dashboard.superadmin');
     Route::prefix('gestions')->name('users.')->group(function () {
-        Route::get('users', [UserController::class, 'index'])->name('index');
+        Route::get('users', [UserController::class, 'indexlist'])->name('index');
         Route::get('users/create', [UserController::class, 'create'])->name('create');
         Route::post('users', [UserController::class, 'store'])->name('store');
         Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('edit');

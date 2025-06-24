@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3'
-import AppLayoutUser from '@/layouts/AppLayoutUser.vue';
-import PieChart from '@/components/Charts/PieChart.vue';
 import BarChart from '@/components/Charts/BarChart.vue';
 import LineChart from '@/components/Charts/LineChart.vue';
+import PieChart from '@/components/Charts/PieChart.vue';
+import AppLayoutUser from '@/layouts/AppLayoutUser.vue';
+import { Head, router, Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 import type { BreadcrumbItem } from '@/types';
 
@@ -15,6 +16,8 @@ const props = defineProps<{
   lateMinutes?: number;
   weekStats?: Record<string, {present: number, absent: number}>;
   monthlyStats?: {month: string, rate: number}[];
+  selectedDate?: string,
+   isSuperAdmin?: boolean
 }>();
 
 const { 
@@ -24,8 +27,11 @@ const {
   late = 0,
   lateMinutes = 0,
   weekStats = {},
-  monthlyStats = []
+  monthlyStats = [],
+  isSuperAdmin = false 
 } = props;
+
+const date = ref(props.selectedDate || new Date().toISOString().slice(0,10));
 
 const presenceRate = total > 0 ? Math.round((present / total) * 100) : 0;
 const absenceRate = total > 0 ? Math.round((absent / total) * 100) : 0;
@@ -34,6 +40,10 @@ const breadcrumbs: BreadcrumbItem[] = [{
   title: 'Dashboard',
   href: '/dashboard' 
 }];
+
+function filterByDate() {
+  router.get(route('user.dashboard'), { date: date.value }, { preserveState: true, replace: true });
+}
 </script>
 
 <template>
@@ -41,6 +51,13 @@ const breadcrumbs: BreadcrumbItem[] = [{
   
   <AppLayoutUser :breadcrumbs="breadcrumbs">
     <div class="flex h-full flex-1 flex-col gap-6 p-4">
+      <!-- Filtre par date -->
+      <form @submit.prevent="filterByDate" class="mb-6 flex items-center gap-2">
+        <label for="date" class="font-medium">Date :</label>
+        <input id="date" type="date" v-model="date" class="input" />
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+      </form>
+
       <!-- Cartes statistiques -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-card rounded-xl border p-5 shadow-sm">
@@ -151,6 +168,17 @@ const breadcrumbs: BreadcrumbItem[] = [{
           </div>
         </div>
       </div>
+
+      <div class="mt-8">
+        <Link
+          v-if="isSuperAdmin"
+          :href="route('dashboard.superadmin')" prefetch
+          class="btn btn-primary text-red-700"
+        >
+          Accéder au dashboard Super Admin
+        </Link>
+      </div>
+      <!-- <p>isSuperAdmin: {{ isSuperAdmin }}</p> -->
     </div>
   </AppLayoutUser>
 </template>
