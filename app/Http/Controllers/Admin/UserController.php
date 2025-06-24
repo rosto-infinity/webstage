@@ -184,7 +184,7 @@ class UserController extends Controller
     /**
      * -Supprime un utilisateur
      * 
-     * @param User $user L'utilisateur à supprimer
+     * @param User --$user L'utilisateur à supprimer
      * @return \Illuminate\Http\RedirectResponse Redirection vers la liste des utilisateurs
      */
     public function destroy(User $user)
