@@ -113,7 +113,7 @@ class UserController extends Controller
     }
 
     /**
-     * Enregistre un nouvel utilisateur en base de données
+     * -Enregistre un nouvel utilisateur en base de données
      * 
      * @param Request $request Requête HTTP contenant les données du formulaire
      * @return \Illuminate\Http\RedirectResponse Redirection vers la liste des utilisateurs
