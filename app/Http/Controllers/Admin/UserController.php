@@ -54,7 +54,7 @@ class UserController extends Controller
         $weekDays = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
         $weekStats = [];
         
-        // -Initialise chaque jour avec des compteurs à 0
+        // - -Initialise chaque jour avec des compteurs à 0
         foreach ($weekDays as $day) {
             $weekStats[$day] = ['present' => 0, 'absent' => 0];
         }
