@@ -160,7 +160,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        // Validation des données (le mot de passe est optionnel)
+        // ---Validation des données (le mot de passe est optionnel)
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,'.$user->id, // Ignore l'email actuel de l'utilisateur
