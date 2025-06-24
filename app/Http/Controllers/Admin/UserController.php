@@ -152,7 +152,7 @@ class UserController extends Controller
     }
 
     /**
-     * Met à jour un utilisateur existant
+     * --Met à jour un utilisateur existant
      * 
      * @param Request $request Requête HTTP contenant les données mises à jour
      * @param User $user L'utilisateur à mettre à jour
