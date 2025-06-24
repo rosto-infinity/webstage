@@ -59,7 +59,7 @@ class UserController extends Controller
             $weekStats[$day] = ['present' => 0, 'absent' => 0];
         }
         
-        // Récupère les données de la semaine en cours
+        // -Récupère les données de la semaine en cours
         $weekData = Presence::where('user_id', $user->id)
             ->whereBetween('date', [now()->startOfWeek(), now()->endOfWeek()])
             ->get()
