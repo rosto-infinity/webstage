@@ -49,12 +49,12 @@ class UserController extends Controller
         $late = Presence::where('user_id', $user->id)->where('late', true)->count();
         $lateMinutes = Presence::where('user_id', $user->id)->sum('late_minutes');
 
-        // STATISTIQUES HEBDOMADAIRES
+        // -STATISTIQUES HEBDOMADAIRES
         // Initialise un tableau pour les 7 jours de la semaine
         $weekDays = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
         $weekStats = [];
         
-        // Initialise chaque jour avec des compteurs à 0
+        // -Initialise chaque jour avec des compteurs à 0
         foreach ($weekDays as $day) {
             $weekStats[$day] = ['present' => 0, 'absent' => 0];
         }
