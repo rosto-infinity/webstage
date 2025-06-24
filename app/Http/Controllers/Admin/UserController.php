@@ -68,7 +68,7 @@ class UserController extends Controller
                 return Carbon::parse($item->date)->format('D');
             });
         
-        // -Met à jour les compteurs pour chaque jour ayant des données
+        // --Met à jour les compteurs pour chaque jour ayant des données
         foreach ($weekData as $day => $items) {
             $weekStats[$day]['present'] = $items->where('absent', false)->count();
             $weekStats[$day]['absent'] = $items->where('absent', true)->count();
