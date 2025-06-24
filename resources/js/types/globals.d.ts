@@ -24,3 +24,16 @@ declare module '@vue/runtime-core' {
         $headManager: ReturnType<typeof createHeadManager>;
     }
 }
+// resources/js/types/global.d.ts
+import type { PageProps as InertiaPageProps } from '@inertiajs/core'
+
+export interface SharedData {
+  auth: { user?: { id: number; name: string; email: string; role: string } }
+  // ajoutez ici d'autres données partagées
+}
+
+export type PageProps<T = {}> = InertiaPageProps & SharedData & T
+
+declare module '@inertiajs/core' {
+  interface PageProps extends SharedData {}
+}

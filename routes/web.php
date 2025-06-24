@@ -13,9 +13,7 @@ Route::get('/', function () {
     return Inertia::render('Welcome',compact('totalUsers'));
 })->name('home');
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('dashboard', [UserController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'verified','role:admin'])->group(function () {
     Route::get('admin/dashboard', [DashboardController::class,'admin'])->name('admin.dashboard');
