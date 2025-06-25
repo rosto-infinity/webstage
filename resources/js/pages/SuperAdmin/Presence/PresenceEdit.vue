@@ -56,30 +56,30 @@ const breadcrumbs: BreadcrumbItem[] = [
 <template>
   <Head title="Modifier la présence" />
 
-  <AppLayout :breadcrumbs="breadcrumbs">
+ <AppLayout :breadcrumbs="breadcrumbs">
     <div class="p-6 max-w-7xl mx-auto">
       <Link
         :href="route('presences')" prefetch
-        class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg transition-colors mb-6"
+        class="inline-flex items-center gap-2 bg-muted hover:bg-muted/80 text-foreground px-4 py-2 rounded-lg transition-colors mb-6"
       >
         Retour à la liste
       </Link>
 
-      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <h2 class="text-2xl font-bold mb-6 text-gray-900 border-b pb-4">
+      <div class="bg-card p-6 rounded-xl shadow-sm border border-border">
+        <h2 class="text-2xl font-bold mb-6 text-foreground border-b border-border pb-4">
           Modifier la fiche de présence
         </h2>
 
         <form @submit.prevent="submit" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="md:col-span-2 space-y-4 p-4 bg-gray-50 rounded-lg">
-            <h3 class="font-medium text-gray-700">Informations étudiant</h3>
+          <div class="md:col-span-2 space-y-4 p-4 bg-muted rounded-lg">
+            <h3 class="font-medium text-foreground">Informations étudiant</h3>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Étudiant</label>
+              <label class="block text-sm font-medium text-foreground mb-1">Étudiant</label>
               <select
                 v-model="form.user_id"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                :class="{ 'border-red-500': form.errors.user_id }"
+                class="w-full px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-ring"
+                :class="{ 'border-destructive': form.errors.user_id }"
               >
                 <option value="" disabled>Sélectionnez un étudiant</option>
                 <option 
@@ -90,96 +90,96 @@ const breadcrumbs: BreadcrumbItem[] = [
                   {{ user.name }} ({{ user.email }})
                 </option>
               </select>
-              <p v-if="form.errors.user_id" class="text-sm text-red-600">{{ form.errors.user_id }}</p>
+              <p v-if="form.errors.user_id" class="text-sm text-destructive">{{ form.errors.user_id }}</p>
             </div>
           </div>
 
-          <div class="space-y-4 p-4 bg-gray-50 rounded-lg">
-            <h3 class="font-medium text-gray-700">Horaires</h3>
+          <div class="space-y-4 p-4 bg-muted rounded-lg">
+            <h3 class="font-medium text-foreground">Horaires</h3>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+              <label class="block text-sm font-medium text-foreground mb-1">Date</label>
               <input
                 v-model="form.date"
                 type="date"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                :class="{ 'border-red-500': form.errors.date }"
+                class="w-full px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-ring"
+                :class="{ 'border-destructive': form.errors.date }"
               />
-              <p v-if="form.errors.date" class="text-sm text-red-600">{{ form.errors.date }}</p>
+              <p v-if="form.errors.date" class="text-sm text-destructive">{{ form.errors.date }}</p>
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Heure d'arrivée</label>
+              <label class="block text-sm font-medium text-foreground mb-1">Heure d'arrivée</label>
               <input
                 v-model="form.heure_arrivee"
                 type="time"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                :class="{ 'border-red-500': form.errors.heure_arrivee }"
+                class="w-full px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-ring"
+                :class="{ 'border-destructive': form.errors.heure_arrivee }"
               />
-              <p v-if="form.errors.heure_arrivee" class="text-sm text-red-600">{{ form.errors.heure_arrivee }}</p>
+              <p v-if="form.errors.heure_arrivee" class="text-sm text-destructive">{{ form.errors.heure_arrivee }}</p>
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Heure de départ</label>
+              <label class="block text-sm font-medium text-foreground mb-1">Heure de départ</label>
               <input
                 v-model="form.heure_depart"
                 type="time"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                :class="{ 'border-red-500': form.errors.heure_depart }"
+                class="w-full px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-ring"
+                :class="{ 'border-destructive': form.errors.heure_depart }"
               />
-              <p v-if="form.errors.heure_depart" class="text-sm text-red-600">{{ form.errors.heure_depart }}</p>
+              <p v-if="form.errors.heure_depart" class="text-sm text-destructive">{{ form.errors.heure_depart }}</p>
             </div>
           </div>
 
-          <div class="space-y-4 p-4 bg-gray-50 rounded-lg">
-            <h3 class="font-medium text-gray-700">Statut</h3>
+          <div class="space-y-4 p-4 bg-muted rounded-lg">
+            <h3 class="font-medium text-foreground">Statut</h3>
 
             <div>
-              <label class="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+              <label class="flex items-center gap-2 text-sm font-medium text-foreground mb-1">
                 <input
                   v-model="form.absent"
                   type="checkbox"
-                  class="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                  class="rounded border-input text-primary focus:ring-ring"
                 />
                 Absent(e)
               </label>
             </div>
 
             <div>
-              <label class="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+              <label class="flex items-center gap-2 text-sm font-medium text-foreground mb-1">
                 <input
                   v-model="form.en_retard"
                   type="checkbox"
-                  class="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                  class="rounded border-input text-primary focus:ring-ring"
                 />
                 En retard
               </label>
             </div>
 
             <div v-if="form.en_retard">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Minutes de retard</label>
+              <label class="block text-sm font-medium text-foreground mb-1">Minutes de retard</label>
               <input
                 v-model.number="form.minutes_retard"
                 type="number"
                 min="0"
                 step="1"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                :class="{ 'border-red-500': form.errors.minutes_retard }"
+                class="w-full px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-ring"
+                :class="{ 'border-destructive': form.errors.minutes_retard }"
               />
-              <p v-if="form.errors.minutes_retard" class="text-sm text-red-600">{{ form.errors.minutes_retard }}</p>
+              <p v-if="form.errors.minutes_retard" class="text-sm text-destructive">{{ form.errors.minutes_retard }}</p>
             </div>
           </div>
 
-          <div class="md:col-span-2 flex justify-end gap-4 pt-4 border-t">
+          <div class="md:col-span-2 flex justify-end gap-4 pt-4 border-t border-border">
             <Link
               :href="route('presences')"
-              class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              class="px-6 py-2 border border-input rounded-lg text-foreground hover:bg-muted transition-colors"
             >
               Annuler
             </Link>
             <button
               type="submit"
-              class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              class="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
             >
               Enregistrer
             </button>
@@ -188,4 +188,5 @@ const breadcrumbs: BreadcrumbItem[] = [
       </div>
     </div>
   </AppLayout>
+
 </template>

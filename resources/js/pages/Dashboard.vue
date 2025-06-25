@@ -62,7 +62,7 @@ function filterByDate() {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-card rounded-xl border p-5 shadow-sm">
           <div class="flex items-center gap-4">
-            <div class="p-3 rounded-full bg-blue-100 text-blue-600 text-xl">👤</div>
+            <div class="p-3 rounded-full bg-blue-100 text-primary text-xl">👤</div>
             <div>
               <p class="text-sm text-muted-foreground">Total présences</p>
               <p class="text-2xl font-bold">{{ total }}</p>
@@ -71,11 +71,11 @@ function filterByDate() {
         </div>
         <div class="bg-card rounded-xl border p-5 shadow-sm">
           <div class="flex items-center gap-4">
-            <div class="p-3 rounded-full bg-green-100 text-green-600 text-xl">✅</div>
+            <div class="p-3 rounded-full bg-green-100 text-primary text-xl">✅</div>
             <div>
               <p class="text-sm text-muted-foreground">Présences</p>
               <p class="text-2xl font-bold">{{ present }}</p>
-              <p class="text-xs text-green-600 mt-1">{{ presenceRate }}% de présence</p>
+              <p class="text-xs text-primary mt-1">{{ presenceRate }}% de présence</p>
             </div>
           </div>
         </div>
@@ -112,7 +112,7 @@ function filterByDate() {
                 labels: ['Présent', 'Absent', 'Retard'],
                 datasets: [{ 
                   data: [present, absent, late],
-                  backgroundColor: ['#10B981', '#EF4444', '#F59E0B']
+                  backgroundColor: ['#654bc3','#EF4444','#b6b2ff']
                 }]
               }"
             />
@@ -130,7 +130,7 @@ function filterByDate() {
                   {
                     label: 'Présent',
                     data: Object.values(weekStats).map(d => d?.present || 0),
-                    backgroundColor: '#10B981'
+                    backgroundColor: '#654bc3'
                   },
                   {
                     label: 'Absent',
@@ -157,7 +157,7 @@ function filterByDate() {
               datasets: [{
                 label: 'Taux de présence',
                 data: monthlyStats.map(m => m.rate),
-                borderColor: '#3B82F6',
+                borderColor: '#654bc3',
                 fill: true,
                 backgroundColor: 'rgba(59, 130, 246, 0.1)'
               }]

@@ -1,18 +1,44 @@
-<!-- src/components/Charts/BarChart.vue -->
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { Chart, BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-interface Props { data: import('chart.js').ChartData<'bar'>; options?: import('chart.js').ChartOptions<'bar'>; }
+interface Props {
+  data: import('chart.js').ChartData<'bar'>;
+  options?: import('chart.js').ChartOptions<'bar'>;
+}
 const props = defineProps<Props>();
-const canvasRef = ref<HTMLCanvasElement|null>(null);
-let chart: Chart<'bar'>|null = null;
+const canvasRef = ref<HTMLCanvasElement | null>(null);
+let chart: Chart<'bar'> | null = null;
 
 onMounted(() => {
-  if (canvasRef.value) chart = new Chart(canvasRef.value, { type: 'bar', data: props.data, options: props.options });
+  if (canvasRef.value) {
+    chart = new Chart(canvasRef.value, {
+      type: 'bar',
+      data: props.data,
+      options: props.options,
+    });
+  }
 });
-onBeforeUnmount(() => chart?.destroy());
-watch(() => props.data, (n) => { chart && (chart.data = n, chart.update()); }, { deep: true });
+
+onBeforeUnmount(() => {
+  if (chart) {
+    chart.destroy();
+  }
+});
+
+watch(
+  () => props.data,
+  (newData) => {
+    if (chart) {
+      chart.data = newData;
+      chart.update();
+    }
+  },
+  { deep: true }
+);
 </script>
-<template><canvas ref="canvasRef"></canvas></template>
+
+<template>
+  <canvas ref="canvasRef"></canvas>
+</template>

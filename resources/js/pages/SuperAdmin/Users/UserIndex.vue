@@ -41,102 +41,102 @@ function destroy(id: number | string) {
   <AppLayout :breadcrumbs="breadcrumbs">
     <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 dark:bg-gray-800 dark:border-gray-700">
+        <div class="p-5 rounded-xl shadow-sm border border-border">
           <div class="flex items-center gap-3">
-            <div class="p-3 rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+            <div class="p-3 rounded-lg text-primary">
               <Users class="w-5 h-5" />
             </div>
             <div>
-              <p class="text-sm text-gray-500 dark:text-gray-400">Total Stagiaires</p>
-              <p class="text-2xl font-bold dark:text-white">{{ totalUsers }}</p>
+              <p class="text-sm text-muted-foreground">Total Stagiaires</p>
+              <p class="text-2xl font-bold">{{ totalUsers }}</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 dark:bg-gray-800 dark:border-gray-700">
+        <div class="p-5 rounded-xl shadow-sm border border-border">
           <div class="flex items-center gap-3">
-            <div class="p-3 rounded-lg bg-green-50 text-green-600 dark:bg-green-900/30 dark:text-green-400">
+            <div class="p-3 rounded-lg text-green-600 dark:text-green-400">
               <Calendar class="w-5 h-5" />
             </div>
             <div>
-              <p class="text-sm text-gray-500 dark:text-gray-400">Présents</p>
-              <p class="text-2xl font-bold dark:text-white">{{ totalPresentUsers ?? 0 }}</p>
+              <p class="text-sm text-muted-foreground">Présents</p>
+              <p class="text-2xl font-bold">{{ totalPresentUsers ?? 0 }}</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 dark:bg-gray-800 dark:border-gray-700">
+        <div class="p-5 rounded-xl shadow-sm border border-border">
           <div class="flex items-center gap-3">
-            <div class="p-3 rounded-lg bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400">
+            <div class="p-3 rounded-lg text-red-600 dark:text-red-400">
               <Users class="w-5 h-5" />
             </div>
             <div>
-              <p class="text-sm text-gray-500 dark:text-gray-400">Absents</p>
-              <p class="text-2xl font-bold dark:text-white">{{ totalAbsentUsers ?? 0 }}</p>
+              <p class="text-sm text-muted-foreground">Absents</p>
+              <p class="text-2xl font-bold">{{ totalAbsentUsers ?? 0 }}</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 dark:bg-gray-800 dark:border-gray-700">
+        <div class="p-5 rounded-xl shadow-sm border border-border">
           <div class="flex items-center gap-3">
-            <div class="p-3 rounded-lg bg-orange-50 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">
+            <div class="p-3 rounded-lg text-orange-600 dark:text-orange-400">
               <Clock class="w-5 h-5" />
             </div>
             <div>
-              <p class="text-sm text-gray-500 dark:text-gray-400">En Retard</p>
-              <p class="text-2xl font-bold dark:text-white">{{ totalLateUsers ?? 0 }}</p>
+              <p class="text-sm text-muted-foreground">En Retard</p>
+              <p class="text-2xl font-bold">{{ totalLateUsers ?? 0 }}</p>
             </div>
           </div>
         </div>
       </div>
 
       <div class="flex justify-between items-center">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">
+        <h2 class="text-lg font-medium">
           Liste des utilisateurs
         </h2>
-       <span class="flex pt-2 px-2 rounded-sm text-white gap-1 bg-green-900">
-           <UserPlus/>
-         <Link class="btn btn-primary mb-4" :href="route('users.create')" prefetch>Add Users</Link>
-       </span>
-        <span class="text-sm text-gray-500 dark:text-gray-400">
+        <span class="flex pt-2 px-2 rounded-sm text-white gap-1 bg-primary">
+          <UserPlus/>
+          <Link class="btn btn-primary mb-4" :href="route('users.create')" prefetch>Add Users</Link>
+        </span>
+        <span class="text-sm text-muted-foreground">
           Total: {{ totalUsers }} utilisateur(s)
         </span>
       </div>
 
-      <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead class="bg-gray-50 dark:bg-gray-800">
+      <div class="overflow-x-auto rounded-lg border border-border shadow-sm">
+        <table class="min-w-full divide-y divide-border">
+          <thead>
             <tr>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 ID
               </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Nom
               </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Email
               </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Statut
               </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+          <tbody class="divide-y divide-border">
             <tr 
               v-for="user in users.data" 
               :key="user.id"
-              class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150"
+              class="hover:bg-muted/50 transition-colors duration-150"
             >
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 {{ user.id }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+              <td class="px-6 py-4 whitespace-nowrap text-sm">
                 {{ user.name }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+              <td class="px-6 py-4 whitespace-nowrap text-sm">
                 {{ user.email }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
@@ -145,7 +145,7 @@ function destroy(id: number | string) {
                   :class="{
                     'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200': user.status === 'active',
                     'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200': user.status === 'inactive',
-                    'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200': !user.status
+                    'bg-muted text-muted-foreground': !user.status
                   }"
                 >
                   {{ user.status === 'active' ? 'Actif' : user.status === 'inactive' ? 'Inactif' : 'N/A' }}
@@ -154,13 +154,13 @@ function destroy(id: number | string) {
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <Link 
                   :href="route('users.edit', user.id)" 
-                  class="inline-flex items-center px-3 py-1 gap-1 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:bg-green-700 dark:hover:bg-green-600"
+                  class="inline-flex items-center px-3 py-1 gap-1 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
                 >
-                 <Pen class="w-4 h-4 inline"/>  Editer
+                 <Pen class="w-4 h-4 inline"/> Editer
                 </Link>
                 <button 
                   @click="destroy(user.id)" 
-                  class="inline-flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:bg-red-700 dark:hover:bg-red-600 ml-2"
+                  class="inline-flex items-center gap-1 px-3 py-1 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 ml-2"
                 >
                 <Trash2 class="w-4 h-4 inline"/>
                   Suppr.
@@ -177,7 +177,7 @@ function destroy(id: number | string) {
         <Link 
           :href="route('presences')" 
           prefetch
-          class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:bg-gray-700 dark:hover:bg-gray-600"
+          class="inline-flex items-center px-4 py-2 bg-muted text-foreground rounded-md hover:bg-muted/80"
         >
           Retour à la liste des présences
         </Link>
@@ -185,3 +185,4 @@ function destroy(id: number | string) {
     </div>
   </AppLayout>
 </template>
+

@@ -152,13 +152,13 @@ const breadcrumbs: BreadcrumbItem[] = [
   <Head title="Présences" />
   <AppLayout :breadcrumbs="breadcrumbs">
     
-     <!-- Message flash -->
+    <!-- Message flash -->
     <div v-if="showFlash" 
          :class="[
            'fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-md transition-all duration-300',
            flashType === 'success' 
-             ? 'bg-green-50 border border-green-200 text-green-800' 
-             : 'bg-red-50 border border-red-200 text-red-800'
+             ? 'bg-success/10 border-success text-success-foreground' 
+             : 'bg-destructive/10 border-destructive text-destructive-foreground'
          ]">
       <div class="flex items-start justify-between gap-4">
         <div class="flex-1">
@@ -167,40 +167,44 @@ const breadcrumbs: BreadcrumbItem[] = [
           </h3>
           <p class="text-sm mt-1">{{ flashMessage }}</p>
         </div>
-        <button @click="showFlash = false" class="text-gray-500 hover:text-gray-700">
+        <button @click="showFlash = false" class="text-muted-foreground hover:text-foreground">
           <X class="w-5 h-5" />
         </button>
       </div>
     </div>
+
     <!-- Statistiques -->
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-8 p-2">
-      <div class="bg-white p-5 rounded-xl shadow border flex items-center gap-3">
-        <Users class="text-blue-600 w-6 h-6"/>
-        <div><p class="text-sm text-gray-500">Total stagiaires</p><p class="text-2xl font-bold">{{ filteredAndSortedData.length }}</p></div>
+      <div class="bg-card p-5 rounded-xl border flex items-center gap-3">
+        <Users class="text-primary w-6 h-6"/>
+        <div><p class="text-sm text-muted-foreground">Total stagiaires</p><p class="text-2xl font-bold">{{ filteredAndSortedData.length }}</p></div>
       </div>
-      <div class="bg-white p-5 rounded-xl shadow border flex items-center gap-3">
-        <Calendar class="text-green-600 w-6 h-6"/>
-        <div><p class="text-sm text-gray-500">Présents</p><p class="text-2xl font-bold">{{ presentCount }}</p></div>
+      <div class="bg-card p-5 rounded-xl border flex items-center gap-3">
+        <Calendar class="text-success w-6 h-6"/>
+        <div><p class="text-sm text-muted-foreground">Présents</p><p class="text-2xl font-bold">{{ presentCount }}</p></div>
       </div>
-      <div class="bg-white p-5 rounded-xl shadow border flex items-center gap-3">
-        <Users class="text-red-600 w-6 h-6"/>
-        <div><p class="text-sm text-gray-500">Absents</p><p class="text-2xl font-bold">{{ absentCount }}</p></div>
+      <div class="bg-card p-5 rounded-xl border flex items-center gap-3">
+        <Users class="text-destructive w-6 h-6"/>
+        <div><p class="text-sm text-muted-foreground">Absents</p><p class="text-2xl font-bold">{{ absentCount }}</p></div>
       </div>
-      <div class="bg-white p-5 rounded-xl shadow border flex items-center gap-3">
-        <Clock class="text-orange-600 w-6 h-6"/>
-        <div><p class="text-sm text-gray-500">En retard</p><p class="text-2xl font-bold">{{ lateCount }}</p></div>
+      <div class="bg-card p-5 rounded-xl border flex items-center gap-3">
+        <Clock class="text-warning w-6 h-6"/>
+        <div><p class="text-sm text-muted-foreground">En retard</p><p class="text-2xl font-bold">{{ lateCount }}</p></div>
       </div>
     </div>
 
     <div class="p-2">
       <!-- Actions -->
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-        <div><h1 class="text-3xl font-bold">Tableau de présence : {{ presenceCount }}</h1><p class="text-gray-600">BTS 2 Génie Logiciel / DQP</p></div>
+        <div>
+          <h1 class="text-3xl font-bold">Tableau de présence : {{ presenceCount }}</h1>
+          <p class="text-muted-foreground">BTS 2 Génie Logiciel / DQP</p>
+        </div>
         <div class="flex gap-2">
-          <Link :href="route('presences.add')" class="bg-green-600 text-white flex items-center px-6 py-2 rounded-lg hover:bg-green-700">
+          <Link :href="route('presences.add')" class="btn btn-success">
             <Pen class="w-5 h-5"/>Ajouter
           </Link>
-          <button class="bg-green-600 text-white flex items-center px-6 py-2 rounded-lg hover:bg-green-700">
+          <button class="btn btn-success">
             <Download class="w-5 h-5"/>Exporter
           </button>
         </div>
@@ -209,10 +213,19 @@ const breadcrumbs: BreadcrumbItem[] = [
       <!-- Recherche & filtre -->
       <div class="flex flex-col md:flex-row gap-4 mb-4">
         <div class="relative flex-1">
-          <Search class="absolute left-3 top-3 text-gray-400 w-5 h-5"/>
-          <input v-model="searchTerm" @input="setCurrentPage(1)" placeholder="Rechercher nom/email" class="pl-10 pr-4 py-2 rounded-lg border focus:ring focus:outline-none"/>
+          <Search class="absolute left-3 top-3 text-muted-foreground w-5 h-5"/>
+          <input 
+            v-model="searchTerm" 
+            @input="setCurrentPage(1)" 
+            placeholder="Rechercher nom/email" 
+            class="input pl-10"
+          />
         </div>
-        <select v-model="filterStatus" @change="setCurrentPage(1)" class="rounded-lg border focus:ring focus:outline-none px-2 py-2">
+        <select 
+          v-model="filterStatus" 
+          @change="setCurrentPage(1)" 
+          class="input"
+        >
           <option value="all">Tous</option>
           <option value="present">Présents</option>
           <option value="absent">Absents</option>
@@ -222,8 +235,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 
       <!-- Tableau -->
       <div class="overflow-x-auto">
-        <table class="min-w-full table-auto text-left text-sm bg-white rounded-xl shadow border">
-          <thead class="bg-gray-50">
+        <table class="min-w-full table-auto text-left text-sm bg-card rounded-xl border">
+          <thead class="bg-muted">
             <tr>
               <th @click="handleSort('date')" class="th-sort px-4 py-2">Date <SortIcon field="date" :sortField="sortField" :direction="sortDirection"/></th>
               <th class="px-4 py-2">Nom</th>
@@ -233,11 +246,11 @@ const breadcrumbs: BreadcrumbItem[] = [
               <th @click="handleSort('late_minutes')" class="th-sort px-4 py-2">Retard <SortIcon field="late_minutes" :sortField="sortField" :direction="sortDirection"/></th>
               <th class="px-4 py-2">Absent</th>
               <th class="px-4 py-2">En retard</th>
-              <th colspan="2" class="px-4 py-2 text-center">Actions sur la pésence</th>
+              <th colspan="2" class="px-4 py-2 text-center">Actions sur la présence</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="r in paginatedData" :key="r.id" class="hover:bg-gray-100">
+            <tr v-for="r in paginatedData" :key="r.id" class="hover:bg-muted/50 border-t">
               <td class="px-4 py-2">{{ new Date(r.date).toLocaleDateString('fr-FR') }}</td>
               <td class="px-4 py-2">{{ r.user.name }}</td>
               <td class="px-4 py-2">{{ r.user.email }}</td>
@@ -248,19 +261,26 @@ const breadcrumbs: BreadcrumbItem[] = [
                   {{ r.late_minutes }} min
                 </Badge>
               </td>
-              <td class="px-4 py-2"><Badge :type="r.absent ? 'danger' : 'success'">{{ r.absent ? 'Oui' : 'Non' }}</Badge></td>
-              <td class="px-4 py-2"><Badge :type="r.late ? 'warning' : 'success'">{{ r.late ? 'Oui' : 'Non' }}</Badge></td>
               <td class="px-4 py-2">
-  <Link :href="route('presences.edit', { id: r.id })" prefetch class="text-blue-600 hover:underline">
-    <Pen class="w-4 h-4 inline"/> Editer
-  </Link>
-</td>
-<td class="px-4 py-2 flex gap-2">
-  
-    <button @click="deletePresence(r.id)" class="text-red-600 hover:underline">
-      <Trash2 class="w-4 h-4 inline"/> Suppr
-    </button>
-  </td>
+                <Badge :type="r.absent ? 'destructive' : 'success'">
+                  {{ r.absent ? 'Oui' : 'Non' }}
+                </Badge>
+              </td>
+              <td class="px-4 py-2">
+                <Badge :type="r.late ? 'warning' : 'success'">
+                  {{ r.late ? 'Oui' : 'Non' }}
+                </Badge>
+              </td>
+              <td class="px-4 py-2">
+                <Link :href="route('presences.edit', { id: r.id })" prefetch class="text-primary hover:underline">
+                  <Pen class="w-4 h-4 inline"/> Editer
+                </Link>
+              </td>
+              <td class="px-4 py-2">
+                <button @click="deletePresence(r.id)" class="text-destructive hover:underline">
+                  <Trash2 class="w-4 h-4 inline"/> Suppr
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -268,16 +288,39 @@ const breadcrumbs: BreadcrumbItem[] = [
 
       <!-- Pagination -->
       <div class="flex justify-between items-center py-4">
-        <div><span>Afficher</span><select v-model="itemsPerPage" @change="setCurrentPage(1)" class="border rounded p-1 mx-2"><option v-for="n of [5,10,20,50]" :key="n">{{ n }}</option></select><span>sur {{ filteredAndSortedData.length }}</span></div>
+        <div>
+          <span class="text-muted-foreground">Afficher</span>
+          <select 
+            v-model="itemsPerPage" 
+            @change="setCurrentPage(1)" 
+            class="input mx-2"
+          >
+            <option v-for="n of [5,10,20,50]" :key="n">{{ n }}</option>
+          </select>
+          <span class="text-muted-foreground">sur {{ filteredAndSortedData.length }}</span>
+        </div>
         <div class="flex items-center gap-2">
-          <button :disabled="currentPage === 1" @click="setCurrentPage(currentPage-1)" class="p-2 border rounded hover:bg-gray-200 disabled:opacity-50"><ChevronLeft class="w-4 h-4"/></button>
-          <span>Page {{ currentPage }} / {{ totalPages }}</span>
-          <button :disabled="currentPage === totalPages" @click="setCurrentPage(currentPage+1)" class="p-2 border rounded hover:bg-gray-200 disabled:opacity-50"><ChevronRight class="w-4 h-4"/></button>
+          <button 
+            :disabled="currentPage === 1" 
+            @click="setCurrentPage(currentPage-1)" 
+            class="btn btn-outline disabled:opacity-50"
+          >
+            <ChevronLeft class="w-4 h-4"/>
+          </button>
+          <span class="text-muted-foreground">Page {{ currentPage }} / {{ totalPages }}</span>
+          <button 
+            :disabled="currentPage === totalPages" 
+            @click="setCurrentPage(currentPage+1)" 
+            class="btn btn-outline disabled:opacity-50"
+          >
+            <ChevronRight class="w-4 h-4"/>
+          </button>
         </div>
       </div>
     </div>
   </AppLayout>
 </template>
+
 
 <style scoped>
 .th-sort { cursor: pointer; }

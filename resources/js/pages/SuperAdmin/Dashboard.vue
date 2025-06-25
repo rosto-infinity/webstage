@@ -65,148 +65,153 @@ const breadcrumbs: BreadcrumbItem[] = [
       <!-- Filtre par date -->
       <form @submit.prevent="filterByDate" class="mb-6 flex items-center gap-2">
         <label for="date" class="font-medium">Date :</label>
-        <input id="date" type="date" v-model="date" class="input" />
-        <button type="submit" class="btn btn-primary">Filtrer</button>
+        <input 
+          id="date" 
+          type="date" 
+          v-model="date" 
+          class="px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-ring"
+        />
+        <button 
+          type="submit" 
+          class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
+        >
+          Filtrer
+        </button>
       </form>
 
-  
-    <!-- Cartes de stats -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      
-      
-      
-      <div
-        v-for="(item,i) in [
-          {icon: Users, label:'Total étudiants', value:stats.total, bg:'bg-blue-50', text:'text-blue-600'},
-          {icon: Calendar,label:'Présents', value:stats.present, bg:'bg-green-50', text:'text-green-600'},
-          {icon: AlertCircle,label:'Absents', value:stats.absent, bg:'bg-red-50', text:'text-red-600'},
-          {icon: Clock, label:'Retards', value:stats.late, bg:'bg-orange-50', text:'text-orange-600'}
-        ]"
-        :key="i"
-        class="bg-white p-5 rounded-xl shadow border flex items-center gap-3"
-      >
-
-      
-        <div :class="`${item.bg} p-3 rounded-lg ${item.text}`">
-          <component :is="item.icon" class="w-6 h-6" />
-        </div>
-        <div>
-          <p class="text-sm text-gray-500">{{ item.label }}</p>
-          <p class="text-2xl font-bold">{{ item.value }}</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Graphiques -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <!-- Graphe camembert -->
-      <div class="bg-white p-6 rounded-xl shadow border">
-        <h3 class="text-lg font-semibold mb-4">Présence aujourd’hui</h3>
-        <div class="relative h-80">
-          <PieChart
-            :data="{
-              labels:['Présents','Absents','Retards'],
-              datasets:[{ data:[stats.present,stats.absent,stats.late], backgroundColor:['#10B981','#EF4444','#F59E0B'] }]
-            }"
-            :options="{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'right' } } }"
-            class="absolute inset-0"
-          />
+      <!-- Cartes de stats -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div
+          v-for="(item,i) in [
+            {icon: Users, label:'Total étudiants', value:stats.total, text:'text-primary'},
+            {icon: Calendar,label:'Présents', value:stats.present, text:'text-primary'},
+            {icon: AlertCircle,label:'Absents', value:stats.absent, text:'text-red-600'},
+            {icon: Clock, label:'Retards', value:stats.late, text:'text-orange-600'}
+          ]"
+          :key="i"
+          class="p-5 rounded-xl border border-border flex items-center gap-3"
+        >
+          <div :class="`p-3 rounded-lg ${item.text}`">
+            <component :is="item.icon" class="w-6 h-6" />
+          </div>
+          <div>
+            <p class="text-sm text-muted-foreground">{{ item.label }}</p>
+            <p class="text-2xl font-bold">{{ item.value }}</p>
+          </div>
         </div>
       </div>
 
-      <!-- Bar hebdo -->
-      <div class="bg-white p-6 rounded-xl shadow border">
-        <h3 class="text-lg font-semibold mb-4">Présence hebdomadaire</h3>
-        <div class="relative h-80">
-          <BarChart
-            :data="{
-              labels: dailyPresence.map(d=>d.day),
-              datasets:[
-                { label:'Présents', data: dailyPresence.map(d=>d.present), backgroundColor:'#10B981', borderRadius:4 },
-                { label:'Absents', data: dailyPresence.map(d=>d.absent), backgroundColor:'#EF4444', borderRadius:4 }
-              ]
-            }"
-            :options="{
-              responsive:true,
-              maintainAspectRatio:false,
-              scales:{
-                x:{ grid:{ display:false }},
-                y:{ beginAtZero:true, max:stats.total }
-              },
-              plugins:{
-                tooltip:{
-                  callbacks:{
-                    afterLabel: ctx => {
-                      const idx = ctx.dataIndex;
-                      const total = dailyPresence[idx].present + dailyPresence[idx].absent;
-                      return `Taux: ${Math.round((ctx.raw as number) / total * 100)}%`;
+      <!-- Graphiques -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Graphe camembert -->
+        <div class="p-6 rounded-xl border border-border">
+          <h3 class="text-lg font-semibold mb-4">Présence aujourd’hui</h3>
+          <div class="relative h-80">
+            <PieChart
+              :data="{
+                labels:['Présents','Absents','Retards'],
+                datasets:[{ data:[stats.present,stats.absent,stats.late], backgroundColor:['#654bc3','#EF4444','#b6b2ff'] }]
+              }"
+              :options="{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'right' } } }"
+              class="absolute inset-0"
+            />
+          </div>
+        </div>
+
+        <!-- Bar hebdo -->
+        <div class="p-6 rounded-xl border border-border">
+          <h3 class="text-lg font-semibold mb-4">Présence hebdomadaire</h3>
+          <div class="relative h-80">
+            <BarChart
+              :data="{
+                labels: dailyPresence.map(d=>d.day),
+                datasets:[
+                  { label:'Présents', data: dailyPresence.map(d=>d.present), backgroundColor:'#654bc3', borderRadius:4 },
+                  { label:'Absents', data: dailyPresence.map(d=>d.absent), backgroundColor:'#EF4444', borderRadius:4 }
+                ]
+              }"
+              :options="{
+                responsive:true,
+                maintainAspectRatio:false,
+                scales:{
+                  x:{ grid:{ display:false }},
+                  y:{ beginAtZero:true, max:stats.total }
+                },
+                plugins:{
+                  tooltip:{
+                    callbacks:{
+                      afterLabel: ctx => {
+                        const idx = ctx.dataIndex;
+                        const total = dailyPresence[idx].present + dailyPresence[idx].absent;
+                        return `Taux: ${Math.round((ctx.raw as number) / total * 100)}%`;
+                      }
                     }
                   }
                 }
-              }
-            }"
-            class="absolute inset-0"
-          />
+              }"
+              class="absolute inset-0"
+            />
+          </div>
         </div>
-      </div>
 
-      <!-- Line mensuel -->
-      <div class="bg-white p-6 rounded-xl shadow border">
-        <h3 class="text-lg font-semibold mb-4">Tendance mensuelle</h3>
-        <div class="relative h-80">
-          <LineChart
-            :data="{
-              labels: monthlyTrend.map(m=>m.month),
-              datasets:[{
-                label:'Taux de présence',
-                data: monthlyTrend.map(m=>m.rate),
-                borderColor:'#3B82F6',
-                backgroundColor:'rgba(59,130,246,0.1)',
-                fill:true,
-                tension:0.3
-              }]
-            }"
-            :options="{
-              responsive:true,
-              maintainAspectRatio:false,
-              scales:{ y:{ min:50, max:100, ticks:{ callback: (v) => v + '%' } } },
-              plugins:{ tooltip:{ callbacks:{ label: ctx => ctx.parsed.y + '%' } } }
-            }"
-            class="absolute inset-0"
-          />
+        <!-- Line mensuel -->
+        <div class="p-6 rounded-xl border border-border">
+          <h3 class="text-lg font-semibold mb-4">Tendance mensuelle</h3>
+          <div class="relative h-80">
+            <LineChart
+              :data="{
+                labels: monthlyTrend.map(m=>m.month),
+                datasets:[{
+                  label:'Taux de présence',
+                  data: monthlyTrend.map(m=>m.rate),
+                  borderColor:'#654bc3',
+                  backgroundColor:'rgba(59,130,246,0.1)',
+                  fill:true,
+                  tension:0.3
+                }]
+              }"
+              :options="{
+                responsive:true,
+                maintainAspectRatio:false,
+                scales:{ y:{ min:50, max:100, ticks:{ callback: (v) => v + '%' } } },
+                plugins:{ tooltip:{ callbacks:{ label: ctx => ctx.parsed.y + '%' } } }
+              }"
+              class="absolute inset-0"
+            />
+          </div>
         </div>
-      </div>
 
-      <!-- Bar motifs absence -->
-      <div class="bg-white p-6 rounded-xl shadow border">
-        <h3 class="text-lg font-semibold mb-4">
-          Motifs d’absence (mois en cours)
-        </h3>
-        <div class="relative h-80">
-          <BarChart
-            :data="{
-              labels:['Maladie','Transport','Familial','Autre'],
-              datasets:[{
-                label:'Nombre',
-                data:[12,8,5,3],
-                backgroundColor:['#F59E0B','#EF4444','#8B5CF6','#64748B'],
-                borderRadius:4
-              }]
-            }"
-            :options="{
-              responsive:true,
-              maintainAspectRatio:false,
-              scales:{ x:{ grid:{ display:false }}, y:{ beginAtZero:true } },
-              plugins:{ legend:{ display:false } }
-            }"
-            class="absolute inset-0"
-          />
+        <!-- Bar motifs absence -->
+        <div class="p-6 rounded-xl border border-border">
+          <h3 class="text-lg font-semibold mb-4">
+            Motifs d’absence (mois en cours)
+          </h3>
+          <div class="relative h-80">
+            <BarChart
+              :data="{
+                labels:['Maladie','Transport','Familial','Autre'],
+                datasets:[{
+                  label:'Nombre',
+                  data:[12,8,5,3],
+                  backgroundColor:['#b6b2ff','#EF4444','#654bc3','#64748B'],
+                  borderRadius:4
+                }]
+              }"
+              :options="{
+                responsive:true,
+                maintainAspectRatio:false,
+                scales:{ x:{ grid:{ display:false }}, y:{ beginAtZero:true } },
+                plugins:{ legend:{ display:false } }
+              }"
+              class="absolute inset-0"
+            />
+          </div>
         </div>
       </div>
     </div>
- </div>
   </AppLayout>
 </template>
+
 
 <style scoped>
 /* Suppression de toute règle canvas globale forcée */
