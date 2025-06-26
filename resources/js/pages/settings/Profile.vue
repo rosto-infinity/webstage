@@ -137,7 +137,7 @@ function submit() {
           </div>
         </form>
 
-        <DeleteUser />
+        <!-- <DeleteUser /> -->
       </div>
     </SettingsLayout>
   </AppLayout>
