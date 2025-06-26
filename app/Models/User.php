@@ -58,4 +58,10 @@ class User extends Authenticatable
        return $this->role === env('SUPERADMIN_ROLE', 'lolo');
   
     }
+    // Ajoutez dans app/Models/User.php
+    public function socialMedias()
+    {
+        return $this->hasMany(SocialMedia::class);
+    }
+
 }

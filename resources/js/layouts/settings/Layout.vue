@@ -20,7 +20,7 @@ const sidebarNavItems: NavItem[] = [
     },
     {
         title: 'Media',
-        href: '/settings/appearance',
+        href: '/settings/media',
     },
 ];
 

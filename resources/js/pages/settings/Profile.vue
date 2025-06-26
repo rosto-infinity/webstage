@@ -66,7 +66,7 @@ function submit() {
 
     <SettingsLayout>
       <div class="flex flex-col items-center mb-6">
-        <div class="relative group w-32 h-32 rounded-full border-4 border-[#0a5d3b]
+        <div class="relative group w-32 h-32 rounded-full border-4 border-[#654bc3]
                     bg-gradient-to-br from-[#e0f7ef] to-[#f8fafc] shadow-lg overflow-hidden
                     transition-all duration-300">
           <template v-if="avatarPreview">
@@ -81,7 +81,7 @@ function submit() {
           </template>
           <template v-else>
             <div class="w-full h-full flex items-center justify-center
-                        bg-[#e0f7ef] text-[#0a5d3b] text-5xl font-bold rounded-full">
+                        bg-[#e0f7ef] text-[#654bc3] text-5xl font-bold rounded-full">
               {{ user.name.charAt(0).toUpperCase() }}
             </div>
           </template>
