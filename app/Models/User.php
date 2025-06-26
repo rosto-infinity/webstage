@@ -21,7 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role' // Ajoutez ce champ
+        'role' ,
+        'avatar'
     ];
 
     protected $casts = [
