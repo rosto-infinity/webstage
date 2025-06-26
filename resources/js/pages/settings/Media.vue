@@ -1,22 +1,35 @@
 <script setup lang="ts">
-import { Head, useForm, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Head, useForm, router, usePage } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
 import { type BreadcrumbItem } from '@/types';
 
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import HeadingSmall from '@/components/HeadingSmall.vue';
 
+
+
+
+interface SocialMedia {
+    id: number;
+    platform: string;
+    url: string;
+    display_name: string | null;
+}
+
 const breadcrumbItems: BreadcrumbItem[] = [
     {
-        title: 'Media settings',
+        title: 'Paramètres média',
         href: '/settings/media',
     },
 ];
 
-const props = defineProps({
-    socialMedias: Array,
-});
+const { socialMedias } = defineProps<{
+    socialMedias: SocialMedia[];
+}>();
+
+const page = usePage()
+const flash = computed(() => page.props.flash)
 
 const form = useForm({
     platform: 'github',
@@ -25,13 +38,13 @@ const form = useForm({
 });
 
 const editForm = useForm({
-    id: null,
+    id: null as number | null,
     platform: '',
     url: '',
     display_name: '',
 });
 
-const editingId = ref(null);
+const editingId = ref<number | null>(null);
 
 const submit = () => {
     form.post(route('media.store'), {
@@ -40,7 +53,7 @@ const submit = () => {
     });
 };
 
-const edit = (media) => {
+const edit = (media: SocialMedia) => {
     editingId.value = media.id;
     editForm.id = media.id;
     editForm.platform = media.platform;
@@ -49,6 +62,8 @@ const edit = (media) => {
 };
 
 const update = () => {
+    if (!editForm.id) return;
+    
     editForm.put(route('media.update', editForm.id), {
         preserveScroll: true,
         onSuccess: () => {
@@ -58,8 +73,8 @@ const update = () => {
     });
 };
 
-const destroy = (id) => {
-    if (confirm('Are you sure you want to delete this media?')) {
+const destroy = (id: number) => {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce média ?')) {
         router.delete(route('media.destroy', id), {
             preserveScroll: true,
         });
@@ -69,17 +84,30 @@ const destroy = (id) => {
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbItems">
-        <Head title="Media settings" />
+        <Head title="Paramètres média" />
 
         <SettingsLayout>
             <div class="space-y-6">
                 <HeadingSmall 
-                    title="Social Media Links" 
-                    description="Manage your social media profiles and links" 
+                    title="Liens des réseaux sociaux" 
+                    description="Gérez vos profils et liens de réseaux sociaux" 
                 />
                 
+                <!-- Messages flash -->
+                <div v-if="flash?.success" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                    {{ flash.success }}
+                </div>
+
+                <div v-if="form.errors.platform" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    {{ form.errors.platform }}
+                </div>
+
+                <div v-if="form.errors.url" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    {{ form.errors.url }}
+                </div>
+
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <!-- Add Form -->
+                    <!-- Formulaire d'ajout -->
                     <form @submit.prevent="submit" class="mb-8">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div>
@@ -90,14 +118,14 @@ const destroy = (id) => {
                                     <option value="facebook">Facebook</option>
                                     <option value="instagram">Instagram</option>
                                     <option value="youtube">YouTube</option>
-                                    <option value="other">Other</option>
+                                    <option value="other">Autre</option>
                                 </select>
                             </div>
                             <div class="md:col-span-2">
                                 <input
                                     type="url"
                                     v-model="form.url"
-                                    placeholder="URL"
+                                    :placeholder="`URL ${form.platform} (ex: https://${form.platform}.com/votreprofil)`"
                                     
                                     class="w-full rounded-md border-gray-300"
                                 />
@@ -108,13 +136,13 @@ const destroy = (id) => {
                                     :disabled="form.processing"
                                     class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
                                 >
-                                    Add
+                                    Ajouter
                                 </button>
                             </div>
                         </div>
                     </form>
 
-                    <!-- List -->
+                    <!-- Liste des médias -->
                     <div class="space-y-4">
                         <div
                             v-for="media in socialMedias"
@@ -132,13 +160,13 @@ const destroy = (id) => {
                                             @click="edit(media)"
                                             class="text-blue-500 hover:text-blue-700"
                                         >
-                                            Edit
+                                            Modifier
                                         </button>
                                         <button
                                             @click="destroy(media.id)"
                                             class="text-red-500 hover:text-red-700"
                                         >
-                                            Delete
+                                            Supprimer
                                         </button>
                                     </div>
                                 </div>
@@ -151,7 +179,7 @@ const destroy = (id) => {
                                 </a>
                             </div>
 
-                            <!-- Edit Form -->
+                            <!-- Formulaire de modification -->
                             <form v-else @submit.prevent="update" class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div>
                                     <select v-model="editForm.platform" class="w-full rounded-md border-gray-300">
@@ -161,13 +189,14 @@ const destroy = (id) => {
                                         <option value="facebook">Facebook</option>
                                         <option value="instagram">Instagram</option>
                                         <option value="youtube">YouTube</option>
-                                        <option value="other">Other</option>
+                                        <option value="other">Autre</option>
                                     </select>
                                 </div>
                                 <div class="md:col-span-2">
                                     <input
                                         type="url"
                                         v-model="editForm.url"
+                                        :placeholder="`URL ${editForm.platform} (ex: https://${editForm.platform}.com/votreprofil)`"
                                         required
                                         class="w-full rounded-md border-gray-300"
                                     />
@@ -178,14 +207,14 @@ const destroy = (id) => {
                                         :disabled="editForm.processing"
                                         class="bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600"
                                     >
-                                        Save
+                                        Enregistrer
                                     </button>
                                     <button
                                         type="button"
                                         @click="editingId = null"
                                         class="bg-gray-500 text-white py-1 px-3 rounded-md hover:bg-gray-600"
                                     >
-                                        Cancel
+                                        Annuler
                                     </button>
                                 </div>
                             </form>

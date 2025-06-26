@@ -67,7 +67,16 @@ export interface SharedData {
   sidebarOpen: boolean;
 }
 
-
+declare module '@inertiajs/vue3' {
+  export interface PageProps {
+    flash?: {
+      success?: string
+      error?: string
+      warning?: string
+      info?: string
+    }
+  }
+}
 
 
 export type BreadcrumbItemType = BreadcrumbItem;
