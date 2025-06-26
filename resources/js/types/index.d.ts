@@ -57,5 +57,17 @@ export interface User {
     created_at: string;
     updated_at: string;
 }
+// SharedData pour usePage
+export interface SharedData {
+  auth: Auth;
+  ziggy: Config & { location: string };
+  // autres props globales (nom de page, citations, etc.)
+  name: string;
+  quote: { message: string; author: string };
+  sidebarOpen: boolean;
+}
+
+
+
 
 export type BreadcrumbItemType = BreadcrumbItem;
