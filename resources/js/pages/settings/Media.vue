@@ -8,7 +8,16 @@ import SettingsLayout from '@/layouts/settings/Layout.vue';
 import HeadingSmall from '@/components/HeadingSmall.vue';
 
 
-
+declare module '@inertiajs/vue3' {
+  interface PageProps {
+    flash?: {
+      success?: string
+      error?: string
+      warning?: string
+      info?: string
+    }
+  }
+}
 
 interface SocialMedia {
     id: number;
@@ -134,7 +143,7 @@ const destroy = (id: number) => {
                                 <button
                                     type="submit"
                                     :disabled="form.processing"
-                                    class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+                                    class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-violet-600"
                                 >
                                     Ajouter
                                 </button>
@@ -147,7 +156,7 @@ const destroy = (id: number) => {
                         <div
                             v-for="media in socialMedias"
                             :key="media.id"
-                            class="border rounded-md p-4"
+                            class="border rounded-md p-4 w-full"
                         >
                             <div v-if="editingId !== media.id">
                                 <div class="flex justify-between items-center">
@@ -158,7 +167,7 @@ const destroy = (id: number) => {
                                     <div class="flex space-x-2">
                                         <button
                                             @click="edit(media)"
-                                            class="text-blue-500 hover:text-blue-700"
+                                            class="text-primary hover:text-violet-900"
                                         >
                                             Modifier
                                         </button>
@@ -180,7 +189,7 @@ const destroy = (id: number) => {
                             </div>
 
                             <!-- Formulaire de modification -->
-                            <form v-else @submit.prevent="update" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <form v-else @submit.prevent="update" class="grid grid-cols-1 md:grid-cols-4 gap-4 ">
                                 <div>
                                     <select v-model="editForm.platform" class="w-full rounded-md border-gray-300">
                                         <option value="github">GitHub</option>
@@ -197,22 +206,22 @@ const destroy = (id: number) => {
                                         type="url"
                                         v-model="editForm.url"
                                         :placeholder="`URL ${editForm.platform} (ex: https://${editForm.platform}.com/votreprofil)`"
-                                        required
+                                        
                                         class="w-full rounded-md border-gray-300"
                                     />
                                 </div>
-                                <div class="flex space-x-2">
+                                <div class="flex gap-2 space-x-2w-full ">
                                     <button
                                         type="submit"
                                         :disabled="editForm.processing"
-                                        class="bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600"
+                                        class="bg-primary text-white py-1 px-3 rounded-md hover:bg-primary"
                                     >
                                         Enregistrer
                                     </button>
                                     <button
                                         type="button"
                                         @click="editingId = null"
-                                        class="bg-gray-500 text-white py-1 px-3 rounded-md hover:bg-gray-600"
+                                        class="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600"
                                     >
                                         Annuler
                                     </button>
