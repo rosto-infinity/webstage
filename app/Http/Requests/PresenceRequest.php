@@ -69,6 +69,17 @@ class PresenceRequest extends FormRequest
                 'boolean',
                 'exclude_if:absent,true',
             ],
+            'absence_reason_id' => [
+    'required_if:absent,true',
+    'nullable',
+    'exists:absence_reasons,id',
+    function ($attribute, $value, $fail) {
+        if ($value && !$this->absent) {
+            $fail("Incohérence : motif d'absence renseigné alors que non absent.");
+        }
+    }
+],
+
         ];
     }
 
@@ -82,6 +93,9 @@ class PresenceRequest extends FormRequest
             'minutes_retard.max' => 'Le retard maximum autorisé est de 300 minutes (5h).',
             'heure_depart.after' => "L'heure de départ doit être postérieure à l'arrivée.",
             'heure_depart.required_with' => "L'heure de départ est requise quand l'heure d'arrivée est renseignée.",
+            'absence_reason_id.required_if' => 'Un motif est obligatoire pour les absences.',
+'absence_reason_id.exists' => 'Le motif sélectionné est invalide.'
+
         ];
     }
 }

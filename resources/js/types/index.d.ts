@@ -21,7 +21,10 @@ export interface Presence {
   absent: boolean;
   late: boolean;
   user: { name: string; email: string };
+absence_reason: string | null; // Nouveau champ
 }
+// Typage amélioré avec absence_reason
+
 
 export interface PaginationLink {
   url: string | null

@@ -111,6 +111,27 @@
                   </label>
                 </div>
 
+                <div v-if="form.absent">
+                  <label class="block text-sm font-medium text-foreground mb-1">Motif d'absence</label>
+                  <select
+                    v-model="form.absence_reason_id"
+                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"
+                    :class="{ 'border-destructive': form.errors.absence_reason_id }"
+                  >
+                    <option value="" disabled>Sélectionnez un motif</option>
+                    <option 
+                      v-for="reason in props.absenceReasons" 
+                      :key="reason.id" 
+                      :value="reason.id"
+                    >
+                      {{ reason.name }}
+                    </option>
+                  </select>
+                  <p v-if="form.errors.absence_reason_id" class="mt-1 text-sm text-destructive">
+                    {{ form.errors.absence_reason_id }}
+                  </p>
+                </div>
+
                 <div>
                   <label class="flex items-center gap-2 text-sm font-medium text-foreground mb-1">
                     <input
@@ -122,19 +143,6 @@
                     />
                     En retard
                   </label>
-                </div>
-              </div>
-
-              <!-- Affichage du retard calculé -->
-              <div v-if="form.heure_arrivee && !form.absent" class="mt-4 p-3 bg-primary/10 rounded-lg border border-primary">
-                <div class="flex items-center gap-2 mb-2">
-                  <Clock class="w-4 h-4 text-primary" />
-                  <span class="text-sm font-medium text-primary">Calcul du retard</span>
-                </div>
-                <div class="text-sm text-primary space-y-1">
-                  <div>Normale: <strong>8h00</strong></div>
-                  <div>Arrivée: <strong>{{ form.heure_arrivee }}</strong></div>
-                  <div>Retard: <strong>{{ formatDelay(calculatedDelay) }}</strong></div>
                 </div>
               </div>
             </div>
@@ -156,8 +164,21 @@
                 </p>
               </div>
 
+              <!-- Affichage du retard calculé -->
+              <div v-if="form.heure_arrivee && !form.absent" class="mt-4 p-3 bg-primary/10 rounded-lg border border-primary">
+                <div class="flex items-center gap-2 mb-2">
+                  <Clock class="w-4 h-4 text-primary" />
+                  <span class="text-sm font-medium text-primary">Calcul du retard</span>
+                </div>
+                <div class="text-sm text-primary space-y-1">
+                  <div>Normale: <strong>8h00</strong></div>
+                  <div>Arrivée: <strong>{{ form.heure_arrivee }}</strong></div>
+                  <div>Retard: <strong>{{ formatDelay(calculatedDelay) }}</strong></div>
+                </div>
+              </div>
+
               <!-- Espace supplémentaire pour équilibrer visuellement -->
-              <div class="h-full flex items-start ">
+              <div v-if="!form.en_retard || form.absent" class="h-full flex items-start">
                 <div class="w-full p-3 bg-success/10 rounded-lg border border-success">
                   <p class="text-sm text-success">
                     Tous les champs marqués d'un astérisque (<span class="text-destructive">*</span>) sont obligatoires
@@ -190,7 +211,6 @@
   </AppLayout>
 </template>
 
-
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue'
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
@@ -207,6 +227,7 @@ interface PresenceForm {
   minutes_retard: number | null
   absent: boolean
   en_retard: boolean
+  absence_reason_id: number | null
 }
 
 // Initialisation du formulaire
@@ -218,11 +239,13 @@ const form = useForm<PresenceForm>({
   minutes_retard: null,
   absent: false,
   en_retard: false,
+  absence_reason_id: null,
 })
 
-// Récupération des utilisateurs
+// Récupération des utilisateurs et raisons d'absence
 const { props } = usePage<{
   users: Array<{ id: number; name: string; email: string }>
+  absenceReasons: Array<{ id: number; name: string }>
 }>()
 
 // Fonction pour calculer le retard
@@ -276,10 +299,12 @@ watch(() => form.heure_arrivee, (newArrivalTime) => {
 // Gestion des états liés
 watch(() => form.absent, (newVal) => {
   if (newVal) {
-    form.en_retard = false;
-    form.minutes_retard = null;
     form.heure_arrivee = '';
     form.heure_depart = '';
+    form.en_retard = false;
+    form.minutes_retard = null;
+  } else {
+    form.absence_reason_id = null;
   }
 });
 
@@ -295,10 +320,9 @@ const submit = () => {
     preserveScroll: true,
     onSuccess: () => {
       form.reset();
-      // Optionnel : message de succès
     },
     onError: () => {
-      // Optionnel : gestion des erreurs
+      // Gestion des erreurs côté client si nécessaire
     }
   })
 }

@@ -15,40 +15,20 @@ const props = defineProps<{
     Countabsent: number
     Countlate: number
     selectedDate?: string
-    weeklyPresence: Array<{day: string, present: number, absent: number}>
+    dailyPresence: Array<{day: string, present: number, absent: number}>
     monthlyTrend: Array<{month: string, rate: number}>
-    absenceReasons: Array<{label: string, value: number, color: string}>
 }>();
 
 const processing = ref(false);
-const date = ref(props.selectedDate || new Date().toISOString().slice(0, 10));
+const date = ref(props.selectedDate || new Date().toISOString().slice(0,10));
 
-// Calcul des statistiques
 const stats = computed(() => ({
     total: props.totalUsers,
     present: props.Countpresent,
     absent: props.Countabsent,
     late: props.Countlate,
-    percentage: props.totalUsers > 0 ? Math.round((props.Countpresent / props.totalUsers) * 100) : 0
+    percentage: Math.round((props.Countpresent / props.totalUsers) * 100)
 }));
-
-// Formatage de la période pour les graphiques
-const selectedMonth = computed(() => new Date(date.value).toLocaleString('fr-FR', { month: 'long', year: 'numeric' }));
-const weekStart = computed(() => {
-    const d = new Date(date.value);
-    d.setDate(d.getDate() - d.getDay() + 1); // Lundi de la semaine
-    return d.toLocaleDateString('fr-FR');
-});
-const weekEnd = computed(() => {
-    const d = new Date(date.value);
-    d.setDate(d.getDate() - d.getDay() + 7); // Dimanche de la semaine
-    return d.toLocaleDateString('fr-FR');
-});
-
-// Vérification des données vides
-const hasWeeklyData = computed(() => props.weeklyPresence.some(d => d.present > 0 || d.absent > 0));
-const hasMonthlyData = computed(() => props.monthlyTrend.some(m => m.rate > 0));
-const hasAbsenceReasons = computed(() => props.absenceReasons.some(r => r.value > 0));
 
 function filterByDate() {
     processing.value = true;
@@ -65,6 +45,14 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/superadmin/dashboard'
     }
 ];
+
+// Données statiques pour le graphique des motifs d'absence
+const absenceReasons = [
+    { label: 'Maladie', value: 12, color: '#b6b2ff' },
+    { label: 'Transport', value: 8, color: '#EF4444' },
+    { label: 'Familial', value: 5, color: '#654bc3' },
+    { label: 'Autre', value: 3, color: '#64748B' }
+];
 </script>
 
 <template>
@@ -78,7 +66,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                     type="date" 
                     v-model="date" 
                     class="px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-ring"
-                    :max="new Date().toISOString().split('T')[0]" 
+                    max="2025-06-27" 
+                    
                 />
                 <button 
                     type="submit" 
@@ -123,7 +112,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <!-- Graphe camembert -->
                 <div class="p-6 rounded-xl border border-border shadow-sm">
                     <h3 class="text-lg font-semibold mb-4">Présence le {{ new Date(date).toLocaleDateString('fr-FR') }}</h3>
-                    <div v-if="stats.present + stats.absent + stats.late > 0" class="relative h-80">
+                    <div class="relative h-80">
                         <PieChart
                             :data="{
                                 labels:['Présents','Absents','Retards'],
@@ -159,29 +148,26 @@ const breadcrumbs: BreadcrumbItem[] = [
                             class="absolute inset-0"
                         />
                     </div>
-                    <div v-else class="text-center text-muted-foreground h-80 flex items-center justify-center">
-                        Aucune donnée de présence pour cette date.
-                    </div>
                 </div>
 
                 <!-- Bar hebdo -->
                 <div class="p-6 rounded-xl border border-border shadow-sm">
-                    <h3 class="text-lg font-semibold mb-4">Présence hebdomadaire ({{ weekStart }} - {{ weekEnd }})</h3>
-                    <div v-if="hasWeeklyData" class="relative h-80">
+                    <h3 class="text-lg font-semibold mb-4">Présence hebdomadaire</h3>
+                    <div class="relative h-80">
                         <BarChart
                             :data="{
-                                labels: props.weeklyPresence.map(d => d.day),
+                                labels: props.dailyPresence.map(d => d.day),
                                 datasets:[
                                     { 
                                         label:'Présents', 
-                                        data: props.weeklyPresence.map(d => d.present), 
+                                        data: props.dailyPresence.map(d => d.present), 
                                         backgroundColor:'#654bc3', 
                                         borderRadius: 4,
                                         barPercentage: 0.6
                                     },
                                     { 
                                         label:'Absents', 
-                                        data: props.weeklyPresence.map(d => d.absent), 
+                                        data: props.dailyPresence.map(d => d.absent), 
                                         backgroundColor:'#EF4444', 
                                         borderRadius: 4,
                                         barPercentage: 0.6
@@ -207,7 +193,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                         callbacks: {
                                             afterLabel: (context) => {
                                                 const idx = context.dataIndex;
-                                                const total = props.weeklyPresence[idx].present + props.weeklyPresence[idx].absent;
+                                                const total = props.dailyPresence[idx].present + props.dailyPresence[idx].absent;
                                                 return `Taux: ${Math.round((context.raw as number) / total * 100)}%`;
                                             }
                                         }
@@ -217,15 +203,12 @@ const breadcrumbs: BreadcrumbItem[] = [
                             class="absolute inset-0"
                         />
                     </div>
-                    <div v-else class="text-center text-muted-foreground h-80 flex items-center justify-center">
-                        Aucune donnée de présence pour cette semaine.
-                    </div>
                 </div>
 
                 <!-- Line mensuel -->
                 <div class="p-6 rounded-xl border border-border shadow-sm">
-                    <h3 class="text-lg font-semibold mb-4">Tendance mensuelle jusqu'à {{ selectedMonth }}</h3>
-                    <div v-if="hasMonthlyData" class="relative h-80">
+                    <h3 class="text-lg font-semibold mb-4">Tendance mensuelle</h3>
+                    <div class="relative h-80">
                         <LineChart
                             :data="{
                                 labels: props.monthlyTrend.map(m => m.month),
@@ -245,7 +228,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 maintainAspectRatio: false,
                                 scales: { 
                                     y: { 
-                                        min: 0, 
+                                        min: 50, 
                                         max: 100, 
                                         ticks: { 
                                             callback: (v) => `${v}%` 
@@ -263,22 +246,21 @@ const breadcrumbs: BreadcrumbItem[] = [
                             class="absolute inset-0"
                         />
                     </div>
-                    <div v-else class="text-center text-muted-foreground h-80 flex items-center justify-center">
-                        Aucune donnée de tendance disponible.
-                    </div>
                 </div>
 
                 <!-- Bar motifs absence -->
                 <div class="p-6 rounded-xl border border-border shadow-sm">
-                    <h3 class="text-lg font-semibold mb-4">Motifs d'absence pour {{ selectedMonth }}</h3>
-                    <div v-if="hasAbsenceReasons" class="relative h-80">
+                    <h3 class="text-lg font-semibold mb-4">
+                        Motifs d'absence (mois en cours)
+                    </h3>
+                    <div class="relative h-80">
                         <BarChart
                             :data="{
-                                labels: props.absenceReasons.map(r => r.label),
+                                labels: absenceReasons.map(r => r.label),
                                 datasets:[{
                                     label:'Nombre',
-                                    data: props.absenceReasons.map(r => r.value),
-                                    backgroundColor: props.absenceReasons.map(r => r.color),
+                                    data: absenceReasons.map(r => r.value),
+                                    backgroundColor: absenceReasons.map(r => r.color),
                                     borderRadius: 4
                                 }]
                             }"
@@ -300,7 +282,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     tooltip: {
                                         callbacks: {
                                             label: (context) => {
-                                                const total = props.absenceReasons.reduce((sum, r) => sum + r.value, 0);
+                                                const total = absenceReasons.reduce((sum, r) => sum + r.value, 0);
                                                 const percentage = Math.round((context.raw as number / total) * 100);
                                                 return `${context.label}: ${context.raw} (${percentage}%)`;
                                             }
@@ -311,9 +293,6 @@ const breadcrumbs: BreadcrumbItem[] = [
                             class="absolute inset-0"
                         />
                     </div>
-                    <div v-else class="text-center text-muted-foreground h-80 flex items-center justify-center">
-                        Aucune donnée sur les motifs d'absence pour ce mois.
-                    </div>
                 </div>
             </div>
         </div>
@@ -321,7 +300,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 </template>
 
 <style scoped>
-/* Styles pour améliorer l'UI */
+/* Styles optionnels pour améliorer l'UI */
 .border-input {
     border-color: hsl(var(--input));
 }

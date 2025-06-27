@@ -3,58 +3,11 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import Badge from '@/components/Badge.vue';
 import SortIcon from '@/components/SortIcon.vue';
 import { Head, Link, usePage, router } from '@inertiajs/vue3';
-import { ref, computed ,watch} from 'vue';
-import { Trash2 ,ChevronLeft, ChevronRight, Pen, Users, Calendar, Clock, Search, Download } from 'lucide-vue-next';
+import { ref, computed, watch } from 'vue';
+import { Trash2, ChevronLeft, ChevronRight, Pen, Users, Calendar, Clock, Search, Download, X } from 'lucide-vue-next';
 import type { BreadcrumbItem } from '@/types';
 
-defineProps<{
-  presenceCount:number
-}>()
-
-
-// Typage des messages flash
-interface FlashMessages {
-  success?: string;
-  error?: string;
-  warning?: string;
-}
-
-// Récupérer les messages flash
-const flash = computed<FlashMessages>(() => usePage().props.flash as FlashMessages);
-const showFlash = ref(false);
-const flashMessage = ref('');
-const flashType = ref<'success' | 'error' | 'warning'>('success');
-
-// Surveillance réactive des messages flash
-watch(flash, (newVal: FlashMessages) => {
-  const hasMessage = newVal.success || newVal.error || newVal.warning;
-
-  if (hasMessage) {
-    showFlash.value = true;
-    flashMessage.value = newVal.success || newVal.error || newVal.warning || '';
-    flashType.value = newVal.success ? 'success' 
-                     : newVal.error ? 'error' 
-                     : 'warning';
-    
-    // Durée de 5s pour une meilleure expérience
-    setTimeout(() => {
-      showFlash.value = false;
-    }, 5000);
-  }
-}, { 
-  immediate: true,
-});
-// Ajouter cette fonction
-function deletePresence(id: number) {
-  if (confirm('Êtes-vous sûr de vouloir supprimer cette présence ?')) {
-    router.delete(route('presences.destroy', { presence: id }), {
-      onSuccess: () => {
-        // Suppression locale pour réactivité immédiate
-        data.value = data.value.filter(p => p.id !== id);
-      }
-    });
-  }
-}
+// Typage amélioré avec absence_reason
 interface Presence {
   id: number;
   date: string;
@@ -64,32 +17,61 @@ interface Presence {
   absent: boolean;
   late: boolean;
   user: { name: string; email: string };
+  absence_reason: string | null; // Nouveau champ
 }
 
-// Fonction utilitaire calcul du retard
+defineProps<{
+  presenceCount: number
+}>();
+
+// Messages flash (existant)
+const flash = computed(() => usePage().props.flash as { success?: string; error?: string; warning?: string });
+const showFlash = ref(false);
+const flashMessage = ref('');
+const flashType = ref<'success' | 'error' | 'warning'>('success');
+
+watch(flash, (newVal) => {
+  const hasMessage = newVal.success || newVal.error || newVal.warning;
+  if (hasMessage) {
+    showFlash.value = true;
+    flashMessage.value = newVal.success || newVal.error || newVal.warning || '';
+    flashType.value = newVal.success ? 'success' : newVal.error ? 'error' : 'warning';
+    setTimeout(() => showFlash.value = false, 5000);
+  }
+}, { immediate: true });
+
+// Fonctions existantes
+function deletePresence(id: number) {
+  if (confirm('Êtes-vous sûr de vouloir supprimer cette présence ?')) {
+    router.delete(route('presences.destroy', { presence: id }), {
+      onSuccess: () => {
+        data.value = data.value.filter(p => p.id !== id);
+      }
+    });
+  }
+}
+
 function calculerMinutesRetard(arrivee: string | null, normale = '08:00'): number {
   if (!arrivee) return 0;
   const [hArr, mArr] = arrivee.split(':').map(Number);
   const [hNorm, mNorm] = normale.split(':').map(Number);
-
-  const dateArr = new Date(0, 0, 0, hArr, mArr);
-  const dateNorm = new Date(0, 0, 0, hNorm, mNorm);
-
-  const diffMin = Math.floor((+dateArr - +dateNorm) / 60000);
+  const diffMin = (hArr * 60 + mArr) - (hNorm * 60 + mNorm);
   return diffMin > 0 ? diffMin : 0;
 }
-const page = usePage(); // garde le type par défaut
-const rawPresences = (page.props as any).presences as Omit<Presence, 'late_minutes'|'late'>[];
 
+// Initialisation des données avec absence_reason
+const page = usePage();
+const rawPresences = (page.props as any).presences as Omit<Presence, 'late_minutes' | 'late'>[];
 const data = ref<Presence[]>(
-  rawPresences.map((r: Omit<Presence, 'late_minutes'|'late'>) => ({
+  rawPresences.map(r => ({
     ...r,
     late_minutes: calculerMinutesRetard(r.arrival_time),
     late: calculerMinutesRetard(r.arrival_time) > 0,
+    absence_reason: (r as any).absence_reason || null // Assure la compatibilité
   }))
 );
 
-
+// Filtres et tris existants
 const searchTerm = ref('');
 const filterStatus = ref<'all' | 'present' | 'absent' | 'late'>('all');
 const currentPage = ref(1);
@@ -118,14 +100,14 @@ const filteredAndSortedData = computed(() => {
     });
 });
 
+// Pagination et statistiques
 const totalPages = computed(() => Math.ceil(filteredAndSortedData.value.length / itemsPerPage.value));
 const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage.value;
   return filteredAndSortedData.value.slice(start, start + itemsPerPage.value);
 });
 
-// const presentCount = computed(() => data.value.filter(r => !r.absent && !r.late).length);
-const presentCount = computed(() => data.value.filter(r => !r.absent ).length);
+const presentCount = computed(() => data.value.filter(r => !r.absent).length);
 const absentCount = computed(() => data.value.filter(r => r.absent).length);
 const lateCount = computed(() => data.value.filter(r => r.late).length);
 
@@ -152,7 +134,7 @@ const breadcrumbs: BreadcrumbItem[] = [
   <Head title="Présences" />
   <AppLayout :breadcrumbs="breadcrumbs">
     
-    <!-- Message flash -->
+    <!-- Message flash (existant) -->
     <div v-if="showFlash" 
          :class="[
            'fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-md transition-all duration-300',
@@ -162,9 +144,7 @@ const breadcrumbs: BreadcrumbItem[] = [
          ]">
       <div class="flex items-start justify-between gap-4">
         <div class="flex-1">
-          <h3 class="font-medium">
-            {{ flashType === 'success' ? 'Succès' : 'Erreur' }}
-          </h3>
+          <h3 class="font-medium">{{ flashType === 'success' ? 'Succès' : 'Erreur' }}</h3>
           <p class="text-sm mt-1">{{ flashMessage }}</p>
         </div>
         <button @click="showFlash = false" class="text-muted-foreground hover:text-foreground">
@@ -173,31 +153,47 @@ const breadcrumbs: BreadcrumbItem[] = [
       </div>
     </div>
 
-    <!-- Statistiques -->
+    <!-- Statistiques améliorées -->
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-8 p-2">
       <div class="bg-card p-5 rounded-xl border flex items-center gap-3">
         <Users class="text-primary w-6 h-6"/>
-        <div><p class="text-sm text-muted-foreground">Total stagiaires</p><p class="text-2xl font-bold">{{ filteredAndSortedData.length }}</p></div>
+        <div><p class="text-sm text-muted-foreground">Total</p><p class="text-2xl font-bold">{{ presenceCount }}</p></div>
       </div>
       <div class="bg-card p-5 rounded-xl border flex items-center gap-3">
         <Calendar class="text-success w-6 h-6"/>
-        <div><p class="text-sm text-muted-foreground">Présents</p><p class="text-2xl font-bold">{{ presentCount }}</p></div>
+        <div>
+          <p class="text-sm text-muted-foreground">Présents</p>
+          <p class="text-2xl font-bold">{{ presentCount }}</p>
+          <p class="text-xs text-success">({{ Math.round((presentCount/presenceCount)*100) }}%)</p>
+        </div>
       </div>
       <div class="bg-card p-5 rounded-xl border flex items-center gap-3">
         <Users class="text-destructive w-6 h-6"/>
-        <div><p class="text-sm text-muted-foreground">Absents</p><p class="text-2xl font-bold">{{ absentCount }}</p></div>
+        <div>
+          <p class="text-sm text-muted-foreground">Absents</p>
+          <p class="text-2xl font-bold">{{ absentCount }}</p>
+          <p v-if="absentCount > 0" class="text-xs text-destructive">
+            {{ data.filter(p => p.absent && !p.absence_reason).length }} sans motif
+          </p>
+        </div>
       </div>
       <div class="bg-card p-5 rounded-xl border flex items-center gap-3">
         <Clock class="text-warning w-6 h-6"/>
-        <div><p class="text-sm text-muted-foreground">En retard</p><p class="text-2xl font-bold">{{ lateCount }}</p></div>
+        <div>
+          <p class="text-sm text-muted-foreground">Retards</p>
+          <p class="text-2xl font-bold">{{ lateCount }}</p>
+          <p v-if="lateCount > 0" class="text-xs text-warning">
+            Moyenne: {{ Math.round(data.reduce((a,b) => a + b.late_minutes, 0)/lateCount) }}min
+          </p>
+        </div>
       </div>
     </div>
 
     <div class="p-2">
-      <!-- Actions -->
+      <!-- Actions existantes -->
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
         <div>
-          <h1 class="text-3xl font-bold">Tableau de présence : {{ presenceCount }}</h1>
+          <h1 class="text-3xl font-bold">Tableau de présence</h1>
           <p class="text-muted-foreground">BTS 2 Génie Logiciel / DQP</p>
         </div>
         <div class="flex gap-2">
@@ -210,7 +206,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         </div>
       </div>
 
-      <!-- Recherche & filtre -->
+      <!-- Filtres existants -->
       <div class="flex flex-col md:flex-row gap-4 mb-4">
         <div class="relative flex-1">
           <Search class="absolute left-3 top-3 text-muted-foreground w-5 h-5"/>
@@ -221,11 +217,7 @@ const breadcrumbs: BreadcrumbItem[] = [
             class="input pl-10"
           />
         </div>
-        <select 
-          v-model="filterStatus" 
-          @change="setCurrentPage(1)" 
-          class="input"
-        >
+        <select v-model="filterStatus" @change="setCurrentPage(1)" class="input">
           <option value="all">Tous</option>
           <option value="present">Présents</option>
           <option value="absent">Absents</option>
@@ -233,7 +225,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         </select>
       </div>
 
-      <!-- Tableau -->
+      <!-- Tableau amélioré -->
       <div class="overflow-x-auto">
         <table class="min-w-full table-auto text-left text-sm bg-card rounded-xl border">
           <thead class="bg-muted">
@@ -244,9 +236,9 @@ const breadcrumbs: BreadcrumbItem[] = [
               <th @click="handleSort('arrival_time')" class="th-sort px-4 py-2">Arrivée <SortIcon field="arrival_time" :sortField="sortField" :direction="sortDirection"/></th>
               <th @click="handleSort('departure_time')" class="th-sort px-4 py-2">Départ <SortIcon field="departure_time" :sortField="sortField" :direction="sortDirection"/></th>
               <th @click="handleSort('late_minutes')" class="th-sort px-4 py-2">Retard <SortIcon field="late_minutes" :sortField="sortField" :direction="sortDirection"/></th>
-              <th class="px-4 py-2">Absent</th>
-              <th class="px-4 py-2">En retard</th>
-              <th colspan="2" class="px-4 py-2 text-center">Actions sur la présence</th>
+              <th class="px-4 py-2">Statut</th>
+              <th class="px-4 py-2">Motif</th>
+              <th colspan="2" class="px-4 py-2 text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -262,17 +254,21 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </Badge>
               </td>
               <td class="px-4 py-2">
-                <Badge :type="r.absent ? 'destructive' : 'success'">
-                  {{ r.absent ? 'Oui' : 'Non' }}
-                </Badge>
+                <Badge v-if="r.absent" type="destructive">Absent</Badge>
+                <Badge v-else-if="r.late" type="warning">En retard</Badge>
+                <Badge v-else type="success">Présent</Badge>
               </td>
               <td class="px-4 py-2">
-                <Badge :type="r.late ? 'warning' : 'success'">
-                  {{ r.late ? 'Oui' : 'Non' }}
+                <Badge v-if="r.absent && r.absence_reason" type="secondary">
+                  {{ r.absence_reason }}
                 </Badge>
+                <Badge v-else-if="r.absent" type="destructive">
+                  Sans motif
+                </Badge>
+                <span v-else>-</span>
               </td>
               <td class="px-4 py-2">
-                <Link :href="route('presences.edit', { id: r.id })" prefetch class="text-primary hover:underline">
+                <Link :href="route('presences.edit', { id: r.id })" class="text-primary hover:underline">
                   <Pen class="w-4 h-4 inline"/> Editer
                 </Link>
               </td>
@@ -286,15 +282,11 @@ const breadcrumbs: BreadcrumbItem[] = [
         </table>
       </div>
 
-      <!-- Pagination -->
+      <!-- Pagination existante -->
       <div class="flex justify-between items-center py-4">
         <div>
           <span class="text-muted-foreground">Afficher</span>
-          <select 
-            v-model="itemsPerPage" 
-            @change="setCurrentPage(1)" 
-            class="input mx-2"
-          >
+          <select v-model="itemsPerPage" @change="setCurrentPage(1)" class="input mx-2">
             <option v-for="n of [5,10,20,50]" :key="n">{{ n }}</option>
           </select>
           <span class="text-muted-foreground">sur {{ filteredAndSortedData.length }}</span>
@@ -320,7 +312,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     </div>
   </AppLayout>
 </template>
-
 
 <style scoped>
 .th-sort { cursor: pointer; }

@@ -31,4 +31,8 @@ protected $casts = [
     {
         return $this->belongsTo(User::class);
     }
+     public function absenceReason()
+    {
+        return $this->belongsTo(AbsenceReason::class);
+    }
 }

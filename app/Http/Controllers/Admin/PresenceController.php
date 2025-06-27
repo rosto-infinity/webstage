@@ -6,15 +6,16 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Presence;
 use Illuminate\Http\Request;
+use App\Models\AbsenceReason;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PresenceRequest;
 
 class PresenceController extends Controller
 {
-    public function index()
+   public function index()
 {
-    $presences = Presence::with('user')
+    $presences = Presence::with('user', 'absenceReason')
         ->orderBy('date', 'desc')
         ->get()
         ->map(fn ($p) => [
@@ -29,11 +30,11 @@ class PresenceController extends Controller
                 'name' => $p->user->name,
                 'email' => $p->user->email,
             ],
+            'absence_reason' => $p->absenceReason ? $p->absenceReason->name : null,
         ]);
 
     $presenceCount = Presence::count();
 
-//         dd($stats["absent"]);
     return Inertia::render('SuperAdmin/Presence/PresenceIndex', [
         'presences' => $presences,
         'presenceCount' => $presenceCount,
@@ -47,36 +48,41 @@ class PresenceController extends Controller
 
     public function add()
     {
-        $users = User::orderBy('name')->get(['id', 'name', 'email']);
+        $users = User::where('role', 'user')->orderBy('name')->get(['id', 'name', 'email']);
+        $absenceReasons = AbsenceReason::all(['id', 'name']);
 
-        return Inertia::render('SuperAdmin/Presence/PresenceAdd', compact('users'));
+        return Inertia::render('SuperAdmin/Presence/PresenceAdd', compact('users', 'absenceReasons'));
     }
 
-public function store(PresenceRequest $request)
-{
-    // Vérification finale avant création
-    if (Presence::where('user_id', $request->user_id)
-               ->whereDate('date', $request->date)
-               ->exists()) {
-        return back()
-            ->withErrors(['user_id' => 'Une présence existe déjà pour cet étudiant aujourd\'hui.'])
-            ->withInput();
+    public function store(PresenceRequest $request)
+    {
+        // Vérification finale avant création
+        if (Presence::where('user_id', $request->user_id)
+                   ->whereDate('date', $request->date)
+                   ->exists()) {
+            return back()
+                ->withErrors(['user_id' => 'Une présence existe déjà pour cet étudiant aujourd\'hui.'])
+                ->withInput();
+        }
+
+        // Création de la présence
+        Presence::create([
+    'user_id' => $request->user_id,
+    'date' => $request->date,
+    'arrival_time' => $request->absent ? null : $request->heure_arrivee,
+    'departure_time' => $request->absent ? null : $request->heure_depart,
+    'late_minutes' => $request->absent ? 0 : $request->minutes_retard,
+    'absent' => $request->absent,
+    'late' => $request->absent ? false : $request->en_retard,
+    'absence_reason_id' => $request->absent 
+        ? $request->absence_reason_id 
+        : null, // Bien géré
+]);
+
+
+        return redirect()->route('presences')
+            ->with('success', 'Présence enregistrée avec succès.');
     }
-
-    // Création de la présence
-    Presence::create([
-        'user_id' => $request->user_id,
-        'date' => $request->date,
-        'arrival_time' => $request->absent ? null : $request->heure_arrivee,
-        'departure_time' => $request->absent ? null : $request->heure_depart,
-        'late_minutes' => $request->absent ? 0 : $request->minutes_retard,
-        'absent' => $request->absent,
-        'late' => $request->absent ? false : $request->en_retard,
-    ]);
-
-    return redirect()->route('presences')
-        ->with('success', 'Présence enregistrée avec succès.');
-}
     
 public function edit($id)
 {
