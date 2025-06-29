@@ -77,7 +77,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * ---Récupère les statistiques hebdomadaires pour la semaine donnée.
+     * --Récupère les statistiques hebdomadaires pour la semaine donnée.
      */
     private function getWeeklyStats(string $week, string $user = ''): array
     {
@@ -100,7 +100,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * Récupère les tendances mensuelles pour le mois donné.
+     * ---Récupère les tendances mensuelles pour le mois donné.
      */
     private function getMonthlyStats(string $month, string $user = ''): array
     {
