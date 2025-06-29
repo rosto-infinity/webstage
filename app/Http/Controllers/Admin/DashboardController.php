@@ -146,7 +146,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * Tableau de bord pour les administrateurs.
+     * -Tableau de bord pour les administrateurs.
      */
     public function admin(Request $request)
     {
