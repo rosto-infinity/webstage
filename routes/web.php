@@ -37,6 +37,7 @@ Route::middleware(['auth', 'verified','role:superadmin'])->group(function () {
 
 
     Route::prefix('presences')->group(function () {
+        Route::get('/excel', [PresenceController::class, 'excel'])->name('presences.excel');
         Route::get('/users', [PresenceController::class, 'index'])->name('presences');  
         Route::get('/add', [PresenceController::class, 'add'])->name('presences.add');
         Route::post('/store', [PresenceController::class, 'store'])->name('presences.store'); 

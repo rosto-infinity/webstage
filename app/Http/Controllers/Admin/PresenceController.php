@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\PresenceExport;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Presence;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\AbsenceReason;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\PresenceRequest;
 
 class PresenceController extends Controller
@@ -127,8 +129,15 @@ public function update(PresenceRequest $request, $id)
         return redirect()->route('presences')
             ->with('success', 'Présence supprimée avec succès.');
     }
+    public function excel()
+    {
+        // --Génère un nom de fichier basé sur la date et l'heure actuelles
+        $fileName = now()->format('d-m-Y H.i.s');
+        
+        //-- Télécharge le fichier Excel avec les données d'historique des emplois
+        return Excel::download(new PresenceExport, 'Presences_' . $fileName . '.xlsx');
+    }
 }
-
 
 // public function store(PresenceRequest $request)
 // {

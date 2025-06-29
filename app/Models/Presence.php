@@ -11,6 +11,7 @@ class Presence extends Model
     use HasFactory;
 
     protected $fillable = [
+   
         'user_id',
         'date',
         'arrival_time',
@@ -18,6 +19,7 @@ class Presence extends Model
         'late_minutes',
         'absent',
         'late',
+        'absence_reason_id'
     ];
    
 

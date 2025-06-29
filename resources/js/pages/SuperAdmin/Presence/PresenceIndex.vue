@@ -6,6 +6,7 @@ import { Head, Link, usePage, router } from '@inertiajs/vue3';
 import { ref, computed, watch } from 'vue';
 import { Trash2, ChevronLeft, ChevronRight, Pen, Users, Calendar, Clock, Search, Download, X } from 'lucide-vue-next';
 import type { BreadcrumbItem } from '@/types';
+import Button from '@/components/ui/button/Button.vue';
 
 // Typage amélioré avec absence_reason
 interface Presence {
@@ -189,7 +190,7 @@ const breadcrumbs: BreadcrumbItem[] = [
       </div>
     </div>
 
-    <div class="p-2">
+    <div class="p-4">
       <!-- Actions existantes -->
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
         <div>
@@ -197,27 +198,41 @@ const breadcrumbs: BreadcrumbItem[] = [
           <p class="text-muted-foreground">BTS 2 Génie Logiciel / DQP</p>
         </div>
         <div class="flex gap-2">
-          <Link :href="route('presences.add')" class="btn btn-success">
-            <Pen class="w-5 h-5"/>Ajouter
-          </Link>
-          <button class="btn btn-success">
-            <Download class="w-5 h-5"/>Exporter
-          </button>
+          <Button>
+            <Link :href="route('presences.add')" class="flex gap-1">
+              <Pen class="w-5 h-5"/>Ajouter
+            </Link>
+          </Button>
+
+          <Button class="cursor-pointer">
+            <Download class="w-5 h-5"/>Exporter-Pdf
+          </Button>
+          
+          <a :href="route('presences.excel')" >
+            <Button class="cursor-pointer">
+              <Download class="w-5 h-5"/>Export-Excel
+            </Button>
+          </a>
         </div>
       </div>
 
       <!-- Filtres existants -->
       <div class="flex flex-col md:flex-row gap-4 mb-4">
+
         <div class="relative flex-1">
-          <Search class="absolute left-3 top-3 text-muted-foreground w-5 h-5"/>
-          <input 
+          <div class="flex ">
+            <input 
             v-model="searchTerm" 
             @input="setCurrentPage(1)" 
             placeholder="Rechercher nom/email" 
-            class="input pl-10"
-          />
+            class="input pl-10  w-full border-1 border-violet-400 rounded-md"
+            />
+            <Search class=" text-muted-foreground w-5 h-5 mx-2 "/>
+
+          </div>
         </div>
-        <select v-model="filterStatus" @change="setCurrentPage(1)" class="input">
+
+        <select v-model="filterStatus" @change="setCurrentPage(1)" class="input bg-violet-200 p-1 rounded-md">
           <option value="all">Tous</option>
           <option value="present">Présents</option>
           <option value="absent">Absents</option>
