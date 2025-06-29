@@ -46,7 +46,7 @@ class DashboardController extends Controller
         // --Liste des utilisateurs
         $users = User::pluck('name')->toArray();
 
-        // Requête de base avec filtre utilisateur
+        // ---Requête de base avec filtre utilisateur
         $query = Presence::query()->with('absenceReason');
         if ($user) {
             $query->whereHas('user', fn ($q) => $q->where('name', $user));
