@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Foundation\Application;
-use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\PreventBack;
+use App\Http\Middleware\RoleMiddleware;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
@@ -17,9 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
-          $middleware->alias([
-            "role" => RoleMiddleware::class,
-            "prevent-back" => PreventBack::class,
+        $middleware->alias([
+            'role' => RoleMiddleware::class,
+            'prevent-back' => PreventBack::class,
         ]);
         $middleware->web(append: [
             HandleAppearance::class,

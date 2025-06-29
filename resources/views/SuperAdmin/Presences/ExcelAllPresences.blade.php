@@ -4,7 +4,7 @@
     <th width='20' align='center'>#ID</th>
     <th width='20' align='center'>Date</th>
     <th width='20' align='center'>Name</th>
-    <th width='20' align='center'>E‑mail</th>
+    <th width='20' align='center'>E-mail</th>
     <th width='20' align='center'>Arrivée </th>
     <th width='20' align='center'>Depart</th>
     <th width='20' align='center'>Retard</th>

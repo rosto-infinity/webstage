@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
-use Inertia\Inertia;
+use App\Http\Controllers\Controller;
 use App\Models\Presence;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use Carbon\Carbon;
+use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
@@ -38,8 +38,8 @@ class DashboardController extends Controller
             $monthDate = $selectedDate->copy()->subMonths($i);
             $month = $monthDate->format('M');
             $presencesInMonth = Presence::whereYear('date', $monthDate->year)
-                                      ->whereMonth('date', $monthDate->month)
-                                      ->get();
+                ->whereMonth('date', $monthDate->month)
+                ->get();
             $totalInMonth = $presencesInMonth->count();
             $presentInMonth = $presencesInMonth->where('absent', false)->count();
             $rate = $totalInMonth > 0 ? round(($presentInMonth / $totalInMonth) * 100, 2) : 0;
@@ -53,26 +53,27 @@ class DashboardController extends Controller
         $monthStart = $selectedDate->startOfMonth()->toDateString();
         $monthEnd = $selectedDate->endOfMonth()->toDateString();
         $absenceReasons = Presence::whereBetween('date', [$monthStart, $monthEnd])
-                                ->where('absent', true)
-                                ->join('absence_reasons', 'presences.absence_reason_id', '=', 'absence_reasons.id')
-                                ->select('absence_reasons.name as reason', DB::raw('count(*) as count'))
-                                ->groupBy('absence_reasons.name')
-                                ->get()
-                                ->map(function ($item) {
-                                    $color = match ($item->reason) {
-                                        'Maladie' => '#b6b2ff',
-                                        'Transport' => '#EF4444',
-                                        'Familial' => '#654bc3',
-                                        'Autre' => '#64748B',
-                                        default => '#ccc',
-                                    };
-                                    return [
-                                        'label' => $item->reason,
-                                        'value' => $item->count,
-                                        'color' => $color,
-                                    ];
-                                })
-                                ->toArray();
+            ->where('absent', true)
+            ->join('absence_reasons', 'presences.absence_reason_id', '=', 'absence_reasons.id')
+            ->select('absence_reasons.name as reason', DB::raw('count(*) as count'))
+            ->groupBy('absence_reasons.name')
+            ->get()
+            ->map(function ($item) {
+                $color = match ($item->reason) {
+                    'Maladie' => '#b6b2ff',
+                    'Transport' => '#EF4444',
+                    'Familial' => '#654bc3',
+                    'Autre' => '#64748B',
+                    default => '#ccc',
+                };
+
+                return [
+                    'label' => $item->reason,
+                    'value' => $item->count,
+                    'color' => $color,
+                ];
+            })
+            ->toArray();
 
         // Statistiques quotidiennes
         $baseQuery = Presence::whereDate('date', $date);

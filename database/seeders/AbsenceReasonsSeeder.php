@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\AbsenceReason;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class AbsenceReasonsSeeder extends Seeder
 {
@@ -21,7 +20,7 @@ class AbsenceReasonsSeeder extends Seeder
         ];
 
         foreach ($reasons as $reason) {
-             AbsenceReason::create(['name' => $reason]);
+            AbsenceReason::create(['name' => $reason]);
         }
     }
 }

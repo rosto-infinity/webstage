@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
-use Inertia\Inertia;
+use App\Http\Controllers\Controller;
 use App\Models\Presence;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
     /**
      * Affiche la liste paginée des utilisateurs (pour les super admins)
-     * 
-     * @param Request $request Requête HTTP
+     *
+     * @param  Request  $request  Requête HTTP
      * @return \Inertia\Response Vue Inertia avec la liste des utilisateurs
      */
     public function indexlist(Request $request)
@@ -31,7 +31,7 @@ class UserController extends Controller
 
     /**
      * -Affiche le tableau de bord utilisateur avec les statistiques de présence
-     * 
+     *
      * @return \Inertia\Response Vue Inertia avec toutes les données statistiques
      */
     public function index()
@@ -42,7 +42,7 @@ class UserController extends Controller
         // -STATISTIQUES GLOBALES
         // -Compte le nombre total de présences
         $total = Presence::where('user_id', $user->id)->count();
-        
+
         // -Compte les présences, absences et retards
         $present = Presence::where('user_id', $user->id)->where('absent', false)->count();
         $absent = Presence::where('user_id', $user->id)->where('absent', true)->count();
@@ -51,23 +51,23 @@ class UserController extends Controller
 
         // -STATISTIQUES HEBDOMADAIRES
         // Initialise un tableau pour les 7 jours de la semaine
-        $weekDays = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+        $weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
         $weekStats = [];
-        
+
         // - -Initialise chaque jour avec des compteurs à 0
         foreach ($weekDays as $day) {
             $weekStats[$day] = ['present' => 0, 'absent' => 0];
         }
-        
+
         // -Récupère les données de la semaine en cours
         $weekData = Presence::where('user_id', $user->id)
             ->whereBetween('date', [now()->startOfWeek(), now()->endOfWeek()])
             ->get()
-            ->groupBy(function($item) {
+            ->groupBy(function ($item) {
                 // -Groupe par jour de la semaine (format 'Mon', 'Tue', etc.)
                 return Carbon::parse($item->date)->format('D');
             });
-        
+
         // --Met à jour les compteurs pour chaque jour ayant des données
         foreach ($weekData as $day => $items) {
             $weekStats[$day]['present'] = $items->where('absent', false)->count();
@@ -81,7 +81,7 @@ class UserController extends Controller
             ->groupBy('month')
             ->orderBy('month')
             ->get()
-            ->map(function($row) {
+            ->map(function ($row) {
                 // -- Formate les données pour l'affichage
                 return [
                     'month' => Carbon::create()->month($row->month)->format('M'), // Format 'Jan', 'Feb', etc.
@@ -104,7 +104,7 @@ class UserController extends Controller
 
     /**
      * -Affiche le formulaire de création d'un utilisateur
-     * 
+     *
      * @return \Inertia\Response Vue Inertia avec le formulaire
      */
     public function create()
@@ -114,8 +114,8 @@ class UserController extends Controller
 
     /**
      * -Enregistre un nouvel utilisateur en base de données
-     * 
-     * @param Request $request Requête HTTP contenant les données du formulaire
+     *
+     * @param  Request  $request  Requête HTTP contenant les données du formulaire
      * @return \Illuminate\Http\RedirectResponse Redirection vers la liste des utilisateurs
      */
     public function store(Request $request)
@@ -126,36 +126,36 @@ class UserController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:8',
         ]);
-        
+
         // -Création de l'utilisateur avec le mot de passe hashé
         User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
-        
+
         // -Redirection avec message de succès
         return redirect()->route('users.index')->with('success', 'Utilisateur créé');
     }
 
     /**
      * --Affiche le formulaire d'édition d'un utilisateur
-     * 
-     * @param User $user L'utilisateur à éditer
+     *
+     * @param  User  $user  L'utilisateur à éditer
      * @return \Inertia\Response Vue Inertia avec le formulaire pré-rempli
      */
     public function edit(User $user)
     {
         return Inertia::render('SuperAdmin/Users/UserEdit', [
-            'user' => $user // Passe l'utilisateur à éditer à la vue
+            'user' => $user, // Passe l'utilisateur à éditer à la vue
         ]);
     }
 
     /**
      * --Met à jour un utilisateur existant
-     * 
-     * @param Request $request Requête HTTP contenant les données mises à jour
-     * @param User $user L'utilisateur à mettre à jour
+     *
+     * @param  Request  $request  Requête HTTP contenant les données mises à jour
+     * @param  User  $user  L'utilisateur à mettre à jour
      * @return \Illuminate\Http\RedirectResponse Redirection vers la liste des utilisateurs
      */
     public function update(Request $request, User $user)
@@ -166,30 +166,31 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,'.$user->id, // Ignore l'email actuel de l'utilisateur
             'password' => 'nullable|confirmed|min:8',
         ]);
-        
+
         // Mise à jour des données de base
         $user->name = $validated['name'];
         $user->email = $validated['email'];
-        
+
         // ---Mise à jour du mot de passe seulement si fourni
         if ($request->filled('password')) {
             $user->password = Hash::make($validated['password']);
         }
-        
+
         $user->save();
-        
+
         return redirect()->route('users.index')->with('success', 'Utilisateur mis à jour');
     }
 
     /**
      * -Supprime un utilisateur
-     * 
+     *
      * @param User --$user L'utilisateur à supprimer
      * @return \Illuminate\Http\RedirectResponse Redirection vers la liste des utilisateurs
      */
     public function destroy(User $user)
     {
         $user->delete();
+
         return redirect()->route('users.index')->with('success', 'Utilisateur supprimé');
     }
 }

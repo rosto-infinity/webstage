@@ -13,7 +13,7 @@ class SocialMedia extends Model
         'user_id',
         'platform',
         'url',
-        'display_name'
+        'display_name',
     ];
 
     protected $casts = [

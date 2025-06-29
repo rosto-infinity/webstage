@@ -11,7 +11,7 @@ class Presence extends Model
     use HasFactory;
 
     protected $fillable = [
-   
+
         'user_id',
         'date',
         'arrival_time',
@@ -19,21 +19,21 @@ class Presence extends Model
         'late_minutes',
         'absent',
         'late',
-        'absence_reason_id'
+        'absence_reason_id',
     ];
-   
 
-protected $casts = [
-    'late_minutes' => 'integer',
-    'absent' => 'boolean',
-    'late' => 'boolean'
-];
+    protected $casts = [
+        'late_minutes' => 'integer',
+        'absent' => 'boolean',
+        'late' => 'boolean',
+    ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-     public function absenceReason()
+
+    public function absenceReason()
     {
         return $this->belongsTo(AbsenceReason::class);
     }

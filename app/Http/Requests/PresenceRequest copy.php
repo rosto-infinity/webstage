@@ -3,8 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\Rule;
 
 class PresenceRequest extends FormRequest
 {
@@ -33,7 +33,7 @@ class PresenceRequest extends FormRequest
             'date' => [
                 'required',
                 'date',
-                'before_or_equal:' . $today,
+                'before_or_equal:'.$today,
             ],
 
             // Gestion conditionnelle des horaires
@@ -43,7 +43,7 @@ class PresenceRequest extends FormRequest
                 'date_format:H:i',
                 function ($attribute, $value, $fail) {
                     if ($this->absent && $value) {
-                        $fail("Les horaires doivent être vides quand absent.");
+                        $fail('Les horaires doivent être vides quand absent.');
                     }
                 },
             ],
@@ -55,7 +55,7 @@ class PresenceRequest extends FormRequest
                 'after:heure_arrivee',
                 function ($attribute, $value, $fail) {
                     if ($value && $this->absent) {
-                        $fail("Les horaires doivent être vides quand absent.");
+                        $fail('Les horaires doivent être vides quand absent.');
                     }
                 },
             ],
@@ -69,9 +69,9 @@ class PresenceRequest extends FormRequest
                 'required_if:en_retard,true',
                 function ($attribute, $value, $fail) {
                     if ($value && $this->absent) {
-                        $fail("Le retard doit être vide quand absent.");
+                        $fail('Le retard doit être vide quand absent.');
                     }
-                    if ($value && !$this->heure_arrivee) {
+                    if ($value && ! $this->heure_arrivee) {
                         $fail("Un retard nécessite une heure d'arrivée.");
                     }
                 },
@@ -83,7 +83,7 @@ class PresenceRequest extends FormRequest
                 'boolean',
                 function ($attribute, $value, $fail) {
                     if ($value && ($this->heure_arrivee || $this->en_retard)) {
-                        $fail("Désactivez les horaires/retard avant de marquer absent.");
+                        $fail('Désactivez les horaires/retard avant de marquer absent.');
                     }
                 },
             ],
@@ -93,7 +93,7 @@ class PresenceRequest extends FormRequest
                 'boolean',
                 'exclude_if:absent,true',
                 function ($attribute, $value, $fail) {
-                    if ($value && !$this->heure_arrivee) {
+                    if ($value && ! $this->heure_arrivee) {
                         $fail("Un retard nécessite une heure d'arrivée.");
                     }
                 },
@@ -118,7 +118,7 @@ class PresenceRequest extends FormRequest
     {
         // Nettoyage des données avant validation
         $this->merge([
-            'en_retard' => $this->en_retard && !$this->absent,
+            'en_retard' => $this->en_retard && ! $this->absent,
             'minutes_retard' => $this->absent ? null : $this->minutes_retard,
         ]);
     }

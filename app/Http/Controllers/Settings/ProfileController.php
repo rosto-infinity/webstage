@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Settings;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Settings\ProfileUpdateRequest;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Http\Requests\Settings\ProfileUpdateRequest;
 
 class ProfileController extends Controller
 {
@@ -22,7 +22,7 @@ class ProfileController extends Controller
         return Inertia::render('settings/Profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
-             'user' => [
+            'user' => [
                 'name' => $request->user()->name,
                 'email' => $request->user()->email,
                 'avatar' => $request->user()->avatar ? Storage::disk('public')->url($request->user()->avatar) : null,
@@ -34,7 +34,7 @@ class ProfileController extends Controller
      * Update the user's profile information.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
-   {
+    {
         $user = $request->user();
         $data = $request->validated();
 
@@ -61,7 +61,6 @@ class ProfileController extends Controller
 
         return to_route('profile.edit')->with('status', 'profile-updated');
     }
-
 
     /**
      * Delete the user's profile.

@@ -2,31 +2,30 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
-use Inertia\Inertia;
-use App\Models\Presence;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Presence;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
-
-   public function index()
+    public function index()
     {
         $user = Auth::user();
 
         $total = Presence::where('user_id', $user->id)->count();
-        
+
         $present = Presence::where('user_id', $user->id)->where('absent', false)->count();
         $absent = Presence::where('user_id', $user->id)->where('absent', true)->count();
         $late = Presence::where('user_id', $user->id)->where('late', true)->count();
         $lateMinutes = Presence::where('user_id', $user->id)->sum('late_minutes');
 
         // Statistiques hebdo (présent/absent par jour)
-        $weekDays = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+        $weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
         $weekStats = [];
         foreach ($weekDays as $day) {
             $weekStats[$day] = ['present' => 0, 'absent' => 0];
@@ -34,7 +33,7 @@ class UserController extends Controller
         $weekData = Presence::where('user_id', $user->id)
             ->whereBetween('date', [now()->startOfWeek(), now()->endOfWeek()])
             ->get()
-            ->groupBy(function($item) {
+            ->groupBy(function ($item) {
                 return Carbon::parse($item->date)->format('D');
             });
         foreach ($weekData as $day => $items) {
@@ -48,7 +47,7 @@ class UserController extends Controller
             ->groupBy('month')
             ->orderBy('month')
             ->get()
-            ->map(function($row) {
+            ->map(function ($row) {
                 return [
                     'month' => Carbon::create()->month($row->month)->format('M'),
                     'rate' => $row->total > 0 ? round($row->presents / $row->total * 100, 1) : 0,
@@ -132,13 +131,14 @@ class UserController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
+
         return redirect()->route('users.index')->with('success', 'Utilisateur créé');
     }
 
     public function edit(User $user)
     {
         return Inertia::render('SuperAdmin/Users/UserEdit', [
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
@@ -155,12 +155,14 @@ class UserController extends Controller
             $user->password = Hash::make($validated['password']);
         }
         $user->save();
+
         return redirect()->route('users.index')->with('success', 'Utilisateur mis à jour');
     }
 
     public function destroy(User $user)
     {
         $user->delete();
+
         return redirect()->route('users.index')->with('success', 'Utilisateur supprimé');
     }
 }

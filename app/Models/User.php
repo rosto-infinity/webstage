@@ -17,18 +17,17 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-   protected $fillable = [
+    protected $fillable = [
         'name',
         'email',
         'password',
-        'role' ,
-        'avatar'
+        'role',
+        'avatar',
     ];
 
     protected $casts = [
-        'role' => 'string'
+        'role' => 'string',
     ];
-
 
     /**
      * The attributes that should be hidden for serialization.
@@ -55,13 +54,13 @@ class User extends Authenticatable
 
     public function isSuperAdmin()
     {
-       return $this->role === env('SUPERADMIN_ROLE', 'lolo');
-  
+        return $this->role === env('SUPERADMIN_ROLE', 'lolo');
+
     }
+
     // Ajoutez dans app/Models/User.php
     public function socialMedias()
     {
         return $this->hasMany(SocialMedia::class);
     }
-
 }

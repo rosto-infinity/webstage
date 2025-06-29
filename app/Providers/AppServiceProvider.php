@@ -2,15 +2,11 @@
 
 namespace App\Providers;
 
-use App\Models\SocialMedia;
-use App\Policies\SocialMediaPolicy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 
-
 class AppServiceProvider extends ServiceProvider
 {
-    
     /**
      * Register any application services.
      */
@@ -24,9 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-       Model::automaticallyEagerLoadRelationships();
-      
+        Model::automaticallyEagerLoadRelationships();
+
     }
-
-
 }

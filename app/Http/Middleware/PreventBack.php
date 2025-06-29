@@ -16,9 +16,10 @@ class PreventBack
     public function handle(Request $request, Closure $next): Response
     {
         $response = $next($request);
-        $response->headers->set("Cache-control", "no-cache, no-store, max-age=0, must-revalidate");
-        $response->headers->set("Pragme", "no-cache");
-        $response->headers->set("Expires", "Sat, 01 Jan 1990 00:00:00 GMT");
+        $response->headers->set('Cache-control', 'no-cache, no-store, max-age=0, must-revalidate');
+        $response->headers->set('Pragme', 'no-cache');
+        $response->headers->set('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
+
         return $response;
     }
 }

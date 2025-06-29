@@ -16,13 +16,13 @@ return new class extends Migration
         //     ->after('email')
         //     ->default('user');
         // });
-        $roles = config('roles.roles', ['ty','nf','er']);
-    
-    Schema::table('users', function (Blueprint $table) use ($roles) {
-        $table->enum('role', $roles)
-              ->after('email')
-              ->default('user');
-    });
+        $roles = config('roles.roles', ['ty', 'nf', 'er']);
+
+        Schema::table('users', function (Blueprint $table) use ($roles) {
+            $table->enum('role', $roles)
+                ->after('email')
+                ->default('user');
+        });
     }
 
     /**

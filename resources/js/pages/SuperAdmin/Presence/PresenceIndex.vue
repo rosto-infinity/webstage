@@ -204,9 +204,11 @@ const breadcrumbs: BreadcrumbItem[] = [
             </Link>
           </Button>
 
-          <Button class="cursor-pointer">
-            <Download class="w-5 h-5"/>Exporter-Pdf
-          </Button>
+             <a :href="route('presences.downloadAll')" >
+                <Button class="cursor-pointer">
+                  <Download class="w-5 h-5"/>Exporter-Pdf
+                </Button>
+            </a>
           
           <a :href="route('presences.excel')" >
             <Button class="cursor-pointer">

@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('social_media', function (Blueprint $table) {
-           $table->id();
+            $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->enum('platform', ['github', 'twitter', 'linkedin', 'facebook', 'instagram', 'youtube', 'other']);
             $table->string('url');
             $table->string('display_name')->nullable();
             $table->timestamps();
-            
+
             $table->index(['user_id', 'platform']);
         });
     }
