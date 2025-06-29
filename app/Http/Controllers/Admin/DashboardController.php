@@ -49,7 +49,7 @@ class DashboardController extends Controller
             $query->whereHas('user', fn ($q) => $q->where('name', $user));
         }
 
-        // Statistiques pour la période sélectionnée
+        // -cStatistiques pour la période sélectionnée
         $presenceCount = $query->clone()->whereBetween('date', [$startDate, $endDate])->count();
         $countPresent = $query->clone()->whereBetween('date', [$startDate, $endDate])
             ->where('absent', false)->count();
@@ -77,7 +77,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * Récupère les statistiques hebdomadaires pour la semaine donnée.
+     * ---Récupère les statistiques hebdomadaires pour la semaine donnée.
      */
     private function getWeeklyStats(string $week, string $user = ''): array
     {
