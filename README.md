@@ -102,6 +102,7 @@ php artisan serve
   - Bar chart hebdomadaire
   - Line chart mensuel
   - Motifs d’absence (mois en cours)
+  - Export Excel / PDF des présences
 - Interface responsive grâce à Tailwind v4
 - Navigation fluide avec Inertia.js + Ziggy
 
@@ -123,7 +124,6 @@ MIT License - voir le fichier LICENSE.
 
 ## 🧭 À venir
 
-- Export Excel / PDF des présences
 - Authentification avancée (rôles, permissions)
 - Notification email automatique
 - Filtrage avancé, recherche dynamique, pagination infinie
@@ -138,6 +138,7 @@ MIT License - voir le fichier LICENSE.
 - Authentification Laravel native
 - CRUD des présences (utilisateurs, statut, dates, heures, retards, etc.)
 - Dashboard avec statistiques graphiques (camembert des présences du jour, graphique à barres hebdomadaire, graphique linéaire mensuel, motifs d'absence)
+- Export Excel / PDF des présences
 - Interface responsive grâce à Tailwind v4
 - Navigation fluide avec Inertia.js + Ziggy
 
