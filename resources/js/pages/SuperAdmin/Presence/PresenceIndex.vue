@@ -1,141 +1,7 @@
-<script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import Badge from '@/components/Badge.vue';
-import SortIcon from '@/components/SortIcon.vue';
-import { Head, Link, usePage, router } from '@inertiajs/vue3';
-import { ref, computed, watch } from 'vue';
-import { Trash2, ChevronLeft, ChevronRight, Pen, Users, Calendar, Clock, Search, Download, X } from 'lucide-vue-next';
-import type { BreadcrumbItem } from '@/types';
-import Button from '@/components/ui/button/Button.vue';
-
-// Typage amélioré avec absence_reason
-interface Presence {
-  id: number;
-  date: string;
-  arrival_time: string | null;
-  departure_time: string | null;
-  late_minutes: number;
-  absent: boolean;
-  late: boolean;
-  user: { name: string; email: string };
-  absence_reason: string | null; // Nouveau champ
-}
-
-defineProps<{
-  presenceCount: number
-}>();
-
-// Messages flash (existant)
-const flash = computed(() => usePage().props.flash as { success?: string; error?: string; warning?: string });
-const showFlash = ref(false);
-const flashMessage = ref('');
-const flashType = ref<'success' | 'error' | 'warning'>('success');
-
-watch(flash, (newVal) => {
-  const hasMessage = newVal.success || newVal.error || newVal.warning;
-  if (hasMessage) {
-    showFlash.value = true;
-    flashMessage.value = newVal.success || newVal.error || newVal.warning || '';
-    flashType.value = newVal.success ? 'success' : newVal.error ? 'error' : 'warning';
-    setTimeout(() => showFlash.value = false, 5000);
-  }
-}, { immediate: true });
-
-// Fonctions existantes
-function deletePresence(id: number) {
-  if (confirm('Êtes-vous sûr de vouloir supprimer cette présence ?')) {
-    router.delete(route('presences.destroy', { presence: id }), {
-      onSuccess: () => {
-        data.value = data.value.filter(p => p.id !== id);
-      }
-    });
-  }
-}
-
-function calculerMinutesRetard(arrivee: string | null, normale = '08:00'): number {
-  if (!arrivee) return 0;
-  const [hArr, mArr] = arrivee.split(':').map(Number);
-  const [hNorm, mNorm] = normale.split(':').map(Number);
-  const diffMin = (hArr * 60 + mArr) - (hNorm * 60 + mNorm);
-  return diffMin > 0 ? diffMin : 0;
-}
-
-// Initialisation des données avec absence_reason
-const page = usePage();
-const rawPresences = (page.props as any).presences as Omit<Presence, 'late_minutes' | 'late'>[];
-const data = ref<Presence[]>(
-  rawPresences.map(r => ({
-    ...r,
-    late_minutes: calculerMinutesRetard(r.arrival_time),
-    late: calculerMinutesRetard(r.arrival_time) > 0,
-    absence_reason: (r as any).absence_reason || null // Assure la compatibilité
-  }))
-);
-
-// Filtres et tris existants
-const searchTerm = ref('');
-const filterStatus = ref<'all' | 'present' | 'absent' | 'late'>('all');
-const currentPage = ref(1);
-const itemsPerPage = ref(10);
-const sortField = ref<keyof Presence>('date');
-const sortDirection = ref<'asc' | 'desc'>('desc');
-
-const filteredAndSortedData = computed(() => {
-  return [...data.value]
-    .filter(r => {
-      const term = searchTerm.value.toLowerCase();
-      const match = r.user.name.toLowerCase().includes(term) || r.user.email.toLowerCase().includes(term);
-      return match && (
-        filterStatus.value === 'all' ||
-        (filterStatus.value === 'present' && !r.absent && !r.late) ||
-        (filterStatus.value === 'absent' && r.absent) ||
-        (filterStatus.value === 'late' && r.late)
-      );
-    })
-    .sort((a, b) => {
-      const aVal: any = a[sortField.value];
-      const bVal: any = b[sortField.value];
-      if (aVal < bVal) return sortDirection.value === 'asc' ? -1 : 1;
-      if (aVal > bVal) return sortDirection.value === 'asc' ? 1 : -1;
-      return 0;
-    });
-});
-
-// Pagination et statistiques
-const totalPages = computed(() => Math.ceil(filteredAndSortedData.value.length / itemsPerPage.value));
-const paginatedData = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage.value;
-  return filteredAndSortedData.value.slice(start, start + itemsPerPage.value);
-});
-
-const presentCount = computed(() => data.value.filter(r => !r.absent).length);
-const absentCount = computed(() => data.value.filter(r => r.absent).length);
-const lateCount = computed(() => data.value.filter(r => r.late).length);
-
-function handleSort(field: keyof Presence) {
-  if (sortField.value === field) {
-    sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
-  } else {
-    sortField.value = field;
-    sortDirection.value = 'asc';
-  }
-  currentPage.value = 1;
-}
-
-function setCurrentPage(n: number) {
-  currentPage.value = n;
-}
-
-const breadcrumbs: BreadcrumbItem[] = [
-  { title: 'Présences : Sup_Admin', href: '/presences' },
-];
-</script>
-
 <template>
   <Head title="Présences" />
   <AppLayout :breadcrumbs="breadcrumbs">
-    
-    <!-- Message flash (existant) -->
+    <!-- Message flash -->
     <div v-if="showFlash" 
          :class="[
            'fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-md transition-all duration-300',
@@ -154,7 +20,7 @@ const breadcrumbs: BreadcrumbItem[] = [
       </div>
     </div>
 
-    <!-- Statistiques améliorées -->
+    <!-- Statistiques -->
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-8 p-2">
       <div class="bg-card p-5 rounded-xl border flex items-center gap-3">
         <Users class="text-primary w-6 h-6"/>
@@ -165,7 +31,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         <div>
           <p class="text-sm text-muted-foreground">Présents</p>
           <p class="text-2xl font-bold">{{ presentCount }}</p>
-          <p class="text-xs text-success">({{ Math.round((presentCount/presenceCount)*100) }}%)</p>
+          <p class="text-xs text-success">({{ Math.round((presentCount / presenceCount) * 100) }}%)</p>
         </div>
       </div>
       <div class="bg-card p-5 rounded-xl border flex items-center gap-3">
@@ -191,7 +57,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     </div>
 
     <div class="p-4">
-      <!-- Actions existantes -->
+      <!-- Actions -->
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
         <div>
           <h1 class="text-3xl font-bold">Tableau de présence</h1>
@@ -203,14 +69,12 @@ const breadcrumbs: BreadcrumbItem[] = [
               <Pen class="w-5 h-5"/>Ajouter
             </Link>
           </Button>
-
-             <a :href="route('presences.downloadAll')" >
-                <Button class="cursor-pointer">
-                  <Download class="w-5 h-5"/>Exporter-Pdf
-                </Button>
-            </a>
-          
-          <a :href="route('presences.excel')" >
+          <a :href="route('presences.downloadAll')">
+            <Button class="cursor-pointer">
+              <Download class="w-5 h-5"/>Exporter-Pdf
+            </Button>
+          </a>
+          <a :href="route('presences.excel')">
             <Button class="cursor-pointer">
               <Download class="w-5 h-5"/>Export-Excel
             </Button>
@@ -218,31 +82,34 @@ const breadcrumbs: BreadcrumbItem[] = [
         </div>
       </div>
 
-      <!-- Filtres existants -->
+      <!-- Filtres -->
       <div class="flex flex-col md:flex-row gap-4 mb-4">
-
         <div class="relative flex-1">
-          <div class="flex ">
+          <div class="flex">
             <input 
-            v-model="searchTerm" 
-            @input="setCurrentPage(1)" 
-            placeholder="Rechercher nom/email" 
-            class="input pl-10  w-full border-1 border-violet-400 rounded-md"
+              v-model="searchTerm" 
+              @input="setCurrentPage(1)" 
+              placeholder="Rechercher nom/email" 
+              class="input pl-10 w-full border-1 border-violet-400 rounded-md"
             />
-            <Search class=" text-muted-foreground w-5 h-5 mx-2 "/>
-
+            <Search class="text-muted-foreground w-5 h-5 mx-2"/>
           </div>
         </div>
-
         <select v-model="filterStatus" @change="setCurrentPage(1)" class="input bg-violet-200 p-1 rounded-md">
           <option value="all">Tous</option>
           <option value="present">Présents</option>
           <option value="absent">Absents</option>
           <option value="late">Retard</option>
         </select>
+        <label>De : <input type="date" v-model="filterDateFrom" class="input p-1 rounded-md"></label>
+        <label>À : <input type="date" v-model="filterDateTo" class="input p-1 rounded-md"></label>
+        <select v-model="selectedUser" @change="setCurrentPage(1)" class="input bg-violet-200 p-1 rounded-md">
+          <option value="">Tous</option>
+          <option v-for="user in users" :key="user" :value="user">{{ user }}</option>
+        </select>
       </div>
 
-      <!-- Tableau amélioré -->
+      <!-- Tableau -->
       <div class="overflow-x-auto">
         <table class="min-w-full table-auto text-left text-sm bg-card rounded-xl border">
           <thead class="bg-muted">
@@ -299,7 +166,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         </table>
       </div>
 
-      <!-- Pagination existante -->
+      <!-- Pagination -->
       <div class="flex justify-between items-center py-4">
         <div>
           <span class="text-muted-foreground">Afficher</span>
@@ -329,6 +196,155 @@ const breadcrumbs: BreadcrumbItem[] = [
     </div>
   </AppLayout>
 </template>
+
+<script setup lang="ts">
+import { ref, computed, watch } from 'vue';
+import { Head, Link, usePage, router } from '@inertiajs/vue3';
+import AppLayout from '@/layouts/AppLayout.vue';
+import Badge from '@/components/Badge.vue';
+import SortIcon from '@/components/SortIcon.vue';
+import { Trash2, ChevronLeft, ChevronRight, Pen, Users, Calendar, Clock, Search, Download, X } from 'lucide-vue-next';
+import type { BreadcrumbItem } from '@/types';
+import Button from '@/components/ui/button/Button.vue';
+
+// Typage amélioré avec absence_reason
+interface Presence {
+  id: number;
+  date: string;
+  arrival_time: string | null;
+  departure_time: string | null;
+  late_minutes: number;
+  absent: boolean;
+  late: boolean;
+  user: { name: string; email: string };
+  absence_reason: string | null;
+}
+
+defineProps<{
+  presenceCount: number
+}>();
+
+// Messages flash
+const flash = computed(() => usePage().props.flash as { success?: string; error?: string; warning?: string });
+const showFlash = ref(false);
+const flashMessage = ref('');
+const flashType = ref<'success' | 'error' | 'warning'>('success');
+
+watch(flash, (newVal) => {
+  const hasMessage = newVal.success || newVal.error || newVal.warning;
+  if (hasMessage) {
+    showFlash.value = true;
+    flashMessage.value = newVal.success || newVal.error || newVal.warning || '';
+    flashType.value = newVal.success ? 'success' : newVal.error ? 'error' : 'warning';
+    setTimeout(() => showFlash.value = false, 5000);
+  }
+}, { immediate: true });
+
+// Initialisation des données
+const page = usePage();
+const rawPresences = (page.props as any).presences as Omit<Presence, 'late_minutes' | 'late'>[];
+const data = ref<Presence[]>(
+  rawPresences.map(r => ({
+    ...r,
+    late_minutes: calculerMinutesRetard(r.arrival_time),
+    late: calculerMinutesRetard(r.arrival_time) > 0,
+    absence_reason: (r as any).absence_reason || null
+  }))
+);
+
+// Filtres et tris
+const searchTerm = ref('');
+const filterStatus = ref<'all' | 'present' | 'absent' | 'late'>('all');
+const filterDateFrom = ref(null);
+const filterDateTo = ref(null);
+const selectedUser = ref('');
+const currentPage = ref(1);
+const itemsPerPage = ref(10);
+const sortField = ref<keyof Presence>('date');
+const sortDirection = ref<'asc' | 'desc'>('desc');
+
+// Liste des utilisateurs uniques
+const users = computed(() => {
+  const userSet = new Set();
+  data.value.forEach(p => userSet.add(p.user.name));
+  return Array.from(userSet);
+});
+
+// Données filtrées et triées
+const filteredAndSortedData = computed(() => {
+  return [...data.value]
+    .filter(r => {
+      const term = searchTerm.value.toLowerCase();
+      const matchName = r.user.name.toLowerCase().includes(term);
+      const dateFilter = (!filterDateFrom.value || r.date >= filterDateFrom.value) &&
+                        (!filterDateTo.value || r.date <= filterDateTo.value);
+      const userFilter = selectedUser.value === '' || r.user.name === selectedUser.value;
+      return matchName && dateFilter && userFilter && (
+        filterStatus.value === 'all' ||
+        (filterStatus.value === 'present' && !r.absent && !r.late) ||
+        (filterStatus.value === 'absent' && r.absent) ||
+        (filterStatus.value === 'late' && r.late)
+      );
+    })
+    .sort((a, b) => {
+      const aVal: any = a[sortField.value];
+      const bVal: any = b[sortField.value];
+      if (aVal < bVal) return sortDirection.value === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortDirection.value === 'asc' ? 1 : -1;
+      return 0;
+    });
+});
+
+// Pagination
+const totalPages = computed(() => Math.ceil(filteredAndSortedData.value.length / itemsPerPage.value));
+const paginatedData = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  return filteredAndSortedData.value.slice(start, start + itemsPerPage.value);
+});
+
+// Statistiques
+const presentCount = computed(() => data.value.filter(r => !r.absent).length);
+const absentCount = computed(() => data.value.filter(r => r.absent).length);
+const lateCount = computed(() => data.value.filter(r => r.late).length);
+
+// Méthodes
+function handleSort(field: keyof Presence) {
+  if (sortField.value === field) {
+    sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortField.value = field;
+    sortDirection.value = 'asc';
+  }
+  currentPage.value = 1;
+}
+
+function setCurrentPage(n: number) {
+  currentPage.value = n;
+}
+
+function deletePresence(id: number) {
+  if (confirm('Êtes-vous sûr de vouloir supprimer cette présence ?')) {
+    router.delete(route('presences.destroy', { presence: id }), {
+      onSuccess: () => {
+        data.value = data.value.filter(p => p.id !== id);
+      }
+    });
+  }
+}
+
+function calculerMinutesRetard(arrivee: string | null, normale = '08:00'): number {
+  if (!arrivee) return 0;
+  const [hArr, mArr] = arrivee.split(':').map(Number);
+  const [hNorm, mNorm] = normale.split(':').map(Number);
+  const diffMin = (hArr * 60 + mArr) - (hNorm * 60 + mNorm);
+  return diffMin > 0 ? diffMin : 0;
+}
+
+// Breadcrumbs
+const breadcrumbs: BreadcrumbItem[] = [
+  { title: 'Présences : Sup_Admin', href: '/presences' },
+];
+</script>
 
 <style scoped>
 .th-sort { cursor: pointer; }

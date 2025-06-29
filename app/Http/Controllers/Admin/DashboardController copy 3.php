@@ -11,6 +11,9 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
+    /**
+     * Affiche le tableau de bord pour les superadministrateurs.
+     */
     public function superadmin(Request $request)
     {
         // Validation des paramètres reçus
@@ -32,12 +35,12 @@ class DashboardController extends Controller
         $startDate = match ($filterType) {
             'month' => Carbon::parse($month)->startOfMonth()->toDateString(),
             'week' => Carbon::parse($week)->startOfWeek()->toDateString(),
-            default => $date, // day
+            default => $date,
         };
         $endDate = match ($filterType) {
             'month' => Carbon::parse($month)->endOfMonth()->toDateString(),
             'week' => Carbon::parse($week)->endOfWeek()->toDateString(),
-            default => $date, // day
+            default => $date,
         };
 
         // Liste des utilisateurs
@@ -47,6 +50,12 @@ class DashboardController extends Controller
         $query = Presence::query()->with('absenceReason');
         if ($user) {
             $query->whereHas('user', fn ($q) => $q->where('name', $user));
+            $totalUsers = 1;
+        } else {
+            // Nombre d'utilisateurs uniques avec présence dans la période
+            $totalUsers = Presence::whereBetween('date', [$startDate, $endDate])
+                ->distinct('user_id')
+                ->count();
         }
 
         // Statistiques pour la période sélectionnée
@@ -59,7 +68,7 @@ class DashboardController extends Controller
             ->where('late', true)->count();
 
         return Inertia::render('SuperAdmin/Dashboard', [
-            'totalUsers' => $user ? 1 : User::count(),
+            'totalUsers' => $totalUsers,
             'presenceCount' => $presenceCount,
             'Countpresent' => $countPresent,
             'Countabsent' => $countAbsent,
@@ -111,7 +120,9 @@ class DashboardController extends Controller
             $query->whereHas('user', fn ($q) => $q->where('name', $user));
         }
 
-        $totalUsers = $user ? 1 : User::count();
+        $totalUsers = $user ? 1 : Presence::whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->distinct('user_id')
+            ->count();
         return $query->whereBetween('date', [$startOfMonth, $endOfMonth])
             ->selectRaw('DAY(date) as day, COUNT(*) as count')
             ->groupBy('day')

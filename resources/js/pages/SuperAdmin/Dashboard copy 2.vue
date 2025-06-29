@@ -15,22 +15,13 @@ const props = defineProps<{
     Countabsent: number
     Countlate: number
     selectedDate?: string
-    selectedMonth?: string
-    selectedWeek?: string
-    selectedUser?: string
-    users: Array<string>
     weeklyPresence: Array<{day: string, present: number, absent: number}>
-    monthlyTrend: Array<{day: string, rate: number}>
+    monthlyTrend: Array<{month: string, rate: number}>
     absenceReasons: Array<{label: string, value: number, color: string}>
-    filterType: 'day' | 'week' | 'month'
 }>();
 
 const processing = ref(false);
 const date = ref(props.selectedDate || new Date().toISOString().slice(0, 10));
-const month = ref(props.selectedMonth || new Date().toISOString().slice(0, 7));
-const week = ref(props.selectedWeek || new Date().toISOString().slice(0, 10));
-const selectedUser = ref(props.selectedUser || '');
-const filterType = ref(props.filterType || 'day');
 
 // Calcul des statistiques
 const stats = computed(() => ({
@@ -38,20 +29,18 @@ const stats = computed(() => ({
     present: props.Countpresent,
     absent: props.Countabsent,
     late: props.Countlate,
-    percentage: props.filterType === 'day' && props.totalUsers > 0 
-        ? Math.round((props.Countpresent / props.totalUsers) * 100) 
-        : null
+    percentage: props.totalUsers > 0 ? Math.round((props.Countpresent / props.totalUsers) * 100) : 0
 }));
 
 // Formatage de la période pour les graphiques
-const selectedMonthDisplay = computed(() => new Date(month.value).toLocaleString('fr-FR', { month: 'long', year: 'numeric' }));
+const selectedMonth = computed(() => new Date(date.value).toLocaleString('fr-FR', { month: 'long', year: 'numeric' }));
 const weekStart = computed(() => {
-    const d = new Date(week.value);
+    const d = new Date(date.value);
     d.setDate(d.getDate() - d.getDay() + 1); // Lundi de la semaine
     return d.toLocaleDateString('fr-FR');
 });
 const weekEnd = computed(() => {
-    const d = new Date(week.value);
+    const d = new Date(date.value);
     d.setDate(d.getDate() - d.getDay() + 7); // Dimanche de la semaine
     return d.toLocaleDateString('fr-FR');
 });
@@ -61,15 +50,9 @@ const hasWeeklyData = computed(() => props.weeklyPresence.some(d => d.present > 
 const hasMonthlyData = computed(() => props.monthlyTrend.some(m => m.rate > 0));
 const hasAbsenceReasons = computed(() => props.absenceReasons.some(r => r.value > 0));
 
-function filterData() {
+function filterByDate() {
     processing.value = true;
-    router.get(route('dashboard'), { 
-        date: date.value, 
-        month: month.value, 
-        week: week.value, 
-        user: selectedUser.value,
-        filterType: filterType.value
-    }, {
+    router.get(route('dashboard'), { date: date.value }, {
         preserveState: true,
         replace: true,
         onFinish: () => processing.value = false
@@ -87,61 +70,16 @@ const breadcrumbs: BreadcrumbItem[] = [
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-2">
-            <!-- Filtres -->
-            <form @submit.prevent="filterData" class="mb-6 flex flex-col md:flex-row items-center gap-4">
-                <div class="flex items-center gap-2">
-                    <label for="filterType" class="font-medium">Type de filtre :</label>
-                    <select 
-                        id="filterType" 
-                        v-model="filterType" 
-                        class="px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-ring"
-                    >
-                        <option value="day">Jour</option>
-                        <option value="week">Semaine</option>
-                        <option value="month">Mois</option>
-                    </select>
-                </div>
-                <div class="flex items-center gap-2" v-if="filterType === 'day'">
-                    <label for="date" class="font-medium">Jour :</label>
-                    <input 
-                        id="date" 
-                        type="date" 
-                        v-model="date" 
-                        class="px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-ring"
-                        :max="new Date().toISOString().split('T')[0]" 
-                    />
-                </div>
-                <div class="flex items-center gap-2" v-if="filterType === 'month'">
-                    <label for="month" class="font-medium">Mois :</label>
-                    <input 
-                        id="month" 
-                        type="month" 
-                        v-model="month" 
-                        class="px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-ring"
-                        :max="new Date().toISOString().slice(0, 7)" 
-                    />
-                </div>
-                <div class="flex items-center gap-2" v-if="filterType === 'week'">
-                    <label for="week" class="font-medium">Semaine :</label>
-                    <input 
-                        id="week" 
-                        type="date" 
-                        v-model="week" 
-                        class="px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-ring"
-                        :max="new Date().toISOString().split('T')[0]" 
-                    />
-                </div>
-                <div class="flex items-center gap-2">
-                    <label for="user" class="font-medium">Utilisateur :</label>
-                    <select 
-                        id="user" 
-                        v-model="selectedUser" 
-                        class="px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-ring"
-                    >
-                        <option value="">Tous</option>
-                        <option v-for="user in props.users" :key="user" :value="user">{{ user }}</option>
-                    </select>
-                </div>
+            <!-- Filtre par date -->
+            <form @submit.prevent="filterByDate" class="mb-6 flex items-center gap-2">
+                <label for="date" class="font-medium">Date :</label>
+                <input 
+                    id="date" 
+                    type="date" 
+                    v-model="date" 
+                    class="px-4 py-2 border border-input rounded-lg focus:ring-2 focus:ring-ring"
+                    :max="new Date().toISOString().split('T')[0]" 
+                />
                 <button 
                     type="submit" 
                     class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 flex items-center gap-2"
@@ -160,8 +98,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <div
                     v-for="(item, i) in [
                         {icon: Users, label:'Total étudiants', value:stats.total, text:'text-primary'},
-                        {icon: Calendar, label:'Présents', value:stats.present, text:'text-primary'},
-                        {icon: AlertCircle, label:'Absents', value:stats.absent, text:'text-red-600'},
+                        {icon: Calendar,label:'Présents', value:stats.present, text:'text-primary'},
+                        {icon: AlertCircle,label:'Absents', value:stats.absent, text:'text-red-600'},
                         {icon: Clock, label:'Retards', value:stats.late, text:'text-orange-600'}
                     ]"
                     :key="i"
@@ -173,7 +111,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <div>
                         <p class="text-sm text-muted-foreground">{{ item.label }}</p>
                         <p class="text-2xl font-bold">{{ item.value }}</p>
-                        <p v-if="i === 1 && stats.percentage !== null" class="text-xs text-green-500">
+                        <p v-if="i === 1" class="text-xs text-green-500">
                             Taux: {{ stats.percentage }}%
                         </p>
                     </div>
@@ -184,23 +122,23 @@ const breadcrumbs: BreadcrumbItem[] = [
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Graphe camembert -->
                 <div class="p-6 rounded-xl border border-border shadow-sm">
-                    <h3 class="text-lg font-semibold mb-4">Présence {{ filterType === 'day' ? `le ${new Date(date).toLocaleDateString('fr-FR')}` : filterType === 'week' ? `du ${weekStart} au ${weekEnd}` : `pour ${selectedMonthDisplay}` }}</h3>
+                    <h3 class="text-lg font-semibold mb-4">Présence le {{ new Date(date).toLocaleDateString('fr-FR') }}</h3>
                     <div v-if="stats.present + stats.absent + stats.late > 0" class="relative h-80">
                         <PieChart
                             :data="{
-                                labels: ['Présents', 'Absents', 'Retards'],
-                                datasets: [{ 
-                                    data: [stats.present, stats.absent, stats.late], 
-                                    backgroundColor: ['#654bc3', '#EF4444', '#b6b2ff'],
+                                labels:['Présents','Absents','Retards'],
+                                datasets:[{ 
+                                    data:[stats.present, stats.absent, stats.late], 
+                                    backgroundColor:['#654bc3','#EF4444','#b6b2ff'],
                                     borderWidth: 1
                                 }]
                             }"
                             :options="{ 
                                 responsive: true, 
                                 maintainAspectRatio: false, 
-                                plugins: { 
-                                    legend: { 
-                                        position: 'right',
+                                plugins:{ 
+                                    legend:{ 
+                                        position:'right',
                                         labels: {
                                             usePointStyle: true,
                                             padding: 20
@@ -222,7 +160,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         />
                     </div>
                     <div v-else class="text-center text-muted-foreground h-80 flex items-center justify-center">
-                        Aucune donnée de présence pour cette période.
+                        Aucune donnée de présence pour cette date.
                     </div>
                 </div>
 
@@ -233,18 +171,18 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <BarChart
                             :data="{
                                 labels: props.weeklyPresence.map(d => d.day),
-                                datasets: [
+                                datasets:[
                                     { 
-                                        label: 'Présents', 
+                                        label:'Présents', 
                                         data: props.weeklyPresence.map(d => d.present), 
-                                        backgroundColor: '#654bc3', 
+                                        backgroundColor:'#654bc3', 
                                         borderRadius: 4,
                                         barPercentage: 0.6
                                     },
                                     { 
-                                        label: 'Absents', 
+                                        label:'Absents', 
                                         data: props.weeklyPresence.map(d => d.absent), 
-                                        backgroundColor: '#EF4444', 
+                                        backgroundColor:'#EF4444', 
                                         borderRadius: 4,
                                         barPercentage: 0.6
                                     }
@@ -286,16 +224,16 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                 <!-- Line mensuel -->
                 <div class="p-6 rounded-xl border border-border shadow-sm">
-                    <h3 class="text-lg font-semibold mb-4">Tendance mensuelle pour {{ selectedMonthDisplay }}</h3>
+                    <h3 class="text-lg font-semibold mb-4">Tendance mensuelle jusqu'à {{ selectedMonth }}</h3>
                     <div v-if="hasMonthlyData" class="relative h-80">
                         <LineChart
                             :data="{
-                                labels: props.monthlyTrend.map(m => m.day),
-                                datasets: [{
-                                    label: 'Taux de présence',
+                                labels: props.monthlyTrend.map(m => m.month),
+                                datasets:[{
+                                    label:'Taux de présence',
                                     data: props.monthlyTrend.map(m => m.rate),
-                                    borderColor: '#654bc3',
-                                    backgroundColor: 'rgba(101, 75, 195, 0.1)',
+                                    borderColor:'#654bc3',
+                                    backgroundColor:'rgba(101, 75, 195, 0.1)',
                                     fill: true,
                                     tension: 0.3,
                                     pointBackgroundColor: '#654bc3',
@@ -332,13 +270,13 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                 <!-- Bar motifs absence -->
                 <div class="p-6 rounded-xl border border-border shadow-sm">
-                    <h3 class="text-lg font-semibold mb-4">Motifs d'absence pour {{ selectedMonthDisplay }}</h3>
+                    <h3 class="text-lg font-semibold mb-4">Motifs d'absence pour {{ selectedMonth }}</h3>
                     <div v-if="hasAbsenceReasons" class="relative h-80">
                         <BarChart
                             :data="{
                                 labels: props.absenceReasons.map(r => r.label),
-                                datasets: [{
-                                    label: 'Nombre',
+                                datasets:[{
+                                    label:'Nombre',
                                     data: props.absenceReasons.map(r => r.value),
                                     backgroundColor: props.absenceReasons.map(r => r.color),
                                     borderRadius: 4
@@ -383,6 +321,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 </template>
 
 <style scoped>
+/* Styles pour améliorer l'UI */
 .border-input {
     border-color: hsl(var(--input));
 }

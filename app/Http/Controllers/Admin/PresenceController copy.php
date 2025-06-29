@@ -16,38 +16,38 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class PresenceController extends Controller
 {
-   public function index()
-{
-    $presences = Presence::with('user', 'absenceReason')
-        ->orderBy('date', 'desc')
-        ->get()
-        ->map(fn ($p) => [
-            'id' => $p->id,
-            'date' => $p->date,
-            'arrival_time' => $p->arrival_time,
-            'departure_time' => $p->departure_time,
-            'late_minutes' => $p->late_minutes,
-            'absent' => $p->absent,
-            'late' => $p->late,
-            'user' => [
-                'name' => $p->user->name,
-                'email' => $p->user->email,
+    public function index()
+    {
+        $presences = Presence::with('user', 'absenceReason')
+            ->orderBy('date', 'desc')
+            ->get()
+            ->map(fn ($p) => [
+                'id' => $p->id,
+                'date' => $p->date,
+                'arrival_time' => $p->arrival_time,
+                'departure_time' => $p->departure_time,
+                'late_minutes' => $p->late_minutes,
+                'absent' => $p->absent,
+                'late' => $p->late,
+                'user' => [
+                    'name' => $p->user->name,
+                    'email' => $p->user->email,
+                ],
+                'absence_reason' => $p->absenceReason ? $p->absenceReason->name : null,
+            ]);
+
+        $presenceCount = Presence::count();
+
+        return Inertia::render('SuperAdmin/Presence/PresenceIndex', [
+            'presences' => $presences,
+            'presenceCount' => $presenceCount,
+            'flash' => [
+                'success' => session('success'),
+                'error' => session('error'),
+                'warning' => session('warning'),
             ],
-            'absence_reason' => $p->absenceReason ? $p->absenceReason->name : null,
         ]);
-
-    $presenceCount = Presence::count();
-
-    return Inertia::render('SuperAdmin/Presence/PresenceIndex', [
-        'presences' => $presences,
-        'presenceCount' => $presenceCount,
-        'flash' => [
-            'success' => session('success'),
-            'error' => session('error'),
-            'warning' => session('warning'),
-        ],
-    ]);
-}
+    }
 
     public function add()
     {
