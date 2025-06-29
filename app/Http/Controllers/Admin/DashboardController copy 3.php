@@ -16,7 +16,7 @@ class DashboardController extends Controller
      */
     public function superadmin(Request $request)
     {
-        // --Validation des paramètres reçus
+        // -Validation des paramètres reçus
         $validated = $request->validate([
             'date' => 'nullable|date_format:Y-m-d',
             'month' => 'nullable|date_format:Y-m',
