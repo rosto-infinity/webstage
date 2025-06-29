@@ -109,7 +109,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * --Récupère les tendances mensuelles pour le mois donné.
+     * -Récupère les tendances mensuelles pour le mois donné.
      */
     private function getMonthlyStats(string $month, string $user = ''): array
     {
