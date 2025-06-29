@@ -124,7 +124,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * Récupère les motifs d'absence pour le mois donné.
+     * ---Récupère les motifs d'absence pour le mois donné.
      */
     private function getAbsenceReasons(string $month, string $user = ''): array
     {
