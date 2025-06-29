@@ -58,7 +58,7 @@ class DashboardController extends Controller
                 ->count();
         }
 
-        // Statistiques pour la période sélectionnée
+        // --Statistiques pour la période sélectionnée
         $presenceCount = $query->clone()->whereBetween('date', [$startDate, $endDate])->count();
         $countPresent = $query->clone()->whereBetween('date', [$startDate, $endDate])
             ->where('absent', false)->count();
