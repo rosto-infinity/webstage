@@ -40,7 +40,7 @@ class DashboardController extends Controller
             default => $date, // day
         };
 
-        // --Liste des utilisateurs
+        // ---Liste des utilisateurs
         $users = User::pluck('name')->toArray();
 
         // Requête de base avec filtre utilisateur
