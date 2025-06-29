@@ -31,7 +31,7 @@ class DashboardController extends Controller
         $user = $validated['user'] ?? '';
         $filterType = $validated['filterType'] ?? 'day';
 
-        // Déterminer la plage de dates en fonction du type de filtre
+        //--- Déterminer la plage de dates en fonction du type de filtre
         $startDate = match ($filterType) {
             'month' => Carbon::parse($month)->startOfMonth()->toDateString(),
             'week' => Carbon::parse($week)->startOfWeek()->toDateString(),
