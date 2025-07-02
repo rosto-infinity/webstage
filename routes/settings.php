@@ -32,9 +32,7 @@ Route::middleware(['auth', 'prevent-back'])->group(function () {
         return Inertia::render('settings/Appearance');
     })->name('appearance');
 
-//    Route::get('settings/dbbackup', function () {
-//        return Inertia::render('settings/DbBackup');
-//    })->name('dbbackup');
+
 Route::get('settings/dbbackup', [DBBackupController::class, 'index'])
     ->name('dbbackup');
 

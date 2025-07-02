@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { Head, router } from '@inertiajs/vue3';
+import { Head, usePage,router  } from '@inertiajs/vue3';
 import { Download } from 'lucide-vue-next';
 import HeadingSmall from '@/components/HeadingSmall.vue';
 import { type BreadcrumbItem } from '@/types';
+import { computed } from 'vue';
 
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
@@ -16,6 +17,11 @@ const breadcrumbItems: BreadcrumbItem[] = [
     },
 ];
 
+
+interface FlashMessage {
+    success?: string;
+}
+
 const props = defineProps<{
     backups: Array<{
         name: string;
@@ -23,8 +29,11 @@ const props = defineProps<{
         last_modified: number;
         path: string;
     }>;
+    flash?: FlashMessage;
 }>();
 
+const page = usePage();
+const flash = computed<FlashMessage>(() => (page.props.flash as FlashMessage) ?? props.flash ?? {});
 const formatSize = (bytes: number) => {
     if (bytes >= 1073741824) return (bytes / 1073741824).toFixed(2) + ' GB';
     if (bytes >= 1048576) return (bytes / 1048576).toFixed(2) + ' MB';
@@ -56,6 +65,10 @@ const createBackup = () => {
                 title="Sauvegardes de base de données" 
                     description="Liste des sauvegardes disponibles et gestion" 
                 />
+                 <!-- Correction ici avec l'opérateur optionnel -->
+                <div v-if="flash.success" class="bg-green-100 text-green-600">
+                    {{ flash.success }}
+                </div>
                <Button @click="createBackup" class="mb-4">
                       Créer une nouvelle sauvegarde
                </Button>
