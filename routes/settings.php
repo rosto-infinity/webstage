@@ -1,10 +1,16 @@
 <?php
 
-use App\Http\Controllers\Settings\PasswordController;
-use App\Http\Controllers\Settings\ProfileController;
-use App\Http\Controllers\Settings\SocialMediaController;
-use Illuminate\Support\Facades\Route;
+use Carbon\Carbon;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Settings\ProfileController;
+use App\Http\Controllers\Settings\DBBackupController;
+use App\Http\Controllers\Settings\PasswordController;
+use App\Http\Controllers\Settings\SocialMediaController;
 
 Route::middleware(['auth', 'prevent-back'])->group(function () {
     Route::redirect('settings', '/settings/profile');
@@ -20,9 +26,21 @@ Route::middleware(['auth', 'prevent-back'])->group(function () {
     Route::post('settings/media', [SocialMediaController::class, 'store'])->name('media.store');
     Route::put('settings/media/{socialMedia}', [SocialMediaController::class, 'update'])->name('media.update');
     Route::delete('settings/media/{socialMedia}', [SocialMediaController::class, 'destroy'])->name('media.destroy');
-
+    
+    
     Route::get('settings/appearance', function () {
         return Inertia::render('settings/Appearance');
     })->name('appearance');
 
+//    Route::get('settings/dbbackup', function () {
+//        return Inertia::render('settings/DbBackup');
+//    })->name('dbbackup');
+Route::get('settings/dbbackup', [DBBackupController::class, 'index'])
+    ->name('dbbackup');
+
+Route::get('settings/dbbackup/download', [DBBackupController::class, 'download'])
+    ->name('dbbackup.download');
+
+Route::post('settings/dbbackup/create', [DBBackupController::class, 'create'])
+    ->name('dbbackup.create');
 });
