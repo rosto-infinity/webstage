@@ -1,22 +1,21 @@
 <script setup lang="ts">
-import { Head, useForm, router, usePage } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
 import { type BreadcrumbItem } from '@/types';
+import { Head, router, useForm, usePage } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
 
+import HeadingSmall from '@/components/HeadingSmall.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
-import HeadingSmall from '@/components/HeadingSmall.vue';
-
 
 declare module '@inertiajs/vue3' {
-  interface PageProps {
-    flash?: {
-      success?: string
-      error?: string
-      warning?: string
-      info?: string
+    interface PageProps {
+        flash?: {
+            success?: string;
+            error?: string;
+            warning?: string;
+            info?: string;
+        };
     }
-  }
 }
 
 interface SocialMedia {
@@ -37,8 +36,8 @@ const { socialMedias } = defineProps<{
     socialMedias: SocialMedia[];
 }>();
 
-const page = usePage()
-const flash = computed(() => page.props.flash)
+const page = usePage();
+const flash = computed(() => page.props.flash);
 
 const form = useForm({
     platform: 'github',
@@ -72,7 +71,7 @@ const edit = (media: SocialMedia) => {
 
 const update = () => {
     if (!editForm.id) return;
-    
+
     editForm.put(route('media.update', editForm.id), {
         preserveScroll: true,
         onSuccess: () => {
@@ -97,28 +96,25 @@ const destroy = (id: number) => {
 
         <SettingsLayout>
             <div class="space-y-6">
-                <HeadingSmall 
-                    title="Liens des réseaux sociaux" 
-                    description="Gérez vos profils et liens de réseaux sociaux" 
-                />
-                
+                <HeadingSmall title="Liens des réseaux sociaux" description="Gérez vos profils et liens de réseaux sociaux" />
+
                 <!-- Messages flash -->
-                <div v-if="flash?.success" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                <div v-if="flash?.success" class="mb-4 rounded border border-green-400 bg-green-100 px-4 py-3 text-green-700">
                     {{ flash.success }}
                 </div>
 
-                <div v-if="form.errors.platform" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <div v-if="form.errors.platform" class="mb-4 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
                     {{ form.errors.platform }}
                 </div>
 
-                <div v-if="form.errors.url" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <div v-if="form.errors.url" class="mb-4 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
                     {{ form.errors.url }}
                 </div>
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <div class="overflow-hidden bg-white p-6 shadow-sm sm:rounded-lg">
                     <!-- Formulaire d'ajout -->
                     <form @submit.prevent="submit" class="mb-8">
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
                             <div>
                                 <select v-model="form.platform" class="w-full rounded-md border-gray-300">
                                     <option value="github">GitHub</option>
@@ -135,7 +131,6 @@ const destroy = (id: number) => {
                                     type="url"
                                     v-model="form.url"
                                     :placeholder="`URL ${form.platform} (ex: https://${form.platform}.com/votreprofil)`"
-                                    
                                     class="w-full rounded-md border-gray-300"
                                 />
                             </div>
@@ -143,7 +138,7 @@ const destroy = (id: number) => {
                                 <button
                                     type="submit"
                                     :disabled="form.processing"
-                                    class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-violet-600"
+                                    class="w-full rounded-md bg-primary px-4 py-2 text-white hover:bg-violet-600"
                                 >
                                     Ajouter
                                 </button>
@@ -153,43 +148,25 @@ const destroy = (id: number) => {
 
                     <!-- Liste des médias -->
                     <div class="space-y-4">
-                        <div
-                            v-for="media in socialMedias"
-                            :key="media.id"
-                            class="border rounded-md p-4 w-full"
-                        >
+                        <div v-for="media in socialMedias" :key="media.id" class="w-full rounded-md border p-4">
                             <div v-if="editingId !== media.id">
-                                <div class="flex justify-between items-center">
+                                <div class="flex items-center justify-between">
                                     <div>
                                         <span class="font-medium capitalize">{{ media.platform }}</span>
                                         <span v-if="media.display_name"> - {{ media.display_name }}</span>
                                     </div>
                                     <div class="flex space-x-2">
-                                        <button
-                                            @click="edit(media)"
-                                            class="text-primary hover:text-violet-900"
-                                        >
-                                            Modifier
-                                        </button>
-                                        <button
-                                            @click="destroy(media.id)"
-                                            class="text-red-500 hover:text-red-700"
-                                        >
-                                            Supprimer
-                                        </button>
+                                        <button @click="edit(media)" class="text-primary hover:text-violet-900">Modifier</button>
+                                        <button @click="destroy(media.id)" class="text-red-500 hover:text-red-700">Supprimer</button>
                                     </div>
                                 </div>
-                                <a
-                                    :href="media.url"
-                                    target="_blank"
-                                    class="text-gray-600 hover:text-gray-800 block mt-1 truncate"
-                                >
+                                <a :href="media.url" target="_blank" class="mt-1 block truncate text-gray-600 hover:text-gray-800">
                                     {{ media.url }}
                                 </a>
                             </div>
 
                             <!-- Formulaire de modification -->
-                            <form v-else @submit.prevent="update" class="grid grid-cols-1 md:grid-cols-4 gap-4 ">
+                            <form v-else @submit.prevent="update" class="grid grid-cols-1 gap-4 md:grid-cols-4">
                                 <div>
                                     <select v-model="editForm.platform" class="w-full rounded-md border-gray-300">
                                         <option value="github">GitHub</option>
@@ -206,22 +183,21 @@ const destroy = (id: number) => {
                                         type="url"
                                         v-model="editForm.url"
                                         :placeholder="`URL ${editForm.platform} (ex: https://${editForm.platform}.com/votreprofil)`"
-                                        
                                         class="w-full rounded-md border-gray-300"
                                     />
                                 </div>
-                                <div class="flex gap-2 space-x-2w-full ">
+                                <div class="space-x-2w-full flex gap-2">
                                     <button
                                         type="submit"
                                         :disabled="editForm.processing"
-                                        class="bg-primary text-white py-1 px-3 rounded-md hover:bg-primary"
+                                        class="rounded-md bg-primary px-3 py-1 text-white hover:bg-primary"
                                     >
                                         Enregistrer
                                     </button>
                                     <button
                                         type="button"
                                         @click="editingId = null"
-                                        class="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600"
+                                        class="rounded-md bg-red-500 px-3 py-1 text-white hover:bg-red-600"
                                     >
                                         Annuler
                                     </button>

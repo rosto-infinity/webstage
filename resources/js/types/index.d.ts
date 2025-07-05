@@ -5,31 +5,29 @@ export interface Auth {
     user: User;
 }
 export interface PageProps {
-    
-  arrival_time: string | null;
-  departure_time: string | null;
-  late_minutes: number;
-  absent: boolean;
-  late: boolean;
+    arrival_time: string | null;
+    departure_time: string | null;
+    late_minutes: number;
+    absent: boolean;
+    late: boolean;
 }
-export interface Presence {  
-   id: number;
-  date: string;
-  arrival_time: string | null;
-  departure_time: string | null;
-  late_minutes: number;
-  absent: boolean;
-  late: boolean;
-  user: { name: string; email: string };
-absence_reason: string | null; // Nouveau champ
+export interface Presence {
+    id: number;
+    date: string;
+    arrival_time: string | null;
+    departure_time: string | null;
+    late_minutes: number;
+    absent: boolean;
+    late: boolean;
+    user: { name: string; email: string };
+    absence_reason: string | null; // Nouveau champ
 }
 // Typage amélioré avec absence_reason
 
-
 export interface PaginationLink {
-  url: string | null
-  label: string
-  active: boolean
+    url: string | null;
+    label: string;
+    active: boolean;
 }
 export interface BreadcrumbItem {
     title: string;
@@ -62,24 +60,23 @@ export interface User {
 }
 // SharedData pour usePage
 export interface SharedData {
-  auth: Auth;
-  ziggy: Config & { location: string };
-  // autres props globales (nom de page, citations, etc.)
-  name: string;
-  quote: { message: string; author: string };
-  sidebarOpen: boolean;
+    auth: Auth;
+    ziggy: Config & { location: string };
+    // autres props globales (nom de page, citations, etc.)
+    name: string;
+    quote: { message: string; author: string };
+    sidebarOpen: boolean;
 }
 
 declare module '@inertiajs/vue3' {
-  export interface PageProps {
-    flash?: {
-      success?: string
-      error?: string
-      warning?: string
-      info?: string
+    export interface PageProps {
+        flash?: {
+            success?: string;
+            error?: string;
+            warning?: string;
+            info?: string;
+        };
     }
-  }
 }
-
 
 export type BreadcrumbItemType = BreadcrumbItem;

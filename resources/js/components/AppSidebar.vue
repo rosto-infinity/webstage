@@ -5,18 +5,8 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import {
-    LayoutGrid,
-    CalendarCheck,
-    UserPlus,
-    List,
-    Folder,
-    Settings,
-    BookOpen,
-    Home
-} from 'lucide-vue-next';
+import { BookOpen, CalendarCheck, Folder, Home, LayoutGrid, List, Settings, UserPlus } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
-
 
 interface PageProps {
     auth: {
@@ -30,22 +20,18 @@ interface PageProps {
 const { props } = usePage<PageProps>();
 const userRole = props.auth?.user?.role || 'user';
 
-
 const mainNavItems: NavItem[] = [
-   
     {
         title: 'Home',
         href: '/',
         icon: Home, // Icône appropriée pour un tableau de bord
     },
-     
 
-{
+    {
         title: 'Dashboard',
         href: '/dashboard',
         icon: LayoutGrid,
     },
-    
 ];
 
 const adminNavItems: NavItem[] = [
@@ -55,14 +41,13 @@ const adminNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-         title: 'Dashboard Admin',
+        title: 'Dashboard Admin',
         href: '/gestions/users',
         icon: Settings,
     },
 ];
 
 const superAdminNavItems: NavItem[] = [
-  
     {
         title: 'Dashboard Sup_Admin',
         href: '/superadmin/dashboard',
@@ -83,7 +68,6 @@ const superAdminNavItems: NavItem[] = [
         href: '/gestions/users',
         icon: List, // Plus adapté pour une liste que l'icône Users
     },
-   
 ];
 
 let roleBasedNavItems = [...mainNavItems];
@@ -92,9 +76,8 @@ if (userRole === 'admin') {
     roleBasedNavItems = [...adminNavItems];
 }
 if (userRole === 'superadmin') {
-    roleBasedNavItems = [...roleBasedNavItems,...superAdminNavItems];
+    roleBasedNavItems = [...roleBasedNavItems, ...superAdminNavItems];
 }
-
 
 const footerNavItems: NavItem[] = [
     {
@@ -102,7 +85,7 @@ const footerNavItems: NavItem[] = [
         href: '#',
         icon: Folder,
     },
-   
+
     {
         title: 'Documentation',
         href: '#',

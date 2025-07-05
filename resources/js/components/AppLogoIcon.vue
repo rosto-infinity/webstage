@@ -12,6 +12,4 @@ interface Props {
 defineProps<Props>();
 </script>
 
-<template>
-    WS
-</template>
+<template>WS</template>
