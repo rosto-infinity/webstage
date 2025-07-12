@@ -29,9 +29,10 @@ const mainNavItems: NavItem[] = [
 
     {
         title: 'Dashboard',
-        href: '/dashboard',
+        href: 'dashboard',
         icon: LayoutGrid,
     },
+
 ];
 
 const adminNavItems: NavItem[] = [

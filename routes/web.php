@@ -14,6 +14,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('dashboard', [UserController::class, 'index'])->middleware(['auth', 'verified', 'prevent-back'])->name('dashboard');
+Route::get('dashboard/presence-list-user', [UserController::class, 'list'])->middleware(['auth', 'verified', 'prevent-back'])->name('list');
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('admin/dashboard', [DashboardController::class, 'admin'])->name('admin.dashboard');

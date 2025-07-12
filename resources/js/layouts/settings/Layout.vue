@@ -5,7 +5,22 @@ import { Separator } from '@/components/ui/separator';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
 
-const sidebarNavItems: NavItem[] = [
+interface PageProps {
+    auth: {
+        user?: {
+            role: string;
+        };
+    };
+    ziggy?: {
+        location: string;
+    };
+}
+
+const { props } = usePage<PageProps>();
+const userRole = props.auth?.user?.role || 'user';
+
+// Configuration de base pour tous les utilisateurs
+const baseNavItems: NavItem[] = [
     {
         title: 'Profile',
         href: '/settings/profile',
@@ -18,19 +33,42 @@ const sidebarNavItems: NavItem[] = [
         title: 'Appearance',
         href: '/settings/appearance',
     },
-    {
+     {
         title: 'Media',
         href: '/settings/media',
     },
+];
+
+// Items réservés aux admins
+const adminNavItems: NavItem[] = [
     {
         title: 'DB Backup',
         href: '/settings/dbbackup',
-    },
+    }
 ];
 
-const page = usePage();
+// Items réservés aux superadmins
+const superAdminNavItems: NavItem[] = [
+     {
+        title: 'DB Backup',
+        href: '/settings/dbbackup',
+    },
+    {
+        title: 'System Logs',
+        href: '/settings/logs',
+    }
+];
 
-const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.location).pathname : '';
+// Fusion dynamique en fonction du rôle
+let sidebarNavItems = [...baseNavItems];
+
+if (userRole === 'admin') {
+    sidebarNavItems = [...sidebarNavItems, ...adminNavItems];
+} else if (userRole === 'superadmin') {
+    sidebarNavItems = [...sidebarNavItems, ...adminNavItems, ...superAdminNavItems];
+}
+
+const currentPath = props.ziggy?.location ? new URL(props.ziggy.location).pathname : '';
 </script>
 
 <template>

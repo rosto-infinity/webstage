@@ -29,6 +29,35 @@ class UserController extends Controller
         ]);
     }
 
+
+     public function list()
+    {
+        $user = Auth::user();
+
+        $presences = Presence::where('user_id', $user->id)
+            ->with('absenceReason')
+            ->orderBy('date', 'desc')
+            ->get()
+            ->map(fn ($p) => [
+                'id' => $p->id,
+                'date' => $p->date,
+                'arrival_time' => $p->arrival_time,
+                'departure_time' => $p->departure_time,
+                'late_minutes' => $p->late_minutes,
+                'absent' => $p->absent,
+                'late' => $p->late,
+                'absence_reason' => $p->absenceReason ? $p->absenceReason->name : null,
+            ]);
+
+        $presenceCount = $presences->count();
+
+        return Inertia::render('User/presenceListeUser', [
+            'presences' => $presences,
+            'presenceCount' => $presenceCount,
+        ]);
+    }
+
+
     /**
      * -Affiche le tableau de bord utilisateur avec les statistiques de présence
      *

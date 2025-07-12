@@ -140,18 +140,6 @@ class PresenceController extends Controller
         return Excel::download(new PresenceExport, 'Presences_'.$fileName.'.xlsx');
     }
 
-    // public function downloadAll()
-    // {
-    //     $presences = Presence::latest()->get();
-    //     $filename = 'Presences_'.now()->format('YmdHis').'.pdf';
-
-    //     return Pdf::loadView('SuperAdmin/Presences/PdfAllPresences', [
-    //         'presences' => $presences,
-    //         'date' => now()->format('d/m/Y'),
-            
-    //     ])->download($filename);
-    // }
-
     public function downloadAll()
 {
     $presences = Presence::latest()->get();
