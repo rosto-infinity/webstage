@@ -3,7 +3,7 @@ import AppLayoutUser from '@/layouts/AppLayoutUser.vue';
 import Badge from '@/components/Badge.vue';
 import { Head, usePage } from '@inertiajs/vue3';
 import { Calendar, CalendarCheck, Clock, Users } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
+import { computed, ref , watch} from 'vue';
 import type { BreadcrumbItem } from '@/types';
 
 interface Presence {
@@ -29,6 +29,29 @@ const data = ref<Presence[]>((page.props as any).presences);
 const filterDateFrom = ref<string | null>(null);
 const filterDateTo = ref<string | null>(null);
 const filterStatus = ref<'all' | 'present' | 'absent' | 'late'>('all');
+const currentWeek = ref<number>(0); // 0 = semaine actuelle
+
+// Fonction pour obtenir les dates de début/fin de semaine
+const getWeekDates = (weekOffset: number) => {
+    const today = new Date();
+    const currentDay = today.getDay();
+    const diff = today.getDate() - currentDay + (currentDay === 0 ? -6 : 1) + (weekOffset * 7);
+    const startDate = new Date(today.setDate(diff));
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + 6);
+    
+    return {
+        start: startDate.toISOString().split('T')[0],
+        end: endDate.toISOString().split('T')[0]
+    };
+};
+
+// Appliquer le filtre semaine quand currentWeek change
+watch(currentWeek, (newWeek) => {
+    const { start, end } = getWeekDates(newWeek);
+    filterDateFrom.value = start;
+    filterDateTo.value = end;
+});
 
 // Données filtrées
 const filteredData = computed(() => {
@@ -103,6 +126,24 @@ const breadcrumbs: BreadcrumbItem[] = [
 
             <!-- Filtres unifiés -->
             <div class="mb-4 flex flex-col gap-4 md:flex-row">
+                <div class="flex items-center gap-2">
+                    <button 
+                        @click="currentWeek--" 
+                        class="rounded-md bg-gray-200 p-1 px-2 hover:bg-gray-300"
+                    >
+                        &lt;
+                    </button>
+                    <span class="text-sm font-medium">
+                        Semaine {{ currentWeek >= 0 ? `+${currentWeek}` : currentWeek }}
+                    </span>
+                    <button 
+                        @click="currentWeek++" 
+                        class="rounded-md bg-gray-200 p-1 px-2 hover:bg-gray-300"
+                    >
+                        &gt;
+                    </button>
+                </div>
+                
                 <label>De : <input type="date" v-model="filterDateFrom" class="input rounded-md p-1" /></label>
                 <label>À : <input type="date" v-model="filterDateTo" class="input rounded-md p-1" /></label>
                 <select v-model="filterStatus" class="input rounded-md bg-violet-200 p-1">
@@ -111,6 +152,16 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <option value="absent">Absents</option>
                     <option value="late">Retards</option>
                 </select>
+            </div>
+
+            <!-- Période affichée -->
+            <div class="mb-4 text-sm text-muted-foreground">
+                Affichage de la période : 
+                <span class="font-medium">
+                    {{ new Date(filterDateFrom).toLocaleDateString('fr-FR') }} 
+                    au 
+                    {{ new Date(filterDateTo).toLocaleDateString('fr-FR') }}
+                </span>
             </div>
 
             <!-- Tableau des présences -->
