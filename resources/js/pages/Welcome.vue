@@ -3,8 +3,21 @@ import AppearanceTabs from '@/components/AppearanceTabs.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
 
+
 defineProps<{
     totalUsers: number;
+      users: {
+        id: number;
+        name: string;
+        email: string;
+        avatar: string;
+        socialMedias: {
+            id: number;
+            platform: string;
+            url: string;
+            display_name: string;
+        }[];
+    }[];
 }>();
 
 // Animation au scroll
@@ -111,6 +124,47 @@ onMounted(() => {
             </div>
         </section>
 
+         <!-- Section Utilisateurs -->
+      <section class="users-section bg-background/80 py-20 backdrop-blur-sm">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <h2 class="text-3xl font-bold text-foreground mb-8">Liste des Utilisateurs</h2>
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div
+                v-for="user in users"
+                :key="user.id"
+                class="user-card rounded-xl border border-border bg-background p-8 shadow-sm hover:shadow-md"
+            >
+                <div class="flex items-center gap-4">
+                    <img
+                        :src="user.avatar"
+                        :alt="user.name"
+                        class="h-12 w-12 rounded-full object-cover"
+                    />
+                    <div>
+                        <h3 class="text-xl font-semibold text-foreground">{{ user.name }}</h3>
+                        <p class="text-muted-foreground">{{ user.email }}</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h4 class="font-semibold text-lg text-primary">Médias Sociaux</h4>
+                    <div v-if="user.socialMedias && user.socialMedias.length > 0" class="space-y-2">
+                        <div
+                            v-for="social in user.socialMedias"
+                            :key="social.id"
+                            class="social-media-item"
+                        >
+                            <a :href="social.url" target="_blank" class="text-muted-foreground hover:text-primary">
+                                {{ social.platform }}: {{ social.display_name }}
+                            </a>
+                        </div>
+                    </div>
+                    <p v-else class="text-muted-foreground">Aucun média social associé.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+ 
         <!-- Section Statistiques -->
         <section class="stats-section bg-background/80 py-20 backdrop-blur-sm">
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
@@ -197,7 +251,22 @@ h1 {
     border-radius: 2px;
     margin: 8px auto;
 }
+.user-card {
+    transition: all 0.3s ease;
+}
 
+.user-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary/30);
+}
+
+.social-media-item a {
+    transition: color 0.3s ease;
+}
+
+.social-media-item a:hover {
+    color: var(--primary);
+}
 /* Cartes de statistiques */
 .stat-card {
     transition: all 0.3s ease;

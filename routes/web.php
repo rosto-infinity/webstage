@@ -7,10 +7,14 @@ use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+
 Route::get('/', function () {
     $totalUsers = User::count();
-
-    return Inertia::render('Welcome', compact('totalUsers'));
+$users = User::with('socialMedias')->get()->map(function ($user) {
+    $user->socialMedias = $user->socialMedias ?? [];
+    return $user;
+});
+    return Inertia::render('Welcome', compact('totalUsers', 'users'));
 })->name('home');
 
 Route::get('dashboard', [UserController::class, 'index'])->middleware(['auth', 'verified', 'prevent-back'])->name('dashboard');
