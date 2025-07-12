@@ -29,8 +29,7 @@ class UserController extends Controller
         ]);
     }
 
-
-     public function list()
+    public function list()
     {
         $user = Auth::user();
 
@@ -56,7 +55,6 @@ class UserController extends Controller
             'presenceCount' => $presenceCount,
         ]);
     }
-
 
     /**
      * -Affiche le tableau de bord utilisateur avec les statistiques de présence

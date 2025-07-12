@@ -20,10 +20,9 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid, // Icône appropriée pour un tableau de bord
     },
     {
-         title: 'Mes Présences', 
-         href: '/dashboard/presence-list-user' ,
-        
-    }
+        title: 'Mes Présences',
+        href: '/dashboard/presence-list-user',
+    },
 ];
 
 const footerNavItems: NavItem[] = [

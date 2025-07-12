@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Settings;
 
-use Inertia\Inertia;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DBBackupController extends Controller
@@ -44,7 +44,7 @@ class DBBackupController extends Controller
             'path' => 'required|string',
         ]);
 
-        if (!Storage::exists($request->path)) {
+        if (! Storage::exists($request->path)) {
             abort(404);
         }
 
@@ -57,7 +57,7 @@ class DBBackupController extends Controller
     public function create()
     {
         Artisan::call('app:dbbackup');
-        
+
         return redirect()->back()
             ->with('success', 'La sauvegarde a été lancée avec succès');
     }

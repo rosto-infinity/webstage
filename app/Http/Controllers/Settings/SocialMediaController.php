@@ -31,9 +31,9 @@ class SocialMediaController extends Controller
             'url' => 'required|url|starts_with:https://'.$request->platform.'.com',
             'display_name' => 'nullable|string|max:255',
         ], [
-        'platform.unique' => 'Vous avez déjà ajouté ce réseau social',
-        'url.starts_with' => 'L\'URL doit correspondre au réseau social sélectionné',
-    ]);
+            'platform.unique' => 'Vous avez déjà ajouté ce réseau social',
+            'url.starts_with' => 'L\'URL doit correspondre au réseau social sélectionné',
+        ]);
 
         auth()->user()->socialMedias()->create($request->only([
             'platform', 'url', 'display_name',
@@ -72,7 +72,7 @@ class SocialMediaController extends Controller
                         $fail("L'URL doit appartenir au domaine ".$platformDomains[$request->platform]);
                     }
                 },
-        ],
+            ],
             'display_name' => 'nullable|string|max:255',
         ]);
 

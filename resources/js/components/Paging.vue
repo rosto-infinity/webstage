@@ -33,10 +33,7 @@ const props = defineProps<{
                 {{ link.label }}
             </Link>
             <!-- Texte statique si aucune URL n'est disponible -->
-            <span
-                v-else
-                class="mx-1 rounded border border-gray-200 px-3 py-1 text-sm text-gray-400"
-            >
+            <span v-else class="mx-1 rounded border border-gray-200 px-3 py-1 text-sm text-gray-400">
                 {{ link.label }}
             </span>
         </template>

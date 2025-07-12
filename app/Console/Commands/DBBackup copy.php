@@ -27,14 +27,14 @@ class DBBackup extends Command
      */
     public function handle()
     {
-        $path = Storage::path("/backup/" . now()->format("Y-m-d_H-i-s").".gz");
+        $path = Storage::path('/backup/'.now()->format('Y-m-d_H-i-s').'.gz');
 
-       $command = "mysqldump --user=".env("DB_USERNAME")." --password=".env("DB_PASSWORD")." --host=".env('DB_HOST')." ".env('DB_DATABASE')." | gzip > " .$path;
-      
-       $process = Process::run($command);
+        $command = 'mysqldump --user='.env('DB_USERNAME').' --password='.env('DB_PASSWORD').' --host='.env('DB_HOST').' '.env('DB_DATABASE').' | gzip > '.$path;
+
+        $process = Process::run($command);
 
         if ($process->successful()) {
-            $this->info("Backup created successfully at: " . basename($path));
-        } 
+            $this->info('Backup created successfully at: '.basename($path));
+        }
     }
 }

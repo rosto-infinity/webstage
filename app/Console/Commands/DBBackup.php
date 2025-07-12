@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class DBBackup extends Command
 {
     protected $signature = 'app:dbbackup';
+
     protected $description = 'Crée une sauvegarde compressée de la base de données';
 
     public function handle()
@@ -17,8 +18,8 @@ class DBBackup extends Command
         // Chemin de stockage modifié pour utiliser 'private/backup'
         $directory = 'private/backup';
         Storage::makeDirectory($directory);
-        
-        $filename = now()->format("Y-m-d_H-i-s").".gz";
+
+        $filename = now()->format('Y-m-d_H-i-s').'.gz';
         $path = Storage::path("$directory/$filename");
 
         $command = sprintf(
@@ -33,11 +34,13 @@ class DBBackup extends Command
         $process = Process::run($command);
 
         if ($process->successful()) {
-            $this->info("Sauvegarde créée avec succès : " . $filename);
+            $this->info('Sauvegarde créée avec succès : '.$filename);
+
             return 0;
         }
-        
-        $this->error("Échec de la sauvegarde : " . $process->errorOutput());
+
+        $this->error('Échec de la sauvegarde : '.$process->errorOutput());
+
         return 1;
     }
 }

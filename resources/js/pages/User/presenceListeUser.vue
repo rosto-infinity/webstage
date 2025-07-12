@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import AppLayoutUser from '@/layouts/AppLayoutUser.vue';
 import Badge from '@/components/Badge.vue';
+import AppLayoutUser from '@/layouts/AppLayoutUser.vue';
+import type { BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/vue3';
 import { Calendar, CalendarCheck, Clock, Users } from 'lucide-vue-next';
-import { computed, ref , watch} from 'vue';
-import type { BreadcrumbItem } from '@/types';
+import { computed, ref, watch } from 'vue';
 
 interface Presence {
     id: number;
@@ -35,14 +35,14 @@ const currentWeek = ref<number>(0); // 0 = semaine actuelle
 const getWeekDates = (weekOffset: number) => {
     const today = new Date();
     const currentDay = today.getDay();
-    const diff = today.getDate() - currentDay + (currentDay === 0 ? -6 : 1) + (weekOffset * 7);
+    const diff = today.getDate() - currentDay + (currentDay === 0 ? -6 : 1) + weekOffset * 7;
     const startDate = new Date(today.setDate(diff));
     const endDate = new Date(startDate);
     endDate.setDate(startDate.getDate() + 6);
-    
+
     return {
         start: startDate.toISOString().split('T')[0],
-        end: endDate.toISOString().split('T')[0]
+        end: endDate.toISOString().split('T')[0],
     };
 };
 
@@ -56,9 +56,7 @@ watch(currentWeek, (newWeek) => {
 // Données filtrées
 const filteredData = computed(() => {
     return data.value.filter((r) => {
-        const dateFilter =
-            (!filterDateFrom.value || r.date >= filterDateFrom.value) &&
-            (!filterDateTo.value || r.date <= filterDateTo.value);
+        const dateFilter = (!filterDateFrom.value || r.date >= filterDateFrom.value) && (!filterDateTo.value || r.date <= filterDateTo.value);
 
         const statusFilter =
             filterStatus.value === 'all' ||
@@ -79,7 +77,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Mes Présences',
         href: '/dashboard/presence-list-user',
-    }
+    },
 ];
 </script>
 
@@ -127,23 +125,11 @@ const breadcrumbs: BreadcrumbItem[] = [
             <!-- Filtres unifiés -->
             <div class="mb-4 flex flex-col gap-4 md:flex-row">
                 <div class="flex items-center gap-2">
-                    <button 
-                        @click="currentWeek--" 
-                        class="rounded-md bg-gray-200 p-1 px-2 hover:bg-gray-300"
-                    >
-                        &lt;
-                    </button>
-                    <span class="text-sm font-medium">
-                        Semaine {{ currentWeek >= 0 ? `+${currentWeek}` : currentWeek }}
-                    </span>
-                    <button 
-                        @click="currentWeek++" 
-                        class="rounded-md bg-gray-200 p-1 px-2 hover:bg-gray-300"
-                    >
-                        &gt;
-                    </button>
+                    <button @click="currentWeek--" class="rounded-md bg-gray-200 p-1 px-2 hover:bg-gray-300">&lt;</button>
+                    <span class="text-sm font-medium"> Semaine {{ currentWeek >= 0 ? `+${currentWeek}` : currentWeek }} </span>
+                    <button @click="currentWeek++" class="rounded-md bg-gray-200 p-1 px-2 hover:bg-gray-300">&gt;</button>
                 </div>
-                
+
                 <label>De : <input type="date" v-model="filterDateFrom" class="input rounded-md p-1" /></label>
                 <label>À : <input type="date" v-model="filterDateTo" class="input rounded-md p-1" /></label>
                 <select v-model="filterStatus" class="input rounded-md bg-violet-200 p-1">
@@ -156,10 +142,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 
             <!-- Période affichée -->
             <div class="mb-4 text-sm text-muted-foreground">
-                Affichage de la période : 
+                Affichage de la période :
                 <span class="font-medium">
-                    {{ new Date(filterDateFrom).toLocaleDateString('fr-FR') }} 
-                    au 
+                    {{ new Date(filterDateFrom).toLocaleDateString('fr-FR') }}
+                    au
                     {{ new Date(filterDateTo).toLocaleDateString('fr-FR') }}
                 </span>
             </div>

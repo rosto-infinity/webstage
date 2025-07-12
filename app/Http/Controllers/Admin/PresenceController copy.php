@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
-use Inertia\Inertia;
-use App\Models\Presence;
-use App\Models\AbsenceReason;
 use App\Exports\PresenceExport;
 use App\Http\Controllers\Controller;
-
-use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\PresenceRequest;
+use App\Models\AbsenceReason;
+use App\Models\Presence;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
-
+use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PresenceController extends Controller
 {
@@ -148,22 +146,20 @@ class PresenceController extends Controller
     //     return Pdf::loadView('SuperAdmin/Presences/PdfAllPresences', [
     //         'presences' => $presences,
     //         'date' => now()->format('d/m/Y'),
-            
+
     //     ])->download($filename);
     // }
 
     public function downloadAll()
-{
-    $presences = Presence::latest()->get();
-    $filename = 'Presences_'.now()->format('YmdHis').'.pdf';
+    {
+        $presences = Presence::latest()->get();
+        $filename = 'Presences_'.now()->format('YmdHis').'.pdf';
 
-    return Pdf::loadView('SuperAdmin/Presences/PdfAllPresences', [
-        'presences' => $presences,
-        'date' => now()->format('d/m/Y'),
-    ])
-    ->setPaper('A4', 'landscape')  // Doit être appelé avant download()
-    ->download($filename);
+        return Pdf::loadView('SuperAdmin/Presences/PdfAllPresences', [
+            'presences' => $presences,
+            'date' => now()->format('d/m/Y'),
+        ])
+            ->setPaper('A4', 'landscape')  // Doit être appelé avant download()
+            ->download($filename);
+    }
 }
-
-}
-

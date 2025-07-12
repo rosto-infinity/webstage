@@ -28,7 +28,7 @@ class DashboardController extends Controller
         $user = $validated['user'] ?? '';
         $filterType = $validated['filterType'] ?? 'day';
 
-        //- Déterminer la plage de dates en fonction du type de filtre
+        // - Déterminer la plage de dates en fonction du type de filtre
         $startDate = match ($filterType) {
             'month' => Carbon::parse($month)->startOfMonth()->toDateString(),
             'week' => Carbon::parse($week)->startOfWeek()->toDateString(),
@@ -89,6 +89,7 @@ class DashboardController extends Controller
 
         return collect(range(0, 6))->map(function ($day) use ($startOfWeek, $query) {
             $currentDate = $startOfWeek->copy()->addDays($day);
+
             return [
                 'day' => $currentDate->isoFormat('ddd'),
                 'present' => $query->clone()->whereDate('date', $currentDate)
@@ -112,6 +113,7 @@ class DashboardController extends Controller
         }
 
         $totalUsers = $user ? 1 : User::count();
+
         return $query->whereBetween('date', [$startOfMonth, $endOfMonth])
             ->selectRaw('DAY(date) as day, COUNT(*) as count')
             ->groupBy('day')

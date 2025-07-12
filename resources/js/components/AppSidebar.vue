@@ -32,7 +32,6 @@ const mainNavItems: NavItem[] = [
         href: 'dashboard',
         icon: LayoutGrid,
     },
-
 ];
 
 const adminNavItems: NavItem[] = [

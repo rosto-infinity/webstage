@@ -33,7 +33,7 @@ const baseNavItems: NavItem[] = [
         title: 'Appearance',
         href: '/settings/appearance',
     },
-     {
+    {
         title: 'Media',
         href: '/settings/media',
     },
@@ -44,19 +44,19 @@ const adminNavItems: NavItem[] = [
     {
         title: 'DB Backup',
         href: '/settings/dbbackup',
-    }
+    },
 ];
 
 // Items réservés aux superadmins
 const superAdminNavItems: NavItem[] = [
-     {
+    {
         title: 'DB Backup',
         href: '/settings/dbbackup',
     },
     {
         title: 'System Logs',
         href: '/settings/logs',
-    }
+    },
 ];
 
 // Fusion dynamique en fonction du rôle

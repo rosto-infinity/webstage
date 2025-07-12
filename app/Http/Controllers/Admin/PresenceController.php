@@ -2,52 +2,50 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
-use Inertia\Inertia;
-use App\Models\Presence;
-use App\Models\AbsenceReason;
 use App\Exports\PresenceExport;
 use App\Http\Controllers\Controller;
-
-use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\PresenceRequest;
+use App\Models\AbsenceReason;
+use App\Models\Presence;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
-
+use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PresenceController extends Controller
 {
-   public function index()
-{
-    $presences = Presence::with('user', 'absenceReason')
-        ->orderBy('date', 'desc')
-        ->get()
-        ->map(fn ($p) => [
-            'id' => $p->id,
-            'date' => $p->date,
-            'arrival_time' => $p->arrival_time,
-            'departure_time' => $p->departure_time,
-            'late_minutes' => $p->late_minutes,
-            'absent' => $p->absent,
-            'late' => $p->late,
-            'user' => [
-                'name' => $p->user->name,
-                'email' => $p->user->email,
+    public function index()
+    {
+        $presences = Presence::with('user', 'absenceReason')
+            ->orderBy('date', 'desc')
+            ->get()
+            ->map(fn ($p) => [
+                'id' => $p->id,
+                'date' => $p->date,
+                'arrival_time' => $p->arrival_time,
+                'departure_time' => $p->departure_time,
+                'late_minutes' => $p->late_minutes,
+                'absent' => $p->absent,
+                'late' => $p->late,
+                'user' => [
+                    'name' => $p->user->name,
+                    'email' => $p->user->email,
+                ],
+                'absence_reason' => $p->absenceReason ? $p->absenceReason->name : null,
+            ]);
+
+        $presenceCount = Presence::count();
+
+        return Inertia::render('SuperAdmin/Presence/PresenceIndex', [
+            'presences' => $presences,
+            'presenceCount' => $presenceCount,
+            'flash' => [
+                'success' => session('success'),
+                'error' => session('error'),
+                'warning' => session('warning'),
             ],
-            'absence_reason' => $p->absenceReason ? $p->absenceReason->name : null,
         ]);
-
-    $presenceCount = Presence::count();
-
-    return Inertia::render('SuperAdmin/Presence/PresenceIndex', [
-        'presences' => $presences,
-        'presenceCount' => $presenceCount,
-        'flash' => [
-            'success' => session('success'),
-            'error' => session('error'),
-            'warning' => session('warning'),
-        ],
-    ]);
-}
+    }
 
     public function add()
     {
@@ -141,17 +139,15 @@ class PresenceController extends Controller
     }
 
     public function downloadAll()
-{
-    $presences = Presence::latest()->get();
-    $filename = 'Presences_'.now()->format('YmdHis').'.pdf';
+    {
+        $presences = Presence::latest()->get();
+        $filename = 'Presences_'.now()->format('YmdHis').'.pdf';
 
-    return Pdf::loadView('SuperAdmin/Presences/PdfAllPresences', [
-        'presences' => $presences,
-        'date' => now()->format('d/m/Y'),
-    ])
-    ->setPaper('A4', 'landscape')  // Doit être appelé avant download()
-    ->download($filename);
+        return Pdf::loadView('SuperAdmin/Presences/PdfAllPresences', [
+            'presences' => $presences,
+            'date' => now()->format('d/m/Y'),
+        ])
+            ->setPaper('A4', 'landscape')  // Doit être appelé avant download()
+            ->download($filename);
+    }
 }
-
-}
-

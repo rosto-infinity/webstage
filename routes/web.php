@@ -7,13 +7,14 @@ use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-
 Route::get('/', function () {
     $totalUsers = User::count();
-$users = User::with('socialMedias')->get()->map(function ($user) {
-     $user->setAttribute('socialMedias', $user->socialMedias ?? []);
-    return $user;
-});
+    $users = User::with('socialMedias')->get()->map(function ($user) {
+        $user->setAttribute('socialMedias', $user->socialMedias ?? []);
+
+        return $user;
+    });
+
     return Inertia::render('Welcome', compact('totalUsers', 'users'));
 })->name('home');
 
