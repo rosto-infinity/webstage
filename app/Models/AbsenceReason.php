@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AbsenceReason extends Model
 {
-    protected $fillable = ['name'];
+    use HasFactory; 
     
+    protected $fillable = ['name'];
+
     public function absenceReason()
     {
         return $this->belongsTo(AbsenceReason::class);
