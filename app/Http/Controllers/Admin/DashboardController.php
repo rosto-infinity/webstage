@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Presence;
-use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
+use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Presence;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {
@@ -103,28 +104,35 @@ class DashboardController extends Controller
     /**
      * --cRécupère les tendances mensuelles pour le mois donné.
      */
-    private function getMonthlyStats(string $month, string $user = ''): array
-    {
-        $startOfMonth = Carbon::parse($month)->startOfMonth();
-        $endOfMonth = Carbon::parse($month)->endOfMonth();
-        $query = Presence::query();
-        if ($user) {
-            $query->whereHas('user', fn ($q) => $q->where('name', $user));
-        }
-
-        $totalUsers = $user ? 1 : User::count();
-
-        return $query->whereBetween('date', [$startOfMonth, $endOfMonth])
-            ->selectRaw('DAY(date) as day, COUNT(*) as count')
-            ->groupBy('day')
-            ->orderBy('day')
-            ->get()
-            ->map(fn ($item) => [
-                'day' => (string) $item->day,
-                'rate' => $totalUsers > 0 ? ($item->count / $totalUsers) * 100 : 0,
-            ])->toArray();
+ private function getMonthlyStats(string $month, string $user = ''): array
+{
+    $startOfMonth = Carbon::parse($month)->startOfMonth();
+    $endOfMonth = Carbon::parse($month)->endOfMonth();
+    $query = Presence::query();
+    if ($user) {
+        $query->whereHas('user', fn ($q) => $q->where('name', $user));
     }
 
+    $totalUsers = $user ? 1 : User::count();
+
+    // Correction ici : compatibilité MySQL/SQLite
+    if (DB::getDriverName() === 'sqlite') {
+        $dayExpr = "strftime('%d', date)";
+    } else {
+        $dayExpr = "DAY(date)";
+    }
+
+    return $query->whereBetween('date', [$startOfMonth, $endOfMonth])
+        ->selectRaw("$dayExpr as day, COUNT(*) as count")
+        ->groupBy('day')
+        ->orderBy('day')
+        ->get()
+        ->map(fn ($item) => [
+            'day' => (string) $item->day,
+            'rate' => $totalUsers > 0 ? ($item->count / $totalUsers) * 100 : 0,
+        ])->toArray();
+
+        }
     /**
      * ---Récupère les motifs d'absence pour le mois donné.
      */

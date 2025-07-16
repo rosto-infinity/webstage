@@ -7,4 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class AbsenceReason extends Model
 {
     protected $fillable = ['name'];
+    
+    public function absenceReason()
+    {
+        return $this->belongsTo(AbsenceReason::class);
+    }
 }

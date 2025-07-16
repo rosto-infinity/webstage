@@ -12,7 +12,8 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, ...$roles)
     {
         if (! Auth::check() || ! in_array(Auth::user()->role, $roles)) {
-            return Inertia::render('Welcome');
+            // return Inertia::render('Welcome');
+             abort(403); // Retourne une erreur 403 Forbidden
         }
 
         return $next($request);

@@ -31,7 +31,7 @@ class PresenceRequest extends FormRequest
                 'required_if:absent,false',
                 'nullable',
                 'date_format:H:i',
-                function ($attribute, $value, $fail) {
+                function ($attribute, $value, $fail): void {
                     if ($value && $this->absent) {
                         $fail("Incohérence : heure d'arrivée renseignée alors que marqué absent.");
                     }
@@ -42,7 +42,7 @@ class PresenceRequest extends FormRequest
                 'nullable',
                 'date_format:H:i',
                 'after:heure_arrivee',
-                function ($attribute, $value, $fail) {
+                function ($attribute, $value, $fail): void {
                     if ($value && ! $this->heure_arrivee) {
                         $fail("Le départ nécessite une heure d'arrivée.");
                     }
@@ -57,7 +57,7 @@ class PresenceRequest extends FormRequest
                 'min:0',
                 'max:300',
                 'required_if:en_retard,true',
-                function ($attribute, $value, $fail) {
+                function ($attribute, $value, $fail): void {
                     if ($value && $this->absent) {
                         $fail('Incohérence : retard renseigné alors que marqué absent.');
                     }
@@ -73,7 +73,7 @@ class PresenceRequest extends FormRequest
                 'required_if:absent,true',
                 'nullable',
                 'exists:absence_reasons,id',
-                function ($attribute, $value, $fail) {
+                function ($attribute, $value, $fail): void {
                     if ($value && ! $this->absent) {
                         $fail("Incohérence : motif d'absence renseigné alors que non absent.");
                     }

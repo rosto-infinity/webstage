@@ -15,7 +15,7 @@ class PresenceExport implements FromView
     public function view(): View
     {
         //    $users   = User::pluck('name', 'id');
-        //   $presences = Presence::with(['user']);
+        //   $presences = Presence::with(['user']);SuperAdmin/Presences/ExSuperAdmin/Presences/ExcelAllPresences'celAllPresences'
         return view(
             'SuperAdmin/Presences/ExcelAllPresences',
             [

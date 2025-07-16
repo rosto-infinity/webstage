@@ -7,7 +7,7 @@ use App\Http\Controllers\Settings\SocialMediaController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::middleware(['auth', 'prevent-back'])->group(function () {
+Route::middleware(['auth', 'prevent-back'])->group(function (): void {
     Route::redirect('settings', '/settings/profile');
 
     Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -66,7 +66,7 @@ class SocialMediaController extends Controller
             'url' => [
                 'required',
                 'url',
-                function ($attribute, $value, $fail) use ($request, $platformDomains) {
+                function ($attribute, $value, $fail) use ($request, $platformDomains): void {
                     if ($request->platform !== 'other' &&
                         ! str_contains($value, $platformDomains[$request->platform])) {
                         $fail("L'URL doit appartenir au domaine ".$platformDomains[$request->platform]);

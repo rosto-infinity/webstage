@@ -21,18 +21,18 @@ Route::get('/', function () {
 Route::get('dashboard', [UserController::class, 'index'])->middleware(['auth', 'verified', 'prevent-back'])->name('dashboard');
 Route::get('dashboard/presence-list-user', [UserController::class, 'list'])->middleware(['auth', 'verified', 'prevent-back'])->name('list');
 
-Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function (): void {
     Route::get('admin/dashboard', [DashboardController::class, 'admin'])->name('admin.dashboard');
-    Route::prefix('gestions')->name('users.')->group(function () {
+    Route::prefix('gestions')->name('users.')->group(function (): void {
         Route::get('users', [UserController::class, 'index'])->name('index');
         Route::get('users/create', [UserController::class, 'create'])->name('create');
         Route::post('users', [UserController::class, 'store'])->name('store');
     });
 });
 
-Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function (): void {
     Route::get('/superadmin/dashboard', [DashboardController::class, 'superadmin'])->name('dashboard.superadmin');
-    Route::prefix('gestions')->name('users.')->group(function () {
+    Route::prefix('gestions')->name('users.')->group(function (): void {
         Route::get('users', [UserController::class, 'indexlist'])->name('index');
         Route::get('users/create', [UserController::class, 'create'])->name('create');
         Route::post('users', [UserController::class, 'store'])->name('store');
@@ -41,7 +41,7 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
         Route::delete('users/{user}', [UserController::class, 'destroy'])->name('destroy');
     });
 
-    Route::prefix('presences')->group(function () {
+    Route::prefix('presences')->group(function (): void {
         Route::get('/excel', [PresenceController::class, 'excel'])->name('presences.excel');
         Route::get('/download-all', [PresenceController::class, 'downloadAll'])->name('presences.downloadAll');
         Route::get('/users', [PresenceController::class, 'index'])->name('presences');
