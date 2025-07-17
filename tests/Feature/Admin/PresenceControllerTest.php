@@ -21,7 +21,7 @@ it('refuse l\'accès aux non-admin', function () {
     $user = User::factory()->create(['role' => 'user']);
     $this->actingAs($user);
     $response = $this->get(route('presences'));
-    $response->assertForbidden(); // ou assertRedirect selon ta politique
+    $response->assertForbidden(); // ou -- assertRedirect selon ta politique
 });
 
 it('peut créer une présence', function () {
