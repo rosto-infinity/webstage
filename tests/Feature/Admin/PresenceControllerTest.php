@@ -11,10 +11,11 @@ beforeEach(function () {
     $this->actingAs($this->admin);
 });
 
-it('affiche la liste des présences', function () {
+\it('affiche la liste des présences', function () {
     $response = $this->get(route('presences'));
     $response->assertOk();
-    $response->assertInertia(fn ($page) => $page->component('SuperAdmin/Presence/PresenceIndex'));
+    $response->assertInertia(fn ($page) => $page
+     ->component('SuperAdmin/Presence/PresenceIndex'));
 });
 
 it('refuse l\'accès aux non-admin', function () {
