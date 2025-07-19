@@ -2,7 +2,7 @@
 
 return [
     'default_paper_size' => 'A4',
-    'default_orientation' => 'landscape', // Ajoutez cette ligne pour le mode paysage
+    'default_orientation' => 'landscape', // paysage large
     'default_font' => 'helvetica',
     'dpi' => 300,
     'enable_remote' => true,

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
       
-         $roles = config('roles.roles', ['user', 'admin', 'superadmin']);
+         $roles = config('roles.roles', ['er', 'red', 'ytr']);
 
         Schema::table('users', function (Blueprint $table) use ($roles) {
             $table->enum('role', $roles)
