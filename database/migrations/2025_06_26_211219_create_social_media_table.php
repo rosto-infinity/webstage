@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('url');
             $table->string('display_name')->nullable();
             $table->timestamps();
-
             $table->index(['user_id', 'platform']);
         });
     }
