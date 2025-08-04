@@ -115,7 +115,7 @@ class DashboardController extends Controller
 
     $totalUsers = $user ? 1 : User::count();
 
-    // Correction ici : compatibilité MySQL/SQLite
+    // -Correction ici : compatibilité MySQL/SQLite
     if (DB::getDriverName() === 'sqlite') {
         $dayExpr = "strftime('%d', date)";
     } else {
